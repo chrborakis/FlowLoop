@@ -37,6 +37,10 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'apps',
+    'apps.users',
+    'apps.companies',
+    # 'apps.users.apps.UsersConfig',
+    # 'apps.companies.apps.CompaniesConfig',
     'postgres_composite_types',
     'django.contrib.admin',
     'django.contrib.auth',
