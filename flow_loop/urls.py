@@ -6,7 +6,6 @@ from apps import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api', include('api.urls')),
+    path('api/', include('api.urls')),
     path('', include("frontend.urls")),
-    path('_nested_admin/', include('nested_admin.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

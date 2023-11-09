@@ -1,9 +1,13 @@
 from django.views import View
 from django.shortcuts import render
+from rest_framework import generics
+from .serializers import *
+from apps.users.models import *
 
-# class Main(View):
-#     template_name = "socialnetwork/base.html"
+class UsersCredentialView(generics.CreateAPIView):
+    queryset = UsersCredentials.objects.all()
+    serializer_class = UsersCredentialSerializer
 
-
-def my_view(request):
-    return render(request, "socialnetwork/base.html")
+class UsersView(generics.CreateAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UsersSerializer

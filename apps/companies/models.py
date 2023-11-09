@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
+from phonenumber_field.modelfields import PhoneNumberField
 
 from apps.users.models import Users
 from apps.models import Address, Phone
@@ -9,10 +10,10 @@ from apps.models import Address, Phone
 class Companies(models.Model):
     company_id = models.AutoField(primary_key=True)
     company_name = models.TextField(unique=True)
-    slug = models.SlugField( unique=True, db_index=True, blank=True, null=True)
+    slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
     description = models.TextField(blank=True, null=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    phones = models.ForeignKey(Phone, on_delete=models.CASCADE)
+    phone = PhoneNumberField(blank=False, null=False)
     image = models.ImageField(upload_to="company_image", blank=True, null=True)
     establishment_date = models.DateField(blank=False, null=False)
     creation_date = models.DateField(default=now, editable=False, blank=True, null=True)
@@ -57,10 +58,10 @@ class CompaniesAdmins(models.Model):
     def __str__(self):
         return f'[{self.company}] administrated by {self.isadmin}'
     
-    def save(self, *args, **kwargs):
-        if self.should_save():
-            super(CompaniesAdmins, self).save(*args, **kwargs)
-        else:
-            raise ValueError("User must work on the company in order to admin it.")
-    def should_save(self):
-        return WorksOn.objects.filter(user=self.isadmin, company=self.company).exists()
+    # def save(self, *args, **kwargs):
+    #     if self.should_save():
+    #         super(CompaniesAdmins, self).save(*args, **kwargs)
+    #     else:
+    #         raise ValueError("User must work on the company in order to admin it.")
+    # def should_save(self):
+    #     return WorksOn.objects.filter(user=self.isadmin, company=self.company).exists()

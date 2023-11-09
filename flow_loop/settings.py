@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'apps',
     'apps.users',
-    'apps.companies',
+    'apps.companies', 
+    'rest_framework',
+    "phonenumber_field",
     # 'apps.users.apps.UsersConfig',
     # 'apps.companies.apps.CompaniesConfig',
     'postgres_composite_types',
@@ -86,7 +88,11 @@ WSGI_APPLICATION = 'flow_loop.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
+DATABASES = {
+    # 'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'railway',
@@ -95,20 +101,14 @@ WSGI_APPLICATION = 'flow_loop.wsgi.application'
     #     'HOST': 'containers-us-west-95.railway.app',
     #     'PORT': '5521'
     # }
-#     'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'FlowLoop',
-#        'USER': 'postgres',
-#        'PASSWORD': '1r83RCXa%eL#A',
-#        'HOST': 'localhost',
-#        'PORT': '5432',
-#    }
-# }
-DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'FlowLoop',
+       'USER': 'postgres',
+       'PASSWORD': '1r83RCXa%eL#A',
+       'HOST': 'localhost',
+       'PORT': '5432',
+   }
 }
 
 

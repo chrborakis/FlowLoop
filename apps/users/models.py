@@ -1,9 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
-
-from apps.models import Phone
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UsersCredentials(models.Model):
@@ -22,11 +20,14 @@ class Users(models.Model):
     firstname = models.CharField(max_length=32)
     midname = models.CharField(max_length=32, blank=True, null=True)
     lastname = models.CharField(max_length=32)
-    slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=True)
+    slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
     occupation = models.CharField(max_length=64, blank=True, null=True)
-    gender = models.CharField(max_length=6)
+    gender = models.TextField(
+        choices=[("M", "Male"),("F", "Female")],
+        blank=False, null=False
+    )
     image = models.ImageField(upload_to="user_image", blank=True, null=True)
-    phones = models.ForeignKey(Phone, on_delete=models.CASCADE, null=True, unique=True)
+    phone = PhoneNumberField(blank=False, null=False)
     about = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=64)
     create_date = models.DateTimeField(default=now, editable=False)

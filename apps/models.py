@@ -22,52 +22,7 @@ class Phone(models.Model):
     def __str__(self):
         return f'(+{self.code}) {self.number}'
 
-
-
-
-
-
-
-
-
 # ---------------------------------------------------------------------------------------------
-
-
-
-
-
-# class Posts(models.Model):
-#     post_id = models.AutoField(primary_key=True)
-#     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True)
-#     title = models.TextField(blank=True, null=True)
-#     body = models.TextField()
-#     publish_date = models.DateTimeField(default=now, editable=False)
-#     image = models.ImageField(upload_to="posts", blank=True, null=True)
-
-#     def save(self, *args, **kwargs):
-#         self.slug = slugify(self.title)
-#         super().save(*args, **kwargs)
-        
-#     class Meta: 
-#         db_table = 'posts'
-
-# class PostsPrivate(Posts):
-#     author = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='author', to_field="user")
-#     company = models.ForeignKey(Companies, on_delete=models.CASCADE, db_column='company_id', to_field="company_id")
-
-#     class Meta:  
-#         db_table = 'posts_private'
-
-
-# class PostsPublic(Posts):
-#     author = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='author', to_field="user")
-#     company = models.ForeignKey(Companies, on_delete=models.CASCADE, db_column='company_id', to_field="company_id")
-
-#     class Meta:
-#         db_table = 'posts_public'
-
-
-
 
 # class CommentClass(models.Model):
 #     comment_id = models.AutoField(primary_key=True)
