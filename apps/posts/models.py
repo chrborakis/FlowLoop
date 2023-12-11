@@ -46,8 +46,11 @@ class PostsPrivate(models.Model):
     
 
 class PostPrivateLikes(models.Model):
-    post_id = models.ForeignKey(PostsPrivate, on_delete=models.CASCADE)
+    post = models.ForeignKey(PostsPrivate, on_delete=models.CASCADE)
     like    = models.ForeignKey(WorksOn, on_delete=models.CASCADE)
+
+    class Meta: 
+        db_table = 'posts_private_likes'
 
     def clean(self):
         if self.post_id.author.employee.company != self.like.employee.company:
@@ -58,7 +61,7 @@ class PostPrivateLikes(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'[{self.post_id.author.employee.company} - {self.post_id.title}] liked by {self.like.employee.user}'
+        return f'[{self.post.author.employee.company} - {self.post.title}] liked by {self.like.employee.user}'
 
 # class PostsPublic(Posts):
 #     author = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='author', to_field="user")
