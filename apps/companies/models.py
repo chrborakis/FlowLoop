@@ -58,10 +58,10 @@ class CompaniesAdmins(models.Model):
     def __str__(self):
         return f'[{self.company}] administrated by {self.isadmin}'
     
-    # def save(self, *args, **kwargs):
-    #     if self.should_save():
-    #         super(CompaniesAdmins, self).save(*args, **kwargs)
-    #     else:
-    #         raise ValueError("User must work on the company in order to admin it.")
-    # def should_save(self):
-    #     return WorksOn.objects.filter(user=self.isadmin, company=self.company).exists()
+    def save(self, *args, **kwargs):
+        if self.should_save():
+            super(CompaniesAdmins, self).save(*args, **kwargs)
+        else:
+            raise ValueError("User must work on the company in order to admin it.")
+    def should_save(self):
+        return WorksOn.objects.filter(user=self.isadmin, company=self.company).exists()

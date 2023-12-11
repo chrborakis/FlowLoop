@@ -8,4 +8,3 @@ admin.site.register(Phone)
 admin.site.register(Address)
 
 
-# admin.site.register(Posts)

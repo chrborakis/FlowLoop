@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'apps',
     'apps.users',
-    'apps.companies', 
+    'apps.companies',
+    'apps.posts',
     'rest_framework',
     "phonenumber_field",
     # 'apps.users.apps.UsersConfig',
@@ -51,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

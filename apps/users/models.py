@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.hashers import make_password
 
 
 class UsersCredentials(models.Model):
@@ -9,6 +10,9 @@ class UsersCredentials(models.Model):
     email = models.EmailField(unique=True)
     password = models.TextField()
 
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super().save(*args, **kwargs)
     class Meta:
         db_table = 'users_credentials'
     def __str__(self):
