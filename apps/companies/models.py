@@ -27,9 +27,9 @@ class Companies(models.Model):
         return f'{self.company_name}'
 
 
-class WorksOn(models.Model):
+class WorkRequests(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE, to_field="user_id")
+    user    = models.ForeignKey(Users,     on_delete=models.CASCADE, to_field="user_id")
     company = models.ForeignKey(Companies, on_delete=models.CASCADE, to_field="company_id")
     STATUS = [        ("P", "Pending"),        ("A", "Accepted"),        ("D", "Declined")    ]
     status = models.TextField(
@@ -37,31 +37,20 @@ class WorksOn(models.Model):
         default="P",
         blank=False, null=False
     )
-    role = models.TextField(blank=True, max_length=128, null=True)
-
     class Meta:
-        db_table = 'works_on'
-        unique_together = (('user', 'company'),)
+        db_table = 'work_requests'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'company'], name='unique_user_company')
+        ]
+
     def __str__(self):
         return f'[{self.status}] {self.user} -> {self.company.company_name}'
 
-
-
-class CompaniesAdmins(models.Model):
+class WorksOn(models.Model):
     id = models.AutoField(primary_key=True)
-    company = models.ForeignKey(Companies, on_delete=models.CASCADE, to_field="company_id", related_name="company_to_admin")  # The composite primary key (company, isadmin) found, that is not supported. The first column is selected.
-    isadmin = models.ForeignKey(Users, on_delete=models.CASCADE, to_field="user", related_name="admin")
-        
-    class Meta:
-        db_table = 'companies_admins'
-        unique_together = ('company', 'isadmin')
+    employee = models.ForeignKey(WorkRequests, on_delete=models.CASCADE, unique=True)
+    is_admin = models.BooleanField(null=True,blank=True,default=False)
     def __str__(self):
-        return f'[{self.company}] administrated by {self.isadmin}'
-    
-    def save(self, *args, **kwargs):
-        if self.should_save():
-            super(CompaniesAdmins, self).save(*args, **kwargs)
-        else:
-            raise ValueError("User must work on the company in order to admin it.")
-    def should_save(self):
-        return WorksOn.objects.filter(user=self.isadmin, company=self.company).exists()
+        return f'[{self.employee.company}] {self.employee.user}'
+    class Meta:
+        db_table = 'works_on'
