@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from django.utils.text import slugify
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
@@ -68,3 +69,35 @@ class UniversityDetails(models.Model):
         db_table = 'university_details'
     def __str__(self):
         return f'{self.user} {(self.name)}'
+
+
+
+class FriendRequests(models.Model):
+    id = models.AutoField(primary_key=True)
+    user1   = models.ForeignKey(Users, related_name='user1',   on_delete=models.CASCADE)
+    request = models.ForeignKey(Users, related_name='request', on_delete=models.CASCADE)
+    STATUS = [        ("P", "Pending"),        ("A", "Accepted"),        ("D", "Declined")    ]
+    status = models.TextField(
+        choices=STATUS,
+        default="P",
+        blank=False, null=False
+    )
+    
+    def clean(self):
+        if self.user1 == self.request:
+            raise ValidationError("User can't friend request himself!")
+    class Meta:
+        db_table = 'friend_requests'
+    
+    def __str__(self):
+        return f'[{self.status}] {self.user1} -> {self.request}'
+
+
+class Friends(models.Model):
+    person   = models.ForeignKey(Users, related_name='person',   on_delete=models.CASCADE)
+    friend   = models.ForeignKey(Users, related_name='friend', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'[{self.person}] friends with {self.friend}'
+    class Meta:
+        db_table = 'friends'
