@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from datetime import datetime
 from django.forms import ValidationError
@@ -7,6 +8,8 @@ from django.utils.text import slugify
 from apps.users.models import Users
 from apps.companies.models import WorksOn
 
+def get_upload_path_private(instance, filename):
+    return os.path.join('posts/posts_private', str(instance.author.employee.company), filename)
 
 class PostsPrivate(models.Model):
     post_id = models.AutoField(primary_key=True)
@@ -15,7 +18,7 @@ class PostsPrivate(models.Model):
     title   = models.CharField(max_length=64, blank=True, null=True)
     body    = models.TextField(blank=False, null=False)
     publish_date = models.DateTimeField(default=now, editable=False)
-    image   = models.ImageField(upload_to="posts/posts_private", blank=True, null=True)
+    image   = models.ImageField(upload_to=get_upload_path_private, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         compo_slug = f'{self.author.employee.company}{self.title}'
@@ -46,6 +49,9 @@ class PostsPrivateLikes(models.Model):
     def __str__(self):
         return f'[{self.post.author.employee.company} - {self.post.title}] liked by {self.like.employee.user}'
 
+def get_upload_path_public(instance, filename):
+    author = str(instance.author.firstname) + '' + str(instance.author.lastname)
+    return os.path.join('posts/posts_public', author, filename)
 
 class PostsPublic(models.Model):
     post_id = models.AutoField(primary_key=True)
@@ -54,7 +60,7 @@ class PostsPublic(models.Model):
     title = models.CharField(max_length=64, blank=True, null=True)
     body = models.TextField(blank=False, null=False)
     publish_date = models.DateTimeField(default=now, editable=False)
-    image = models.ImageField(upload_to="posts/posts_public", blank=True, null=True)
+    image = models.ImageField(upload_to=get_upload_path_public, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         compo_slug = f'{self.author}{self.title}'
