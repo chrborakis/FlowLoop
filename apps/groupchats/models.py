@@ -5,7 +5,7 @@ from apps.companies.models import Companies,WorksOn
 
 class GroupChats(models.Model):
     group_id = models.AutoField(primary_key=True)
-    name     = models.TextField(null=False, max_length=256)
+    name     = models.CharField(null=False, max_length=256)
     company  = models.ForeignKey(Companies, on_delete = models.CASCADE)
 
     def __str__(self):

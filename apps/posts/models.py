@@ -8,31 +8,14 @@ from apps.users.models import Users
 from apps.companies.models import WorksOn
 
 
-
-# class Posts(models.Model):
-#     post_id = models.AutoField(primary_key=True)
-#     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
-#     title = models.TextField(max_length=64, blank=True, null=True)
-#     body = models.TextField(blank=False, null=False)
-#     publish_date = models.DateTimeField(default=now, editable=False)
-#     image = models.ImageField(upload_to="posts", blank=True, null=True)
-
-#     def save(self, *args, **kwargs):
-#         self.slug = slugify(self.title)
-#         super().save(*args, **kwargs)
-        
-#     class Meta: 
-#         db_table = 'posts'
-
 class PostsPrivate(models.Model):
     post_id = models.AutoField(primary_key=True)
-    slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
-    author = models.ForeignKey(WorksOn, to_field="id", on_delete=models.CASCADE)
-
-    title = models.TextField(max_length=64, blank=True, null=True)
-    body = models.TextField(blank=False, null=False)
+    slug    = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
+    author  = models.ForeignKey(WorksOn, to_field="id", on_delete=models.CASCADE)
+    title   = models.CharField(max_length=64, blank=True, null=True)
+    body    = models.TextField(blank=False, null=False)
     publish_date = models.DateTimeField(default=now, editable=False)
-    image = models.ImageField(upload_to="posts_private", blank=True, null=True)
+    image   = models.ImageField(upload_to="posts/posts_private", blank=True, null=True)
 
     def save(self, *args, **kwargs):
         compo_slug = f'{self.author.employee.company}{self.title}'
@@ -68,11 +51,10 @@ class PostsPublic(models.Model):
     post_id = models.AutoField(primary_key=True)
     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
     author = models.ForeignKey(Users, to_field="user", on_delete=models.CASCADE)
-
-    title = models.TextField(max_length=64, blank=True, null=True)
+    title = models.CharField(max_length=64, blank=True, null=True)
     body = models.TextField(blank=False, null=False)
     publish_date = models.DateTimeField(default=now, editable=False)
-    image = models.ImageField(upload_to="posts_public", blank=True, null=True)
+    image = models.ImageField(upload_to="posts/posts_public", blank=True, null=True)
 
     def save(self, *args, **kwargs):
         compo_slug = f'{self.author}{self.title}'
