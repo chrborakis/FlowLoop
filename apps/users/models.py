@@ -22,19 +22,19 @@ class UsersCredentials(models.Model):
 
 class Users(models.Model):
     user = models.OneToOneField(UsersCredentials, on_delete=models.CASCADE, primary_key=True)
-    firstname = models.CharField(max_length=32)
+    firstname = models.CharField(max_length=32,blank=False, null=False)
     midname = models.CharField(max_length=32, blank=True, null=True)
-    lastname = models.CharField(max_length=32)
+    lastname = models.CharField(max_length=32,blank=False, null=False)
     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
-    occupation = models.CharField(max_length=64, blank=True, null=True)
+    occupation = models.CharField(max_length=64, blank=False, null=False)
     gender = models.TextField(
         choices=[("M", "Male"),("F", "Female")],
         blank=False, null=False
     )
     image = models.ImageField(upload_to="user_image", blank=True, null=True)
-    phone = PhoneNumberField(blank=False, null=False)
+    phone = PhoneNumberField(unique=True, blank=False, null=False)
     about = models.TextField(blank=True, null=True)
-    country = models.CharField(max_length=64)
+    country = models.CharField(max_length=64, blank=False,null=False)
     create_date = models.DateTimeField(default=now, editable=False)
 
     def save(self, *args, **kwargs):
@@ -87,6 +87,7 @@ class FriendRequests(models.Model):
         if self.user1 == self.request:
             raise ValidationError("User can't friend request himself!")
     class Meta:
+        unique_together = ('user1', 'request',)
         db_table = 'friend_requests'
     
     def __str__(self):
@@ -94,10 +95,12 @@ class FriendRequests(models.Model):
 
 
 class Friends(models.Model):
-    person   = models.ForeignKey(Users, related_name='person',   on_delete=models.CASCADE)
-    friend   = models.ForeignKey(Users, related_name='friend', on_delete=models.CASCADE)
+    person   = models.ForeignKey(Users, related_name='person',  on_delete=models.CASCADE)
+    friend   = models.ForeignKey(Users, related_name='friend',  on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ('person', 'friend',)
+        db_table = 'friends'
 
     def __str__(self):
         return f'[{self.person}] friends with {self.friend}'
-    class Meta:
-        db_table = 'friends'

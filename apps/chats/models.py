@@ -9,7 +9,7 @@ class PrivateChat(models.Model):
     sender     = models.ForeignKey(Friends, related_name='sender',on_delete = models.CASCADE)
     receiver   = models.ForeignKey(Friends, related_name='receiver',on_delete=models.CASCADE)
     message    = models.TextField(null=False,blank=False)
-    date       = models.DateTimeField(default=timezone.now, editable=False, blank=True, null=True)
+    send_date  = models.DateTimeField(auto_now=True)
 
     def clean(self):
         if self.sender == self.receiver:
@@ -21,7 +21,7 @@ class PrivateChat(models.Model):
 
 
     def __str__(self):
-        return f'[{self.sender.person}->{self.receiver.person}] {self.message}'
+        return f'{self.send_date}[{self.sender.person}->{self.receiver.person}] {self.message}'
 
     class Meta:
         db_table = 'private_chat'

@@ -36,6 +36,7 @@ class PostsPrivateLikes(models.Model):
     like = models.ForeignKey(WorksOn, on_delete=models.CASCADE)
 
     class Meta: 
+        unique_together = ('post', 'like',)
         db_table = 'posts_private_likes'
 
     def clean(self):
@@ -77,6 +78,7 @@ class PostsPublicLikes(models.Model):
     post = models.ForeignKey(PostsPublic, on_delete=models.CASCADE)
     like = models.ForeignKey(Users, on_delete=models.CASCADE)
     class Meta: 
+        unique_together = ('post', 'like',)
         db_table = 'posts_public_likes'
 
     def save(self, *args, **kwargs):
