@@ -37,7 +37,7 @@ class ProjectDivision(models.Model):
     file        = models.FileField(upload_to=get_upload_path, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.project} {self.title}'
+        return f'{self.title}'
 
     class Meta:
         unique_together = ('project', 'title',)

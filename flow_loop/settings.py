@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'apps.companies',
     'apps.posts',
     'apps.chats',
-    'apps.groupchats',
+    'apps.groups',
     'apps.projects',
     'rest_framework',
     "phonenumber_field",

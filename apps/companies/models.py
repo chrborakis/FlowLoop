@@ -12,7 +12,7 @@ class Companies(models.Model):
     company_name = models.CharField(unique=True,blank=False, null=False)
     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
     description = models.TextField(blank=True, null=True)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, unique=True)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE, unique=True)
     phone = PhoneNumberField(unique=True,blank=False, null=False)
     image = models.ImageField(upload_to="company_image", blank=True, null=True)
     establishment_date = models.DateField(blank=False, null=False)
@@ -46,7 +46,7 @@ class WorkRequests(models.Model):
 
 class WorksOn(models.Model):
     id = models.AutoField(primary_key=True)
-    employee = models.ForeignKey(WorkRequests, on_delete=models.CASCADE, unique=True)
+    employee = models.OneToOneField(WorkRequests, on_delete=models.CASCADE, unique=True)
     is_admin = models.BooleanField(null=True,blank=True,default=False)
 
     def __str__(self):

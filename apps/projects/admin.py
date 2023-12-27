@@ -7,17 +7,25 @@ class ProjectsAdmin(admin.ModelAdmin):
     list_filter = ('company', 'phase')
     ordering = ('company', 'start_date', 'finish_date')
 
+
 class ProjectDivisionAdmin(admin.ModelAdmin):
-    list_display = ('project', 'title', 'description')
-    list_display_links = ('project', 'title', 'description')
-    list_filter = ('project',)
+    def project_title(self, obj): return obj.project.title
+    def company(self, obj):       return obj.project.company
+
+    list_display = ('company', 'project_title','title', 'description')
+    list_display_links = ('company', 'project_title','title', 'description')
+    list_filter = ('project__company','project')
     ordering = ('project', 'title')
 
+
 class ProjectAssignAdmin(admin.ModelAdmin):
-    list_display = ('division', 'assign')
-    list_display_links = ('division', 'assign')
-    list_filter = ('division__project__company', 'division__project', 'assign__employee__company')
-    ordering = ('division__project__company', 'division__project', 'assign__employee__company')
+    def project(self, obj): return obj.division.project
+    def company(self, obj): return obj.division.project.company
+
+    list_display = ('project','division', 'assign')
+    list_display_links = ('project','division', 'assign')
+    list_filter = ('division__project__company', 'division__project')
+    ordering = ('division__project__company', 'division__project')
 
 class ProjectAdminAdmin(admin.ModelAdmin):
     list_display = ('project', 'admin')
