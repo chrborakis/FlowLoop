@@ -37,7 +37,7 @@ class ProjectDivision(models.Model):
     file        = models.FileField(upload_to=get_upload_path, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.project}{self.title}'
 
     class Meta:
         unique_together = ('project', 'title',)
@@ -53,6 +53,9 @@ class ProjectAssign(models.Model):
         return f'{self.assign.employee.user} -> {self.division}'
 
     def clean(self):
+        print(f'Division: {self.division.division} Assign: {self.assign.employee.user.user.user_id}')
+        if ProjectAssign.objects.filter(division=self.division,assign=self.assign).exclude(pk=self.pk).first():
+            raise ValidationError("Project division with this participant already exists.")
         existing_assignment = ProjectAssign.objects.filter(division=self.division).exclude(pk=self.pk).first()
         if existing_assignment:
             raise ValidationError("A division can only have one participant!")
@@ -60,7 +63,7 @@ class ProjectAssign(models.Model):
             raise ValidationError("Project participants should be working for the company!")
 
     class Meta:
-        unique_together = ('division', 'assign',)
+        # unique_together = ('division', 'assign',)
         db_table = 'project_assign'
 
 

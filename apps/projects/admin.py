@@ -9,13 +9,15 @@ class ProjectsAdmin(admin.ModelAdmin):
 
 
 class ProjectDivisionAdmin(admin.ModelAdmin):
+    def members(self,obj):
+        return ProjectAssign.objects.filter(division=obj.division).count()
     def project_title(self, obj): return obj.project.title
     def company(self, obj):       return obj.project.company
 
-    list_display = ('company', 'project_title','title', 'description')
-    list_display_links = ('company', 'project_title','title', 'description')
+    list_display = ('company', 'project_title','title', 'description','members')
+    list_display_links = ('company', 'project_title','title', 'description','members')
     list_filter = ('project__company','project')
-    ordering = ('project', 'title')
+    ordering = ('project__company','project', 'title')
 
 
 class ProjectAssignAdmin(admin.ModelAdmin):

@@ -12,6 +12,7 @@ class PostsPrivateAdmin(admin.ModelAdmin):
     list_display = ('author_company', 'author_employee', 'title','body','publish_date','likes')
     list_display_links = ('author_company','author_employee', 'title','body','publish_date','likes')
     list_filter = ('author__employee__company', 'author__employee__user') 
+    list_sorting = ('author')
     
 class PostsPublicAdmin(admin.ModelAdmin):
     def likes(self,obj):
@@ -20,6 +21,7 @@ class PostsPublicAdmin(admin.ModelAdmin):
     list_display = ('author', 'title','body','publish_date','likes')
     list_display_links = ('author', 'title','body','publish_date','likes')
     list_filter = ('author', ) 
+    list_sorting = ('author')
 
 class PostsPublicCommentsAdmin(admin.ModelAdmin):
     list_display = ('post', 'commentor','comment','date')

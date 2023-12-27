@@ -24,12 +24,24 @@ class FriendsAdmin(admin.ModelAdmin):
     list_display_links = ('person','friend')
     list_filter = ('person',)
 
+class UsersCredentialsAdmin(admin.ModelAdmin):
+    list_display = ('email','password')
 
-admin.site.register(UsersCredentials)
+class EducationDetailsAdmin(admin.ModelAdmin):
+    list_display = ('user','name', 'graduation')
+    list_display_links = ('user','name', 'graduation')
+    list_filter = ('user','name',)
+
+class UniversityDetailsAdmin(admin.ModelAdmin):
+    list_display = ('user','name', 'graduation', 'degree')
+    list_display_links = ('user','name', 'graduation', 'degree')
+    list_filter = ('user','name', 'degree')
+
+admin.site.register(UsersCredentials,UsersCredentialsAdmin)
 admin.site.register(Users,UsersAdmin)
 
 admin.site.register(FriendRequests,FriendRequestsAdmin)
 admin.site.register(Friends,FriendsAdmin)
 
-admin.site.register(UniversityDetails)
-admin.site.register(EducationDetails)
+admin.site.register(UniversityDetails,UniversityDetailsAdmin)
+admin.site.register(EducationDetails,EducationDetailsAdmin)

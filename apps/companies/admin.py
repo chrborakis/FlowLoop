@@ -3,9 +3,12 @@ from django.contrib import admin
 from apps.companies.models import *
 
 class CompaniesAdmin(admin.ModelAdmin):
-    list_display = ('company_name', 'description','address','phone','establishment_date')
-    list_display_links = ('company_name', 'description','address','phone','establishment_date')
+    def employees(self,obj):
+        return WorksOn.objects.filter(employee__company=obj.company_id).count()
+    list_display = ('company_name', 'description','address','phone','establishment_date','employees')
+    list_display_links = ('company_name', 'description','address','phone','establishment_date','employees')
     list_filter = ('company_name', 'address__country') 
+    list_sorting = ('company_name')
 
 class WorkRequestsAdmin(admin.ModelAdmin):
     list_display = ('user', 'company','status')
