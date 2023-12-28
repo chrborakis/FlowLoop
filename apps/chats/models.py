@@ -9,13 +9,12 @@ class PrivateChat(models.Model):
     sender     = models.ForeignKey(Friends, related_name='sender',on_delete = models.CASCADE)
     receiver   = models.ForeignKey(Friends, related_name='receiver',on_delete=models.CASCADE)
     message    = models.TextField(null=False,blank=False)
-    send_date  = models.DateTimeField(auto_now=True)
+    send_date  = models.DateTimeField(auto_now=True, null=True)
 
     def clean(self):
         if self.sender == self.receiver:
             raise ValidationError("Receiver cannot be the sender!")
-        
-        if self.sender.person != self.receiver.friend:
+        if (self.sender.person != self.receiver.friend) or (self.sender.friend != self.receiver.person):
             raise ValidationError("Sender and Receiver must be friends.")
         super().clean()
 

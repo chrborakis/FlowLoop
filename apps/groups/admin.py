@@ -6,16 +6,19 @@ class GroupsAdmin(admin.ModelAdmin):
     list_display = ('company', 'name')
     list_display_links = ('company', 'name')
     list_filter = ('company',) 
+    ordering = ('company',)
 
 class GroupMembersAdmin(admin.ModelAdmin):
     list_display = ('group', 'member')
     list_display_links = ('group', 'member')
     list_filter = ('group',) 
+    ordering = ('group__company',)
 
 class GroupAdminsAdmin(admin.ModelAdmin):
     list_display = ('group', 'admin')
     list_display_links = ('group', 'admin')
     list_filter = ('group',) 
+    ordering = ('group',)
 
 class GroupChatAdmin(admin.ModelAdmin):
     list_display = ('group', 'send_date', 'sender', 'message')

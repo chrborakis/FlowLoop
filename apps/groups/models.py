@@ -30,6 +30,7 @@ class GroupAdmins(models.Model):
         super().clean()
 
     class Meta:
+        unique_together = ('group','admin')
         db_table = 'group_admins'
 
 
