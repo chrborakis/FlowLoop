@@ -46,8 +46,8 @@ class ProjectDivision(models.Model):
 
 class ProjectAssign(models.Model):
     participant_id = models.AutoField(primary_key=True, null=False)
-    division = models.ForeignKey(ProjectDivision, on_delete=models.CASCADE)
-    assign   = models.OneToOneField(WorksOn, on_delete=models.CASCADE)
+    division = models.OneToOneField(ProjectDivision, on_delete=models.CASCADE)
+    assign   = models.ForeignKey(WorksOn, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.assign.employee.user} -> {self.division}'
@@ -63,7 +63,7 @@ class ProjectAssign(models.Model):
             raise ValidationError("Project participants should be working for the company!")
 
     class Meta:
-        # unique_together = ('division', 'assign',)
+        unique_together = ('division', 'assign',)
         db_table = 'project_assign'
 
 

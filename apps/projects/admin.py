@@ -2,8 +2,10 @@ from django.contrib import admin
 from apps.projects.models import *
 
 class ProjectsAdmin(admin.ModelAdmin):
-    list_display = ('company', 'title', 'phase', 'start_date', 'finish_date')
-    list_display_links = ('company', 'title', 'phase', 'start_date', 'finish_date')
+    def members(self,obj):
+        return ProjectDivision.objects.filter(project=obj.project_id).count()
+    list_display = ('company', 'title', 'phase', 'start_date', 'finish_date','members')
+    list_display_links = ('company', 'title', 'phase', 'start_date', 'finish_date','members')
     list_filter = ('company', 'phase')
     ordering = ('company', 'start_date', 'finish_date')
 
@@ -22,11 +24,12 @@ class ProjectDivisionAdmin(admin.ModelAdmin):
 
 class ProjectAssignAdmin(admin.ModelAdmin):
     def project(self, obj): return obj.division.project
+    def subproject(self, obj): return obj.division.title
     def company(self, obj): return obj.division.project.company
 
-    list_display = ('project','division', 'assign')
-    list_display_links = ('project','division', 'assign')
-    list_filter = ('division__project__company', 'division__project')
+    list_display = ('project','subproject', 'assign')
+    list_display_links = ('project','subproject', 'assign')
+    list_filter = ('division__project__company', 'division__project','assign')
     ordering = ('division__project__company', 'division__project')
 
 class ProjectAdminAdmin(admin.ModelAdmin):
