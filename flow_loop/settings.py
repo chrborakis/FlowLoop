@@ -96,22 +96,22 @@ DATABASES = {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'railway',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'naitRTcRIZzbqdW8D7mk',
-    #     'HOST': 'containers-us-west-95.railway.app',
-    #     'PORT': '5521'
-    # }
     'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'FlowLoop',
-       'USER': 'postgres',
-       'PASSWORD': '1r83RCXa%eL#A',
-       'HOST': 'localhost',
-       'PORT': '5432',
-   }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '65fabf41ce*5A5cB*41B5d**34DaFb*4',
+        'HOST': 'viaduct.proxy.rlwy.net',
+        'PORT': '51923'
+    }
+#     'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'FlowLoop',
+#        'USER': 'postgres',
+#        'PASSWORD': '1r83RCXa%eL#A',
+#        'HOST': 'localhost',
+#        'PORT': '5432',
+#    }
 }
 
 
