@@ -1,15 +1,15 @@
-import React, {Component} from "react";
+import React from "react";
 import { render } from "react-dom";
+import Login from "./Login";
 
-export default class App extends Component{
-    constructor(props){
-        super(props);
-    }
-
-    render(){
-        return(<h1>FlowLoop</h1>)
-    }
+const App = (props) => {
+    return(
+        <div>
+            <h1>FlowLoop</h1>
+            <Login />
+        </div>
+    )
 }
 
-const appDiv = document.getElementById("app");
-render(<App />, appDiv);
+export default App; 
+render(<App />, document.getElementById("app"));
