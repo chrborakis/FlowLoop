@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.groups',
     'apps.projects',
     'rest_framework',
+    'corsheaders',
     "phonenumber_field",
     # 'apps.users.apps.UsersConfig',
     # 'apps.companies.apps.CompaniesConfig',
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', 
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +69,20 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'flow_loop.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000", 
+#     "http://localhost:5500", 
+# ]
+
 
 TEMPLATES = [
     {

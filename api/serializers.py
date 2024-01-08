@@ -4,17 +4,13 @@ from apps.users.models import *
 class UsersCredentialSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsersCredentials
-        fields = (
-            'user_id',
-            'email',
-            'password'
-        )
+        fields = ('user_id','email','password')
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = (
-            'user',
+            # 'user',
             'firstname',
             'midname',
             'lastname',

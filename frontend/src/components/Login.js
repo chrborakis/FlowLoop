@@ -1,32 +1,22 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = () => {
     const [email, setEmail]       = useState('');
     const [password, setPassword] = useState('');
-
-    function getCSRFToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('csrftoken='))
-            .split('=')[1];
     
-        return cookieValue;
-    }
     const handleLogin = async(e) => {
         e.preventDefault()
-            try{
-            const response = await fetch('/api/login',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken(),
-                },
-                body: JSON.stringify({email,password})
-            });
-            if(response.ok){
-                console.log('___OK___')
-            }else print(response)
-        }catch(error){console.log(error)}
+        try{
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/login',
+                {data: email}
+            );
+
+            if(response.ok) console.log('___OK___')
+        }catch(error){
+            console.log('Error sending data:', error.response)
+        }
     }
 
     return(

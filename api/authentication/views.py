@@ -11,10 +11,12 @@ def login_view(request):
     else:
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WORK~~~~~~~~~~~~~~~~~~~~~~~~')
         if request.method == 'POST':
-            email    = request.POST.get('email')
-            password = request.POST.get('password')
-            print(email,password)
-        return HttpResponse(email,password)
+            request_data = request.POST
+            return HttpResponse(request_data)
+            # email    = request.POST.get('email')
+            # password = request.POST.get('password')
+            # print(email,password)
+        # return HttpResponse(email,password)
         #     try:
         #         user = UsersCredentials.objects.get(email=email)
         #         password_matches = check_password(password, user.password)
