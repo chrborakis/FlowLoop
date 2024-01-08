@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import *
 from apps.users.models import *
-from rest_framework import permissions
+from rest_framework import viewsets
+
 class UsersView(APIView):
     def get( self, request):
         output = [{
