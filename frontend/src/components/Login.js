@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Login = () => {
     const [email, setEmail]       = useState('');
@@ -7,16 +8,15 @@ const Login = () => {
     
     const handleLogin = async(e) => {
         e.preventDefault()
-        try{
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/login',
-                {data: email}
-            );
-
-            if(response.ok) console.log('___OK___')
-        }catch(error){
-            console.log('Error sending data:', error.response)
-        }
+        axios.post('http://127.0.0.1:8000/api/authentication/login', { 
+            email,password
+        },{
+            headers: {'X-CSRFToken': Cookies.get('csrftoken'),
+            'Content-Type': 'application/json'}
+        })
+            //JSONResponse apo django 
+            .then(res => console.log('Post request successful:', res.data))
+            .catch(err=>console.error('Error in POST request:', err));
     }
 
     return(

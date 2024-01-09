@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.shortcuts import render
 from rest_framework import generics
@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from .serializers import *
 from apps.users.models import *
 from rest_framework import viewsets
+from django.views.generic import ListView
+from django.views.decorators.csrf import csrf_exempt
 
 class UsersView(APIView):
     def get( self, request):

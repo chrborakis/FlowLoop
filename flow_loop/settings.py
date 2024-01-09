@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'apps.chats',
     'apps.groups',
     'apps.projects',
+    'api',
+    'api.authentication',
     'rest_framework',
     'corsheaders',
     "phonenumber_field",
