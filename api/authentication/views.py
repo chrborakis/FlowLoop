@@ -22,10 +22,13 @@ def login_view(request):
                 print("Authentication successful for user:", user.email)
                 # login(request, user)  //ERROR
                 try:
-                    json_data = serialize('json', [Users.objects.get(user=user)])
+                    # json_data = serialize('json', [Users.objects.get(user=user)])
+                    user_data = Users.objects.values().get(user=user)
+                    user_dict = {key: str(value) for key, value in user_data.items()}
+                    
                     return JsonResponse({
                         'message': 'Login Successful',
-                        'user': json_data,
+                        'user': user_dict,
                         'authenticated': True
                     })
                 except:

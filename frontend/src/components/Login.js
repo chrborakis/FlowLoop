@@ -16,9 +16,13 @@ const Login = (props) => {
         })
             //JSONResponse apo django 
             .then(res => {
-                console.log('Post request successful:', res.data)
-                props.onLogin();
-                props.onUser(res.data);
+                if(res.data.authenticated){
+                    console.log('Post request successful:', res.data)
+                    props.onLogin();
+                    localStorage.setItem('session_user', 1);
+
+                    props.onUser(res.data.user);
+                }
             })
             .catch(err=>console.error('Error in POST request:', err));
     }
