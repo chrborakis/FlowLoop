@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from "react";
+// UserProfile.js
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
+const Account = () => {
+  const { slug } = useParams(); // Access the slug from the URL
 
-const Account = ({user}) => {
+  // Use the slug to fetch user data or perform any actions based on the user's slug
 
-    return(
-        <div>
-            <p>{user.firstname}</p>
-            {/* <p>{user.firstname}</p>
-            {user.midname && <p>{user.midname}</p>}
-            <p>{user.lastname}</p>
-            <p>{user.occupation}</p>
-            <p>{user.gender}</p>
-            <p>{user.image}</p>
-            <p>{user.phone}</p>
-            <p>{user.about}</p>
-            <p>{user.country}</p> */}
-        </div>
-    )
-}
+  return (
+    <div>
+      <h2>User Profile</h2>
+      <p>Current User Slug: {slug}</p>
+      {/* Render user profile based on the slug */}
+    </div>
+  );
+};
 
-export default Account; 
+export default Account;

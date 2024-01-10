@@ -23,12 +23,21 @@ def login_view(request):
                 # login(request, user)  //ERROR
                 try:
                     # json_data = serialize('json', [Users.objects.get(user=user)])
-                    user_data = Users.objects.values().get(user=user)
+                    fields_to_select = ['firstname', 'lastname', 'image', 'slug']
+                    user_data = Users.objects.values(*fields_to_select).get(user=user)
                     user_dict = {key: str(value) for key, value in user_data.items()}
                     
+                    name = f"{user_dict['firstname']} {user_dict['lastname']}"
+                    user1 = {
+                        'name':  name,
+                        'slug':  user_dict['slug'],
+                        'image': user_dict['image']
+                    }
+
                     return JsonResponse({
                         'message': 'Login Successful',
-                        'user': user_dict,
+                        'user_id': user.user_id,
+                        'user': json.dumps(user1),
                         'authenticated': True
                     })
                 except:

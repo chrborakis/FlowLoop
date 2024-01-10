@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
 import Login from "./Login";
-import Account from "./Account";
+import HomePage from "./HomePage";
 // import GetRequest from "../GetRequest"
 
 const App = (props) => {
     const [authenticated, setAuthenticated] = useState(localStorage.getItem('session_user'));
-    const [user, setUser] = useState();
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user_data')));
 
-    const handleLogin = () => {
-        setAuthenticated(true);
-    };
-
-    const handleUser = (userV) => {
+    const handleLogin = (userV) => {
         setUser(userV)
+        setAuthenticated(true);
     }
 
     const logOut = () => {
-        setAuthenticated(0);
         localStorage.setItem('session_user', null);
+        localStorage.setItem('user_data', null);
     }
 
     return(
@@ -29,11 +26,11 @@ const App = (props) => {
                 {authenticated && user ? (
                     <div> 
                         <button onClick={logOut}>Logout</button>
-                        <Account user={user}/>
+                        <HomePage user={user}/>
                         <p>LOGGED IN</p>
                     </div>
                 ) : (
-                    <Login onLogin={handleLogin} onUser={handleUser}/>
+                    <Login onLogin={handleLogin}/>
                 )}
             </div>
         </div>
