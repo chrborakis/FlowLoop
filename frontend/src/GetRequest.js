@@ -5,7 +5,7 @@ import axios from 'axios';
 const App = (props) => {
     const [details, setDetails] = useState([]);
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/userscredential')
+        axios.get('/api/userscredential')
             .then(res => setDetails(res.data)
             ).catch(err => console.log(err));
     }, []);

@@ -2,9 +2,10 @@ import json
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
-from apps.users.models import UsersCredentials
+from apps.users.models import UsersCredentials,Users
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_exempt
+from django.core.serializers import serialize
 
 @csrf_exempt
 def login_view(request):
@@ -20,7 +21,15 @@ def login_view(request):
             if password_matches:
                 print("Authentication successful for user:", user.email)
                 # login(request, user)  //ERROR
-                return JsonResponse({'message': 'Login Successful', 'user':user.email})
+                try:
+                    json_data = serialize('json', [Users.objects.get(user=user)])
+                    return JsonResponse({
+                        'message': 'Login Successful',
+                        'user': json_data,
+                        'authenticated': True
+                    })
+                except:
+                    return JsonResponse({'message': 'User Data not Found'})
             else:
                 print("Invalid password for user:", user.email)
                 return JsonResponse({'message': 'Invalid credentials'})
