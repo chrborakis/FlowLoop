@@ -18,9 +18,9 @@ const Login = (props) => {
             .then(res => {
                 if(res.data.authenticated){
                     console.log('Post request successful:', res.data)
+                    localStorage.setItem('session_user', res.data.user.user_id);
+                    console.log(res.data)
                     props.onLogin();
-                    localStorage.setItem('session_user', 1);
-
                     props.onUser(res.data.user);
                 }
             })

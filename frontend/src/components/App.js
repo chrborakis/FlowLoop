@@ -18,14 +18,15 @@ const App = (props) => {
 
     const logOut = () => {
         setAuthenticated(0);
-        localStorage.setItem('authenticated', 0);
+        localStorage.setItem('session_user', null);
     }
 
     return(
         <div>
             <h1>FlowLoop</h1>
             <div>
-                {authenticated>0 && user ? (
+                {console.log('PK:',authenticated,'User:',user)}
+                {authenticated && user ? (
                     <div> 
                         <button onClick={logOut}>Logout</button>
                         <Account user={user}/>
