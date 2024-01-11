@@ -10,7 +10,9 @@ from apps.users.models import *
 from rest_framework import viewsets
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
-
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.decorators import action
 class UsersView(APIView):
     def get( self, request):
         output = [{
@@ -50,4 +52,19 @@ class UsersCredentialView(APIView):
             serializers.save()
             return Response(serializers.data)
 
-
+@action(detail=True, methods=['post'])
+class UserProfile(APIView):
+    def get(self,request,slug,*args,**kwargs):
+        try:
+            instance = get_object_or_404(Users, slug=slug)
+            serializers = UsersSerializer(instance)
+            return JsonResponse({
+                'message': 'User Data Fetched succesfully',
+                'data': serializers.data,
+                'status': status.HTTP_200_OK
+            })
+        except Exception as e:
+            return JsonResponse({
+                'message': e
+            })
+        

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { render } from 'react-dom';
 import Login from "./Login";
 import HomePage from "./HomePage";
-import Account from "./Account";
+import UserProfile from "./User/UserProfile";
 // import GetRequest from "../GetRequest"
 
 const App = (props) => {
@@ -30,7 +30,7 @@ const App = (props) => {
                  {authenticated && user ? (
                      <div> 
                          <button onClick={logOut}>Logout</button>
-                         <HomePage user={user}/>
+                         {/* <HomePage user={user}/> */}
                          <p>LOGGED IN</p>
                          <div>
                             <nav>
@@ -38,16 +38,16 @@ const App = (props) => {
                                        <li>
                                            <Link to="/">HomePage</Link>
                                        </li><li>
-                                           {/* <Link to={`/user/${user.slug}`}>{user.name}</Link> */}
+                                           <Link to={`/user/${user.slug}`}>{user.name}</Link>
                                        </li><li> 
                                            <button onClick={logOut}>Logout</button>
                                        </li>
                                    </ul>
                             </nav>
-                            {/* <Switch> */}
-                               {/* <Route exact path="/" component={HomePage}/> */}
-                               {/* <Route exact path="/user/:slug" component={Account}/> */}
-                            {/* </Switch> */}
+                            <Switch>
+                               {/* <Route path="/"><HomePage user={user}/></Route> */}
+                               <Route path="/user/:slug" component={UserProfile}/>
+                            </Switch>
                          </div>
                      </div>
                  ) : (

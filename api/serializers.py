@@ -14,6 +14,7 @@ class UsersSerializer(serializers.ModelSerializer):
             'firstname',
             'midname',
             'lastname',
+            'slug',
             'occupation',
             'gender',
             'image',
