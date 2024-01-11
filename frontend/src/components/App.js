@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { render } from "react-dom";
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { render } from 'react-dom';
 import Login from "./Login";
 import HomePage from "./HomePage";
+import Account from "./Account";
 // import GetRequest from "../GetRequest"
 
 const App = (props) => {
     const [authenticated, setAuthenticated] = useState(localStorage.getItem('session_user'));
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user_data')));
+    const [user, setUser]                   = useState(JSON.parse(localStorage.getItem('user_data')));
 
     const handleLogin = (userV) => {
         setUser(userV)
@@ -16,24 +18,44 @@ const App = (props) => {
     const logOut = () => {
         localStorage.setItem('session_user', null);
         localStorage.setItem('user_data', null);
+        window.location.reload();
     }
 
     return(
-        <div>
-            <h1>FlowLoop</h1>
-            <div>
-                {console.log('PK:',authenticated,'User:',user)}
-                {authenticated && user ? (
-                    <div> 
-                        <button onClick={logOut}>Logout</button>
-                        <HomePage user={user}/>
-                        <p>LOGGED IN</p>
-                    </div>
-                ) : (
-                    <Login onLogin={handleLogin}/>
-                )}
-            </div>
-        </div>
+        <Router>
+         <div>
+             <h1>FlowLoop</h1>
+             <div>
+                 {console.log('PK:',authenticated,'User:',user)}
+                 {authenticated && user ? (
+                     <div> 
+                         <button onClick={logOut}>Logout</button>
+                         <HomePage user={user}/>
+                         <p>LOGGED IN</p>
+                         <div>
+                            <nav>
+                                   <ul>
+                                       <li>
+                                           <Link to="/">HomePage</Link>
+                                       </li><li>
+                                           {/* <Link to={`/user/${user.slug}`}>{user.name}</Link> */}
+                                       </li><li> 
+                                           <button onClick={logOut}>Logout</button>
+                                       </li>
+                                   </ul>
+                            </nav>
+                            {/* <Switch> */}
+                               {/* <Route exact path="/" component={HomePage}/> */}
+                               {/* <Route exact path="/user/:slug" component={Account}/> */}
+                            {/* </Switch> */}
+                         </div>
+                     </div>
+                 ) : (
+                     <Login onLogin={handleLogin}/>
+                 )}
+             </div>
+         </div>
+        </Router> 
     )
 }
 

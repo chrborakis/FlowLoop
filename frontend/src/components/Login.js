@@ -21,12 +21,19 @@ const Login = (props) => {
                     localStorage.setItem('session_user', res.data.user_id);
 
                     props.onLogin(JSON.parse(res.data.user));
-                    // props.onUser(res.data.user);
+                    
+                    // props.onLogin(res.data.user);
 
+                    // localStorage.setItem('user_data', JSON.stringify({
+                    //     'name': JSON.parse(res.data.user).name,
+                    //     'slug': JSON.parse(res.data.slug).slug,
+                    //     'image':JSON.parse(res.data.user).image
+                    // }))
+                    const userObj = JSON.parse(res.data.user);
                     localStorage.setItem('user_data', JSON.stringify({
-                        'name': JSON.parse(res.data.user).name,
-                        'slug': JSON.parse(res.data.slug).slug,
-                        'image':JSON.parse(res.data.user).image
+                        'name': userObj.name,
+                        'slug': userObj.slug,
+                        'image':userObj.image
                     }))
 
                     const user = JSON.parse(localStorage.getItem('user_data'));
