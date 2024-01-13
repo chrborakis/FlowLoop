@@ -52,6 +52,7 @@ class UsersCredentialView(APIView):
             serializers.save()
             return Response(serializers.data)
 
+
 @action(detail=True, methods=['post'])
 class UserProfile(APIView):
     def get(self,request,slug,*args,**kwargs):

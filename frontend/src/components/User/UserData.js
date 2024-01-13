@@ -5,7 +5,7 @@ const UserData = (props) => {
 
     const getUser = async(e) => {
         try {
-            const response = await axios.get(`/user/${props.slug}`, {
+            const response = await axios.get(`/api/user/${props.slug}`, {
                 headers: {
                   'X-CSRFToken': Cookies.get('csrftoken'),
                 },
@@ -21,10 +21,7 @@ const UserData = (props) => {
         getUser();
       }, []);
 
-    return(
-        <>
-        </>
-    );
+      return(<></>);
 }
 
 export default UserData;

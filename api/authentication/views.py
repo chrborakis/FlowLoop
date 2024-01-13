@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
 from apps.users.models import UsersCredentials,Users
+from apps.companies.models import WorksOn, WorkRequests
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
@@ -23,10 +24,14 @@ def login_view(request):
                 # login(request, user)  //ERROR
                 try:
                     # json_data = serialize('json', [Users.objects.get(user=user)])
-                    fields_to_select = ['firstname', 'lastname', 'image', 'slug']
+                    fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
                     user_data = Users.objects.values(*fields_to_select).get(user=user)
                     user_dict = {key: str(value) for key, value in user_data.items()}
-                    
+
+                    # work_requests = WorkRequests.objects.filter(user=user_dict['user'], status='A')
+                    # work_dict = {key: str(value) for key, value in work_requests.items()}
+                    # print(work_dict['company'])
+
                     name = f"{user_dict['firstname']} {user_dict['lastname']}"
                     user1 = {
                         'name':  name,

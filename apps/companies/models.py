@@ -29,7 +29,7 @@ class Companies(models.Model):
 
 class WorkRequests(models.Model):
     id = models.AutoField(primary_key=True)
-    user    = models.ForeignKey(Users,     on_delete=models.CASCADE, to_field="user_id")
+    user    = models.ForeignKey(Users,     on_delete=models.CASCADE, to_field="user_id", related_name='work_request')
     company = models.ForeignKey(Companies, on_delete=models.CASCADE, to_field="company_id")
     STATUS = [        ("P", "Pending"),        ("A", "Accepted"),        ("D", "Declined")    ]
     status = models.TextField(

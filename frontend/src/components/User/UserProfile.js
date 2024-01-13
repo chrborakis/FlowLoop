@@ -25,7 +25,9 @@ const UserProfile = () => {
                 <p>{data.country} </p>   
             </div>
         ) : (
-            <UserData onfetch={setData} slug={slug}/>
+            <>
+              <UserData onfetch={setData} slug={slug}/>
+            </>
         )}
      
       </div>
