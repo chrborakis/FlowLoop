@@ -33,7 +33,8 @@ const Login = (props) => {
                     localStorage.setItem('user_data', JSON.stringify({
                         'name': userObj.name,
                         'slug': userObj.slug,
-                        'image':userObj.image
+                        'image':userObj.image,
+                        'company': userObj.company,
                     }))
 
                     const user = JSON.parse(localStorage.getItem('user_data'));

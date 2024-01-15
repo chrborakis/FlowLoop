@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
 from apps.users.models import UsersCredentials,Users
@@ -27,16 +27,27 @@ def login_view(request):
                     fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
                     user_data = Users.objects.values(*fields_to_select).get(user=user)
                     user_dict = {key: str(value) for key, value in user_data.items()}
+                    
+                    work_requests = WorkRequests.objects.values().get(user=user_dict['user'], status='A')
+                    work_dict = {key: str(value) for key, value in work_requests.items()}
 
-                    # work_requests = WorkRequests.objects.filter(user=user_dict['user'], status='A')
+                    # print(work_requests)
+                    # json_data = serialize('json', work_requests)
+                    # data_list = json.loads(json_data)
+
+                    # first_item = data_list[0]
+                    # print(first_item['fields']['company'])
                     # work_dict = {key: str(value) for key, value in work_requests.items()}
                     # print(work_dict['company'])
+
+   
 
                     name = f"{user_dict['firstname']} {user_dict['lastname']}"
                     user1 = {
                         'name':  name,
                         'slug':  user_dict['slug'],
-                        'image': user_dict['image']
+                        'image': user_dict['image'],
+                        'company': work_dict['company_id']
                     }
 
                     return JsonResponse({
