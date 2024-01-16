@@ -3,8 +3,6 @@ from django.urls import include, path
 from .views import *
 
 urlpatterns = [
-    path("user/<slug:slug>", UserProfile.as_view()),
-
     path("users",            UsersView.as_view()),
     path("userscredential",  UsersCredentialView.as_view()),
     path("companies",        CompaniesView.as_view()),
@@ -13,5 +11,5 @@ urlpatterns = [
     path("postprivate",      PostsPrivateView.as_view()),
     path("postpublic",       PostsPublicView.as_view()),
 
-    path("authentication/",  include('api.authentication.urls')),
+    
 ]

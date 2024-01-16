@@ -85,7 +85,7 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostsPrivateComments
         fields = (
-            'post',
+            'post_id',
             'commentor',
             'comment',
             'date'
@@ -95,18 +95,7 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
 
 
 
-class PostsPublicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostsPublic
-        fields = (
-            'post',
-            'slug',
-            'author',
-            'title',
-            'body',
-            'publish_date',
-            'image'
-        )
+
 
 class PostsPublicLikesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -126,3 +115,24 @@ class PostsPublicCommentsSerializer(serializers.ModelSerializer):
             'date'
         )
 
+class PostsPublicSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    # likes = PostsPublicLikesSerializer(many=True, read_only=True)
+    # total_likes = serializers.SerializerMethodField()
+    # comments = PostsPublicCommentsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PostsPublic
+        fields = (
+            'post_id','slug',
+            # 'author',
+            'user','title','body',
+            'publish_date','image'
+        )
+
+    def get_user(self,obj):
+        return {
+            'id':   str(obj.author.user_id),
+            'name': str(obj.author)
+        }

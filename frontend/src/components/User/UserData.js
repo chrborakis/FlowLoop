@@ -5,7 +5,7 @@ const UserData = (props) => {
 
     const getUser = async(e) => {
         try {
-            const response = await axios.get(`/api/user/${props.slug}`, {
+            const response = await axios.get(`/backend/user/${props.slug}`, {
                 headers: {
                   'X-CSRFToken': Cookies.get('csrftoken'),
                 },

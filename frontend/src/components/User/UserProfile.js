@@ -11,7 +11,7 @@ const UserProfile = () => {
       <div>
         { data ? (
             <div>
-              <p>User Profile</p>
+              <h1>User Profile</h1>
               <p>Current User:{ slug }</p>
                 <p>{data.firstname} </p> 
                 <p>{data.midname} </p> 

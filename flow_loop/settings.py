@@ -37,6 +37,9 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
+    'backend',
+    'backend.api',
+    'backend.authentication',
     'apps',
     'apps.users',
     'apps.companies',
@@ -44,13 +47,9 @@ INSTALLED_APPS = [
     'apps.chats',
     'apps.groups',
     'apps.projects',
-    'api',
-    'api.authentication',
     'rest_framework',
     'corsheaders',
     "phonenumber_field",
-    # 'apps.users.apps.UsersConfig',
-    # 'apps.companies.apps.CompaniesConfig',
     'postgres_composite_types',
     'django.contrib.admin',
     'django.contrib.auth',

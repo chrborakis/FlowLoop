@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
+
 class UsersView(APIView):
     def get( self, request):
         output = [{
@@ -160,19 +161,23 @@ class PostsPrivateView(APIView):
 
 class PostsPublicView(APIView):
     def get( self, request):
+        print('IN')
         output = [{
             'post': output.post_id,
             'slug': output.slug,
-            'author': {
-                'id':   output.author.user_id,
-                'name': str(output.author)
-            },
+            # 'author_id': output.author.user_id,
+            # 'author_name': str(output.author),
+            # 'author': {
+            #     'id':   output.author.user_id,
+            #     'name': str(output.author)
+            # },
             'title': output.title,
             'body': output.body,
             'publish_date': output.publish_date,
             "image": str(output.image.url) if output.image else '',
             }for output in PostsPublic.objects.all()
         ]
+        print(output)
         return Response(output)
 
     def post( self, request):
@@ -183,20 +188,3 @@ class PostsPublicView(APIView):
 
 
 
-
-@action(detail=True, methods=['post'])
-class UserProfile(APIView):
-    def get(self,request,slug,*args,**kwargs):
-        try:
-            instance = get_object_or_404(Users, slug=slug)
-            serializers = UsersSerializer(instance)
-            return JsonResponse({
-                'message': 'User Data Fetched succesfully',
-                'data': serializers.data,
-                'status': status.HTTP_200_OK
-            })
-        except Exception as e:
-            return JsonResponse({
-                'message': e
-            })
-        

@@ -8,7 +8,7 @@ const Login = (props) => {
     
     const handleLogin = async(e) => {
         e.preventDefault()
-        axios.post('/api/authentication/login', { 
+        axios.post('backend/authentication/login', { 
             email,password
         },{
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),

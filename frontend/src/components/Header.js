@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import Login from "./Login";
 import HomePage from "./HomePage";
 import UserProfile from "./User/UserProfile";
-import './Header.css';
+import '../../static/css/Header.css';
 
 const Header = ({user}) => {
     const history = useHistory();
@@ -18,7 +18,7 @@ const Header = ({user}) => {
     }
 
     return(
-        <div> 
+        <div className="body"> 
             <div className="header">
                 <nav>
                     <ul>
@@ -39,8 +39,9 @@ const Header = ({user}) => {
             </div>
             <Switch>
                 <Route path="/user/:slug"> <UserProfile /></Route>
-                
-                <Route path="/"><HomePage user={user}/></Route>   
+                <div className="homepage">
+                    <Route path="/"><HomePage user={user}/></Route>   
+                </div>
             </Switch>
         </div>
     )
