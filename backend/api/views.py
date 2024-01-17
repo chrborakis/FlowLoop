@@ -161,7 +161,6 @@ class PostsPrivateView(APIView):
 
 class PostsPublicView(APIView):
     def get( self, request):
-        print('IN')
         output = [{
             'post': output.post_id,
             'slug': output.slug,

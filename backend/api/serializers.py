@@ -51,14 +51,45 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
         )
 
 class WorksOnSerializer(serializers.ModelSerializer):
+    company = serializers.SerializerMethodField()
     class Meta:
         model = WorksOn
         fields = (
             'id',
             'employee_id',
-            'is_admin'
+            'is_admin',
+            'company'
         )
 
+    def get_company(self,obj):
+        return{
+            'id':   str(obj.employee.company.company_id),
+            'name': str(obj.employee.company),
+        }
+    
+class PostsPublicSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    # likes = PostsPublicLikesSerializer(many=True, read_only=True)
+    # total_likes = serializers.SerializerMethodField()
+    # comments = PostsPublicCommentsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PostsPublic
+        fields = (
+            'post_id','slug',
+            # 'author',
+            'user','title','body',
+            'publish_date','image'
+        )
+
+    def get_user(self,obj):
+        return {
+            'user_id':    str(obj.author.user_id),
+            'user_name':  str(obj.author),
+            'user_slug':  str(obj.author.slug),
+            'user_image': str(obj.author.image)
+        }
 
 class PostsPrivateSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -79,69 +110,83 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
             'company_id':   str(obj.author.employee.company.company_id),
             'company_name': str(obj.author.employee.company),
             'user_id':      str(obj.author.employee.user_id),
-            'user_name':    str(obj.author.employee.user)
+            'user_name':    str(obj.author.employee.user),
         }
-
-class PostsPrivateLikesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostsPrivateLikes
-        fields = (
-            'post',
-            'like'
-        )
-
-class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostsPrivateComments
-        fields = (
-            'post_id',
-            'commentor',
-            'comment',
-            'date'
-        )
-
-
-
-
-
-
+    
 
 class PostsPublicLikesSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = PostsPublicLikes
         fields = (
             'post',
-            'like'
+            'user'
+        )
+    def get_user( self, obj):
+        return{
+            'id':    str(obj.like.user_id),
+            'name':  str(obj.like),
+            'slug':  str(obj.like.slug),
+            'image': str(obj.like.image)
+        }
+
+class PostsPrivateLikesSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    class Meta:
+        model = PostsPrivateLikes
+        fields = (
+            'post',
+            'like',
+            'user'
         )
 
+    def get_user(self,obj):
+        return {
+            'id':    str(obj.like.employee.user.user_id),
+            'name':  str(obj.like.employee.user),
+            'slug':  str(obj.like.employee.user.slug),
+            'image': str(obj.like.employee.user.image),
+        }
+    
 class PostsPublicCommentsSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = PostsPublicComments
         fields = (
             'post',
             'commentor',
+            'user',
+            'comment',
+            'date'
+        )
+    def get_user( self, obj):
+        return{
+            'id':    str(obj.commentor.user_id),
+            'name':  str(obj.commentor),
+            'slug':  str(obj.commentor.slug),
+            'image': str(obj.commentor.image)
+        }
+
+class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    class Meta:
+        model = PostsPrivateComments
+        fields = (
+            'post_id',
+            'commentor',
+            'user',
             'comment',
             'date'
         )
 
-class PostsPublicSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-
-    # likes = PostsPublicLikesSerializer(many=True, read_only=True)
-    # total_likes = serializers.SerializerMethodField()
-    # comments = PostsPublicCommentsSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = PostsPublic
-        fields = (
-            'post_id','slug',
-            # 'author',
-            'user','title','body',
-            'publish_date','image'
-        )
-
-    def get_user(self,obj):
-        return {
-            'user_id':   str(obj.author.user_id),
-            'user_name': str(obj.author)
+    def get_user( self, obj):
+        return{
+            'id':   str(obj.commentor.employee.user.user_id),
+            'name': str(obj.commentor.employee.user),
         }
+
+
+
+
+
+
