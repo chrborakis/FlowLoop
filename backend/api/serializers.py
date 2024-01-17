@@ -61,17 +61,26 @@ class WorksOnSerializer(serializers.ModelSerializer):
 
 
 class PostsPrivateSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = PostsPrivate
         fields = (
-            'post',
+            'post_id',
             'slug',
-            'author',
+            'user',
             'title',
             'body',
             'publish_date',
             'image'
         )
+
+    def get_user(self,obj):
+        return {
+            'company_id':   str(obj.author.employee.company.company_id),
+            'company_name': str(obj.author.employee.company),
+            'user_id':      str(obj.author.employee.user_id),
+            'user_name':    str(obj.author.employee.user)
+        }
 
 class PostsPrivateLikesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -133,6 +142,6 @@ class PostsPublicSerializer(serializers.ModelSerializer):
 
     def get_user(self,obj):
         return {
-            'id':   str(obj.author.user_id),
-            'name': str(obj.author)
+            'user_id':   str(obj.author.user_id),
+            'user_name': str(obj.author)
         }

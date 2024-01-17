@@ -10,6 +10,7 @@ urlpatterns = [
     path('authentication/', include('backend.authentication.urls')),
 
     path("user/<slug:slug>", UserProfile.as_view()),
-    path("postspublic",      GetPostPublic.as_view())
+    path("postspublic",      GetPostPublic.as_view()),
+    path("postsprivate/<slug:slug>",  GetPostPrivate.as_view())
 ]
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import { render } from 'react-dom';
-import Login from "./Login";
 import HomePage from "./HomePage";
 import UserProfile from "./User/UserProfile";
 import '../../static/css/Header.css';

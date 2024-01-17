@@ -33,7 +33,7 @@ class GetPostPublic(APIView):
         try:
             instances = get_list_or_404(PostsPublic.objects.all())
             serializers = PostsPublicSerializer(instances, many=True)        
-
+            print(serializers.data)
             return JsonResponse({
                 'message': 'Posts Public Fetched succesfully',
                 'data': serializers.data,
@@ -41,13 +41,28 @@ class GetPostPublic(APIView):
             })
         
         except ValueError as err:
+            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
+        except Exception as err:
+            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+        
+@action(detail=True, methods=['get'])
+class GetPostPrivate(APIView):
+    def get( self, request, slug, *args, **kwargs):
+        try:
+            # instances = get_list_or_404(PostsPrivate, author__employee__company = slug)
+        
+                      
+            instances = PostsPrivate.objects.filter(author__employee__company = slug)
+            serializers = PostsPrivateSerializer(instances, many=True)
+
+            print(serializers.data)
             return JsonResponse({
-                'message': str(err),
-                'status': status.HTTP_400_BAD_REQUEST
+                'message': 'Posts Private Fetched succesfully',
+                'data': serializers.data,
+                'status': status.HTTP_200_OK
             })
 
+        except ValueError as err:
+            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
         except Exception as err:
-            return JsonResponse({
-                'message': str(err),
-                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
-            })
+            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})

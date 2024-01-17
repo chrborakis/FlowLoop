@@ -3,23 +3,20 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 
-const GetPosts = ({onFetch}) => {
+const GetPosts = ({onFetch, url}) => {
     const getData = async(e) => {
         try {
-            const response = await axios.get('/backend/postspublic', 
+            const response = await axios.get(`/backend/${url}`, 
             {
                 headers: {'X-CSRFToken': Cookies.get('csrftoken'),},
             });
             onFetch(response.data.data);
+            console.log(response.data.data)
         }catch (error) {
             console.error('Error in Fetch Posts Public: ', error);
         }
     }
-
-    useEffect(() => {
         getData();
-      }, []);
-    return(<></>)
 }
 
 export default GetPosts;
