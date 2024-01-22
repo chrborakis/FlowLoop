@@ -3,13 +3,15 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_list_or_404, render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.http import HttpRequest
 from backend.api.serializers import *
 from apps.users.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
+
+from django.views.decorators.http import require_POST
 
 @action(detail=True, methods=['post'])
 class UserProfile(APIView):
@@ -139,3 +141,22 @@ class GetPrivateLikes(APIView):
             return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
         except Exception as err:
             return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+        
+@csrf_exempt
+def new_post_public(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            user_id = data.get('user_id')
+            comment = data.get('comment')
+            print(user_id,comment)
+            return JsonResponse({
+                'message': "Post Public Comment Added succesfully",
+                'status': status.HTTP_200_OK
+            })
+
+        except ValueError as err:
+            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
+        except Exception as err:
+            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+        

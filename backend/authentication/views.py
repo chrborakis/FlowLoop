@@ -38,6 +38,7 @@ def login_view(request):
 
                     name = f"{user_dict['firstname']} {user_dict['lastname']}"
                     user1 = {
+                        'id': user.user_id,
                         'name':  name,
                         'slug':  user_dict['slug'],
                         'image': user_dict['image'],
@@ -46,7 +47,6 @@ def login_view(request):
 
                     return JsonResponse({
                         'message': 'Login Successful',
-                        'user_id': user.user_id,
                         'user': json.dumps(user1),
                         'authenticated': True
                     })

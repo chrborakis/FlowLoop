@@ -29,7 +29,7 @@ const Comments = ({post, url}) => {
                 <p>No comments yet!</p>
             </div>
             }
-            <NewComment />
+            <NewComment post={post}/>
         </div>
     );
 }

@@ -1,7 +1,9 @@
+from django import views
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from . import views
 
 from backend.views import *
 
@@ -11,6 +13,7 @@ urlpatterns = [
 
     path("user/<slug:slug>", UserProfile.as_view()),
     path("postspublic",      GetPostPublic.as_view()),
+    path("newpostpublic",    views.new_post_public),
     path("postsprivate/<slug:slug>",  GetPostPrivate.as_view()),
 
     path("publiccomments/<slug:slug>",  GetPublicComments.as_view()),
