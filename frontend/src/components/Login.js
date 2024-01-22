@@ -18,27 +18,20 @@ const Login = (props) => {
             .then(res => {
                 if(res.data.authenticated){
                     console.log('Login Post request successful:', res.data)
-                    localStorage.setItem('session_user', res.data.user_id);
+                    // localStorage.setItem('session_user', res.data.user_id);
 
                     props.onLogin(JSON.parse(res.data.user));
-                    
-                    // props.onLogin(res.data.user);
-
+ 
+                    // const userObj = JSON.parse(res.data.user);
                     // localStorage.setItem('user_data', JSON.stringify({
-                    //     'name': JSON.parse(res.data.user).name,
-                    //     'slug': JSON.parse(res.data.slug).slug,
-                    //     'image':JSON.parse(res.data.user).image
+                    //     'name': userObj.name,
+                    //     'slug': userObj.slug,
+                    //     'image':userObj.image,
+                    //     'company': userObj.company,
                     // }))
-                    const userObj = JSON.parse(res.data.user);
-                    localStorage.setItem('user_data', JSON.stringify({
-                        'name': userObj.name,
-                        'slug': userObj.slug,
-                        'image':userObj.image,
-                        'company': userObj.company,
-                    }))
 
-                    const user = JSON.parse(localStorage.getItem('user_data'));
-                    console.log('Login:', user)
+                    // const user = JSON.parse(localStorage.getItem('user_data'));
+                    // console.log('Login:', user)
                 }
             })
             .catch(err=>console.error('Error in Login Post request:', err));

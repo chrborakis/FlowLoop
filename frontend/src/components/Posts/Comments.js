@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import GetComments from "./GetComments";
+import NewComment from "./NewComment";
 
 const Comments = ({post, url}) => {
     const [comments, setComments] = useState();
@@ -12,7 +13,6 @@ const Comments = ({post, url}) => {
         <div>
             {comments ? (
                 comments.map( comment => 
-                    // {console.log(comment)}
                     <div>
                         <div key={comment.id}>
                             <div className="uploader">
@@ -22,16 +22,14 @@ const Comments = ({post, url}) => {
                             <div className="content">
                                 <p>{comment.comment}</p>
                             </div>
-                        </div>
-                        <div>
-                            <p>Add Comment:</p>
-                        </div>
+                        </div> 
                     </div>
-                )
+                )   
             ): <div>
-                <p>Add Comment:</p>
+                <p>No comments yet!</p>
             </div>
             }
+            <NewComment />
         </div>
     );
 }

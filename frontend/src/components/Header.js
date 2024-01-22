@@ -4,13 +4,14 @@ import { useHistory } from 'react-router-dom';
 import HomePage from "./HomePage";
 import UserProfile from "./User/UserProfile";
 import '../../static/css/Header.css';
+import { useAuth } from "../store/AuthContext";
 
 const Header = ({user}) => {
+    const { logout } = useAuth();
     const history = useHistory();
 
     const logOut = () => {
-        localStorage.setItem('session_user', null);
-        localStorage.setItem('user_data', null);
+        logout()
         history.push('/')
         window.location.reload();
     }
