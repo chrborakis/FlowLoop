@@ -10,7 +10,6 @@ urlpatterns = [
     path("workson",          WorksOnView.as_view()),
     path("postprivate",      PostsPrivateView.as_view()),
     path("postpublic",       PostsPublicView.as_view()),
-    path("postpubliccomments", PostPublicCommentView.as_view())
-
+    path("postpubliccomments/", PostPublicCommentView.as_view())
     
 ]

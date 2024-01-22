@@ -12,9 +12,12 @@ urlpatterns = [
     path('authentication/', include('backend.authentication.urls')),
 
     path("user/<slug:slug>", UserProfile.as_view()),
-    path("postspublic",      GetPostPublic.as_view()),
-    path("newpostpublic",    views.new_post_public),
-    path("postsprivate/<slug:slug>",  GetPostPrivate.as_view()),
+
+    path("postpublic/<slug:post>",    GetPostPublic.as_view()),
+    path("postpublic",               AllPostsPublic.as_view()),
+
+    path("postprivate/<slug:company>",   GetPostPrivate.as_view()),
+    path("postprivate/<slug:company>/<slug:post>",              AllPostPrivate.as_view()),
 
     path("publiccomments/<slug:slug>",  GetPublicComments.as_view()),
     path("privatecomments/<slug:slug>", GetPrivateComments.as_view()),

@@ -13,7 +13,6 @@ const Likes = ({post, url}) => {
     return(
         <div>
             { likes && <>
-            {/* {console.log(likes)} */}
                 <p>Likes: {likes.length}</p>
             </>
             }

@@ -14,7 +14,7 @@ const App = () => {
     const handleLogin = (userV) => {
         // setUser(userV)
         login(userV)
-        setAuthenticated(true);
+        // setAuthenticated(true);
     }
 
     return(

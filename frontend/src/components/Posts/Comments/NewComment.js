@@ -1,12 +1,9 @@
 import React, { useRef} from "react";
-import axios from 'axios';
-import { useAuth } from "../../store/AuthContext";
-import Cookies from 'js-cookie';
+import { useAuth } from "../../../store/AuthContext";
+import PostComment from "./PostComment";
 
-
-const NewComment = ({post}) => {
+const NewComment = ({post, onComment, url}) => {
     const { user} = useAuth();
-
     const commentRef = useRef(null);
 
     const handleSubmit = async (e) => {
@@ -15,16 +12,9 @@ const NewComment = ({post}) => {
         const commentValue = commentRef.current.value;
         console.log(user.id +" -> ",commentValue);
         const data = {post:post,commentor:user.id, comment: commentValue}
-        await axios.post('backend/api/postpubliccomments', data,{
-            headers: {'X-CSRFToken': Cookies.get('csrftoken'),
-            'Content-Type': 'application/json'}
-        })
-            .then(  res => console.log(res))
-            .catch( err => console.log(err))
-        commentRef.current.value = '';
+
+        PostComment({data, url, onComment, comment: commentValue, commentRef});
     }
-
-
 
 
     return(<div>

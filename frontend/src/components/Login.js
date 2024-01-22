@@ -21,6 +21,7 @@ const Login = (props) => {
                     // localStorage.setItem('session_user', res.data.user_id);
 
                     props.onLogin(JSON.parse(res.data.user));
+                    console.log(JSON.parse(res.data.user))
  
                     // const userObj = JSON.parse(res.data.user);
                     // localStorage.setItem('user_data', JSON.stringify({

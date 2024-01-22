@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Comments from "./Comments";
+import Comments from "./Comments/Comments";
 import Likes from "./Likes";
 
-const Post = ({post, url}) => {
+const Post = ({post, url, ready}) => {
     return(
         <div key={post.post_id} className="card">
             <div className="card-title">
@@ -17,7 +17,7 @@ const Post = ({post, url}) => {
                 <hr></hr>
                 <Likes    post={post.post_id} url={url.like+post.post_id}/>
                 <hr></hr>
-                <Comments post={post.post_id} url={url.comment+post.post_id}/>
+                <Comments post={post.post_id} url={url.comment}/>
             </div>
         </div>
     )
