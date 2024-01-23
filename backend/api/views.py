@@ -198,7 +198,27 @@ class PostPublicCommentView(APIView):
         return Response(output)
     
     def post( self, request):
+        print("data : ", request.data)
         serializers = PostsPublicCommentsSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+        
+class PostPrivateCommentView(APIView):
+    def get( self,request):
+        output = [{
+            'post': str(output.post),
+            'commentor': str(output.commentor),
+            'comment': str(output.comment),
+            'date': str(output.date),
+        }for output in PostsPrivateComments.objects.all()
+    ]
+        print(output)
+        return Response(output)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PostsPrivateCommentsSerializer( data = request.data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)

@@ -21,3 +21,9 @@
     font-size: 14px;
     color: #555;
   }
+
+  .activeButton {
+    background-color: #007bff;
+    color: #fff;
+    /* Add any additional styles for the active button */
+  }

@@ -28,13 +28,9 @@ def login_view(request):
                     fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
                     user_data = Users.objects.values(*fields_to_select).get(user=user)
                     user_dict = {key: str(value) for key, value in user_data.items()}
-                    
-                    # work_requests = WorkRequests.objects.values().get(user=user_dict['user'], status='A')
-                    # work_dict = {key: str(value) for key, value in work_requests.items()}
 
                     instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_dict['user'])
                     serializers = WorksOnSerializer(instance)
-                    # print('Ser:', serializers.data['company'])
 
                     name = f"{user_dict['firstname']} {user_dict['lastname']}"
                     user1 = {
@@ -42,7 +38,8 @@ def login_view(request):
                         'name':  name,
                         'slug':  user_dict['slug'],
                         'image': user_dict['image'],
-                        'company': serializers.data['company']
+                        'company': serializers.data['company'],
+                        'work_id': serializers.data['id']
                     }
 
                     return JsonResponse({

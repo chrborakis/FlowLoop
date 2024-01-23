@@ -90,8 +90,8 @@ class AllPostPrivate(APIView):
 class GetPostPrivate(APIView):
     def get( self, request, post, *args, **kwargs):
         try:
-            instance = get_object_or_404(PostsPublic, post_id=post)
-            serializers = PostsPublicSerializer(instance)        
+            instance = get_object_or_404(PostsPrivate, post_id=post)
+            serializers = PostsPrivateSerializer(instance)        
             return JsonResponse({
                 'message': 'Posts Private Fetched succesfully',
                 'data': serializers.data,

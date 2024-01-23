@@ -38,9 +38,7 @@ const Header = ({user}) => {
             </div>
             <Switch>
                 <Route path="/user/:slug"> <UserProfile /></Route>
-                <div className="homepage">
-                    <Route path="/"><HomePage user={user}/></Route>   
-                </div>
+                <Route path="/"><HomePage user={user}/></Route>   
             </Switch>
         </div>
     )

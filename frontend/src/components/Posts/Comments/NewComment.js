@@ -11,7 +11,9 @@ const NewComment = ({post, onComment, url}) => {
 
         const commentValue = commentRef.current.value;
         console.log(user.id +" -> ",commentValue);
-        const data = {post:post,commentor:user.id, comment: commentValue}
+
+        const commentor = url.includes('public') ? user.id : user.work_id;
+        const data = {post:post, commentor, comment: commentValue}
 
         PostComment({data, url, onComment, comment: commentValue, commentRef});
     }

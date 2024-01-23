@@ -7,14 +7,14 @@ const Comments = ({post,url}) => {
     const [newComment, setNewComment] = useState();
 
     useEffect( () => {
-        GetComments({ onFetch: setComments, comments, url: url+post});
+        GetComments({ onFetch: setComments, url: url+post});
     }, [newComment]);
 
     return (
         <div>
             {comments ? (
                 comments.map( comment => 
-                    <div id={comment.id} key={comment.id}>
+                    <div key={comment.id}>
                         <div className="uploader">
                             <image src={comment.user.image}/>
                             <h4>{comment.user.name}</h4>

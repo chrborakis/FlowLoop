@@ -8,19 +8,12 @@ import "../../static/css/index.css"
 
 const App = () => {
     const { user, login, logout } = useAuth();
-    // const [authenticated, setAuthenticated] = useState(localStorage.getItem('session_user'));
-    // const [user, setUser]                   = useState(JSON.parse(localStorage.getItem('user_data')));
-    
-    const handleLogin = (userV) => {
-        // setUser(userV)
-        login(userV)
-        // setAuthenticated(true);
-    }
+
+    const handleLogin = (userV) => login(userV)  
 
     return(
-        <Router>
+        <Router basename="/">
             <div className="body">
-                {/* {console.log('PK:',authenticated,'User:',user)} */}
                 { user ? (
                     <Header user={user}/>
                 ) : (

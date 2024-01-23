@@ -20,6 +20,7 @@ const HomePage = ({user}) => {
             comment: 'publiccomments/',
             like:    'publiclikes/',
         });
+        setLoading(true);
     };
     const getPrivate = () => {
         setPosts('');
@@ -28,31 +29,38 @@ const HomePage = ({user}) => {
             comment: 'privatecomments/',
             like:    'privatelikes/',
         });
+        setLoading(true);
     };
 
     useEffect( () => {
-        console.log(url.post)
         GetPosts({ onFetch: setPosts, url: url.post, setLoading: setLoading});
     }, [url.post]);
 
 
     return(
-        <div className="body">
+        <div className="homepage">
+        {/* <div className="body"> */}
             <h1>HomePage</h1>
             <div className="changeFeed">
-                {console.log(user)}
-                <button onClick={getPublic}>Public Feed</button>
-                <button onClick={getPrivate}>{user.company.name}</button>
+                <button onClick={getPublic}
+                    style={{ backgroundColor: url.post === 'postpublic' ? 'green' : 'gray' }}>
+                    Public Feed
+                </button>
+                <button onClick={getPrivate}
+                    style={{ backgroundColor: url.post !== 'postpublic' ? 'green' : 'gray' }}>
+                    {user.company.name}
+                </button>
             </div>
 
             {loading ?(
                 <p>Loading posts...</p>
             ): (
                 posts.map( post => 
-                    <Post key={post.id} post={post} url={url}/>
+                    <Post key={post.post_id} post={post} url={url}/>
                 )
             )}
             
+        {/* </div> */}
         </div>
     )
 }

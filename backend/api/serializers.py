@@ -153,6 +153,7 @@ class PostsPublicCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostsPublicComments
         fields = (
+            'id',
             'post',
             'commentor',
             'user',
@@ -172,7 +173,8 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostsPrivateComments
         fields = (
-            'post_id',
+            'id',
+            'post',
             'commentor',
             'user',
             'comment',
