@@ -222,3 +222,45 @@ class PostPrivateCommentView(APIView):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
+        
+class PublicLikesView(APIView):
+    def get( self, request):
+        output = [{
+            "id": output.id,
+            "post_id": output.post_id,
+            "like_id": output.like_id,
+        }for output in PostsPublicLikes.objects.all()
+    ]
+        print(output)
+        return Response(output)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PublicLikesSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+        else:
+            print(serializers.errors)
+        
+class PrivateLikesView(APIView):
+    def get( self, request):
+        output = [{
+            'id': output.id,
+            'post_id': output.post_id,
+            'like_id': output.like_id,
+        }for output in PostsPrivateLikes.objects.all()
+    ]
+        print(output)
+        return Response(output)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PrivateLikesSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(
+                {"message": "Data saved successfully"}, 
+                data=serializers.data,
+                status=status.HTTP_201_CREATED
+                )

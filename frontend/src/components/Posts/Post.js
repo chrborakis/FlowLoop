@@ -1,6 +1,6 @@
 import React from "react";
 import Comments from "./Comments/Comments";
-import Likes from "./Likes";
+import Likes from "./Likes/Likes";
 
 const Post = ({post, url, ready}) => {
     return(

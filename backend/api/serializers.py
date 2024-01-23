@@ -187,8 +187,22 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
             'name': str(obj.commentor.employee.user),
         }
 
+class PublicLikesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostsPublicLikes
+        fields = (
+            "id",
+            "post",
+            "like"
+        )
 
 
 
-
-
+class PrivateLikesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostsPrivateLikes
+        fields = (
+            "id",
+            "post",
+            "like"
+        )
