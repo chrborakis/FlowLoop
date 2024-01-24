@@ -7,15 +7,14 @@ const Likes = ({post, url}) => {
     const { user } = useAuth();
 
     const [likes, setLikes] = useState();
-    const [liked, setLiked] = useState(false);
+    const [liked, setLiked] = useState(true);
 
     useEffect( () => {
         GetLikes({ onFetch: setLikes, url});
     }, [url, liked]);
 
     const handleLike = () => {
-        PostLike({ url: url, post_id: post, like_id: url.includes('public') ? user.id : user.work_id, post: post})
-        setLiked((prevValue) => !prevValue)
+        PostLike({ url: url, post_id: post, like_id: url.includes('public') ? user.id : user.work_id, post: post, setLiked: setLiked})
         console.log("Liked: ", liked)
     };
     

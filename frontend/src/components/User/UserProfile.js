@@ -8,8 +8,10 @@ const UserProfile = () => {
 
     return (
       <div>
+        <h1>User {slug} Profile</h1>
         { data ? (
             <div>
+              {console.log(data)}
               <h1>User Profile</h1>
               <p>Current User:{ slug }</p>
                 <p>{data.firstname} </p> 
@@ -24,9 +26,7 @@ const UserProfile = () => {
                 <p>{data.country} </p>   
             </div>
         ) : (
-            <>
               <UserData onfetch={setData} slug={slug}/>
-            </>
         )}
      
       </div>

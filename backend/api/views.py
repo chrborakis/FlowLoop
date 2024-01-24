@@ -164,12 +164,10 @@ class PostsPublicView(APIView):
         output = [{
             'post': output.post_id,
             'slug': output.slug,
-            # 'author_id': output.author.user_id,
-            # 'author_name': str(output.author),
-            # 'author': {
-            #     'id':   output.author.user_id,
-            #     'name': str(output.author)
-            # },
+            'author': {
+                'id':   output.author.user_id,
+                'name': str(output.author)
+            },
             'title': output.title,
             'body': output.body,
             'publish_date': output.publish_date,
@@ -180,10 +178,12 @@ class PostsPublicView(APIView):
         return Response(output)
 
     def post( self, request):
+        print(request.data)
         serializers = PostsPublicSerializer( data = request.data)
         if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+            saved_instance = serializers.save()
+            serialized_data = PostsPublicSerializer(saved_instance).data
+            return JsonResponse({"data": serialized_data}, status=201)
 
 class PostPublicCommentView(APIView):
     def get( self, request):
@@ -259,8 +259,4 @@ class PrivateLikesView(APIView):
         serializers = PrivateLikesSerializer( data = request.data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response({
-                "message": "Data saved successfully", 
-                "data":serializers.data,
-                "status":status.HTTP_201_CREATED
-            })
+            return Response(serializers.data)

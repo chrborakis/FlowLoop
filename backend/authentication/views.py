@@ -28,12 +28,13 @@ def login_view(request):
                     fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
                     user_data = Users.objects.values(*fields_to_select).get(user=user)
                     user_dict = {key: str(value) for key, value in user_data.items()}
-
-                    instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_dict['user'])
-                    serializers = WorksOnSerializer(instance)
-
                     name = f"{user_dict['firstname']} {user_dict['lastname']}"
-                    user1 = {
+
+                    try:
+                        instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_dict['user'])
+                        serializers = WorksOnSerializer(instance)
+                        
+                        user1 = {
                         'id': user.user_id,
                         'name':  name,
                         'slug':  user_dict['slug'],
@@ -41,6 +42,14 @@ def login_view(request):
                         'company': serializers.data['company'],
                         'work_id': serializers.data['id']
                     }
+                    except:
+                        user1 = {
+                            'id': user.user_id,
+                            'name':  name,
+                            'slug':  user_dict['slug'],
+                            'image': user_dict['image'],
+                            'company': serializers.data['company'],
+                        }
 
                     return JsonResponse({
                         'message': 'Login Successful',

@@ -54,6 +54,7 @@ class GetPostPublic(APIView):
         try:
             instance = get_object_or_404(PostsPublic, post_id=post)
             serializers = PostsPublicSerializer(instance)        
+            print("SERIALIZERS DATA: ", serializers.data)
             return JsonResponse({
                 'message': 'Posts Public Fetched succesfully',
                 'data': serializers.data,

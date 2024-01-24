@@ -78,7 +78,7 @@ class PostsPublicSerializer(serializers.ModelSerializer):
         model = PostsPublic
         fields = (
             'post_id','slug',
-            # 'author',
+            'author',
             'user','title','body',
             'publish_date','image'
         )

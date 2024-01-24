@@ -1,0 +1,10 @@
+.newPost{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 60%;
+    align-items: center;
+    padding: 2%;
+    border: 1px solid purple;
+    border-radius: 8px;
+}

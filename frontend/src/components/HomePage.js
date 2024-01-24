@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import Post from "./Posts/Post";
 import GetPosts from "./Posts/GetPosts";
 import '../../static/css/HomePage.css'
+import NewPost from "./Posts/NewPost";
 
 const HomePage = ({user}) => {
     const [ posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [ newPost, setNewPost] = useState();
+
+    const [loading, setLoading] = useState(false);
 
     const [url, setUrl] = useState({
         post:    'postpublic',
@@ -33,9 +36,19 @@ const HomePage = ({user}) => {
     };
 
     useEffect( () => {
+        console.log(url.post)
         GetPosts({ onFetch: setPosts, url: url.post, setLoading: setLoading});
     }, [url.post]);
 
+    useEffect( () => {  
+        if (newPost) {
+            console.log('newPost:', newPost);
+            setPosts((prevPosts) => [newPost.data, ...prevPosts]);
+            // console.log("URL in Effect: ", url.post+'/'+newPost.data.post_id)
+            // GetSinglePost({onFetch: setPosts, url: url.post+'/'+newPost.post_id, setLoading: setLoading})
+            console.log('posts:', posts); 
+        }
+    }, [newPost])
 
     return(
         <div className="homepage">
@@ -46,17 +59,21 @@ const HomePage = ({user}) => {
                     style={{ backgroundColor: url.post === 'postpublic' ? 'green' : 'gray' }}>
                     Public Feed
                 </button>
-                <button onClick={getPrivate}
-                    style={{ backgroundColor: url.post !== 'postpublic' ? 'green' : 'gray' }}>
-                    {user.company.name}
-                </button>
+                {user.company.name && 
+                    <button onClick={getPrivate}
+                        style={{ backgroundColor: url.post !== 'postpublic' ? 'green' : 'gray' }}>
+                        {user.company.name}
+                    </button>
+                }
             </div>
+
+            <NewPost user={user} url={url.post} newPost={setNewPost}/>
 
             {loading ?(
                 <p>Loading posts...</p>
             ): (
-                posts.map( post => 
-                    <Post key={post.post_id} post={post} url={url}/>
+                posts && posts.map( post => 
+                    post && <Post key={post.post_id} post={post} url={url}/>
                 )
             )}
             

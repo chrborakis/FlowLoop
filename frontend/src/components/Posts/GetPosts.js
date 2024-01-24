@@ -5,14 +5,17 @@ import Cookies from 'js-cookie';
 const GetPosts = ({onFetch, url,setLoading}) => {
     const getData = async(e) => {
         try {
+            setLoading(true);
             const response = await axios.get(`backend/${url}`, 
             {
                 headers: {'X-CSRFToken': Cookies.get('csrftoken'),},
             });
             onFetch(prevPosts => [...prevPosts, ...response.data.data]);
-            setLoading(false);
+            // setLoading(false);
         }catch (error) {
             console.error(`Error in Fetch  Public Posts: `, error.data);
+            // setLoading(false);
+        }finally{
             setLoading(false);
         }
     }

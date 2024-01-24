@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { render } from 'react-dom';
 import Login from "./Login";
-import Header from "./Header";
 import { AuthProvider,useAuth } from "../store/AuthContext";
 import "../../static/css/index.css"
+import Appbar from './AppBar/Appbar'
+import BootstrapNav from './AppBar/BootstrapNav'
 
 const App = () => {
     const { user, login, logout } = useAuth();
@@ -15,7 +16,9 @@ const App = () => {
         <Router basename="/">
             <div className="body">
                 { user ? (
-                    <Header user={user}/>
+                    // <Header user={user}/>
+                    <Appbar user={user} />
+                    // <BootstrapNav></BootstrapNav>
                 ) : (
                     <div>
                         <h1>FlowLoop</h1>
