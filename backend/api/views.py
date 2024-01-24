@@ -259,8 +259,8 @@ class PrivateLikesView(APIView):
         serializers = PrivateLikesSerializer( data = request.data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response(
-                {"message": "Data saved successfully"}, 
-                data=serializers.data,
-                status=status.HTTP_201_CREATED
-                )
+            return Response({
+                "message": "Data saved successfully", 
+                "data":serializers.data,
+                "status":status.HTTP_201_CREATED
+            })
