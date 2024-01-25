@@ -44,8 +44,6 @@ const HomePage = ({user}) => {
         if (newPost) {
             console.log('newPost:', newPost);
             setPosts((prevPosts) => [newPost.data, ...prevPosts]);
-            // console.log("URL in Effect: ", url.post+'/'+newPost.data.post_id)
-            // GetSinglePost({onFetch: setPosts, url: url.post+'/'+newPost.post_id, setLoading: setLoading})
             console.log('posts:', posts); 
         }
     }, [newPost])

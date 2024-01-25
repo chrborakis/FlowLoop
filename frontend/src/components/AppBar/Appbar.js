@@ -58,9 +58,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function PrimarySearchAppBar({user}) {
+export default function PrimarySearchAppBar({user, messages, notifications}) {
     const { logout } = useAuth();
     const history = useHistory();
+
+    const notifications_label = `show ${notifications} new notifications`
+    const messages_label = `show ${messages} new messages`
 
     const logOut = () => {
         logout()
@@ -108,16 +111,16 @@ export default function PrimarySearchAppBar({user}) {
         open={isMobileMenuOpen} onClose={handleMobileMenuClose}
     >
         <MenuItem>
-            <IconButton size="large" aria-label="" color="inherit">
-                <Badge badgeContent={1} color="error">
+            <IconButton size="large" aria-label="messages_label" color="inherit">
+                <Badge badgeContent={messages} color="error">
                     <MailIcon />
                 </Badge>
             </IconButton>
             <p>Messages</p>
         </MenuItem>
         <MenuItem>
-            <IconButton size="large" aria-label="show 27 new notifications" color="inherit">
-                <Badge badgeContent={27} color="error">
+            <IconButton size="large" aria-label={notifications_label} color="inherit">
+                <Badge badgeContent={notifications} color="error">
                     <NotificationsIcon />
                 </Badge>
             </IconButton>
@@ -158,13 +161,13 @@ export default function PrimarySearchAppBar({user}) {
                                 </Badge>
                             </IconButton>
                         </Link>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
+                        <IconButton size="large" aria-label={messages_label} color="inherit">
+                            <Badge badgeContent={messages} color="error">
                                 <MailIcon />
                             </Badge>
                         </IconButton>
-                        <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="error">
+                        <IconButton size="large" aria-label={notifications_label} color="inherit">
+                            <Badge badgeContent={notifications} color="error">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>

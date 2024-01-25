@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { render } from 'react-dom';
-import Login from "./Login";
+
 import { AuthProvider,useAuth } from "../store/AuthContext";
 import "../../static/css/index.css"
 import Appbar from './AppBar/Appbar'
-import BootstrapNav from './AppBar/BootstrapNav'
+
+import LoginRegister from "./LoginRegister/LoginRegister";
 
 const App = () => {
-    const { user, login, logout } = useAuth();
-
-    const handleLogin = (userV) => login(userV)  
+    const { user } = useAuth();
 
     return(
         <Router basename="/">
             <div className="body">
                 { user ? (
-                    // <Header user={user}/>
-                    <Appbar user={user} />
-                    // <BootstrapNav></BootstrapNav>
+                    <Appbar user={user} messages={4} notifications={3}/>
                 ) : (
                     <div>
                         <h1>FlowLoop</h1>
                         <p>Login</p>
-                        <Login onLogin={handleLogin}/>
+                        <LoginRegister/>
                     </div>
                 )}
             </div>

@@ -2,6 +2,7 @@ import json
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
+import requests
 from apps.users.models import UsersCredentials,Users
 from apps.companies.models import WorksOn, WorkRequests
 from django.contrib.auth.hashers import check_password
@@ -23,7 +24,7 @@ def login_view(request):
 
             if password_matches:
                 print("Authentication successful for user:", user.email)
-                # login(request, user)  //ERROR
+                # login(request, user) 
                 try:
                     fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
                     user_data = Users.objects.values(*fields_to_select).get(user=user)
@@ -66,3 +67,48 @@ def login_view(request):
             print("Account not found!")            
             return JsonResponse({'message': 'Account not found!'})
     return JsonResponse({'error': 'Only POST requests are allowed'})
+
+@csrf_exempt
+def register_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        user_credentials = {
+            "email":    data.get('formData').get('email'),
+            "password": data.get('formData').get('password')
+        }
+
+        print(user_credentials)
+        try:
+            response_cred = requests.post('/api/userscredential', json=user_credentials)
+            print('ok')
+            print("userscredential status: ", response_cred.status_code)
+            user_cred_data = response_cred.json()
+            print("Response data:", user_cred_data)
+
+            if response_cred.status_code == 200:
+                user = {
+                    "user":       user_cred_data.user_id,
+                    "firstname":  data.get('formData').get('firstname'),
+                    "lastname":   data.get('formData').get('lastname'),
+                    "occupation": data.get('formData').get('occupation'),
+                    "gender":     data.get('formData').get('gender'),
+                    "phone":      data.get('formData').get('phone'),
+                    "country":    data.get('formData').get('country'),
+                }
+
+                response_user = requests.post('../api/users', json=user)
+                
+                print("users status: ", response_user.status_code)
+                user_data = response_user.json()
+                print("Response data:", user_data)
+                
+                
+
+        except:
+            return JsonResponse({'message': 'Error creating user credentials'})
+
+        
+
+        
+
+        return JsonResponse({'message': 'Valid credentials'})

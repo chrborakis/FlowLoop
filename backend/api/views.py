@@ -35,7 +35,7 @@ class UsersView(APIView):
         serializer = UsersSerializer(data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
     
     
 class UsersCredentialView(APIView):
@@ -51,7 +51,7 @@ class UsersCredentialView(APIView):
         serializers = UsersCredentialSerializer(data = request.data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response(serializers.data)
+            return Response(data=serializers.data, status=status.HTTP_200_OK)
         
 class CompaniesView(APIView):
     def get( self, request):
