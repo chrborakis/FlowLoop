@@ -21,7 +21,7 @@ class UsersCredentials(models.Model):
 
 
 class Users(models.Model):
-    user = models.OneToOneField(UsersCredentials, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(UsersCredentials, on_delete=models.CASCADE, primary_key=True, blank=False,null=False)
     firstname = models.CharField(max_length=32,blank=False, null=False)
     midname = models.CharField(max_length=32, blank=True, null=True)
     lastname = models.CharField(max_length=32,blank=False, null=False)

@@ -14,8 +14,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useAuth } from '../../store/AuthContext';
 
-const Register = ({onLogin}) => {
-    const { login } = useAuth();
+const Register = ({login}) => {
+    const onLogin = (userV) => login(userV)
 
     const [gender, setGender] = useState('');
 
@@ -57,12 +57,15 @@ const Register = ({onLogin}) => {
     const register = async() => {
         formData.gender = gender;
         console.log(formData);
+
         
         axios.post('backend/authentication/register', { formData }
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
         ).then(res => {
             if(res.data.authenticated){
-                onLogin(res.data);
+                console.log('OK')
+                console.log(JSON.parse(res.data.user))
+                onLogin(JSON.parse(res.data.user));
                 console.log('Register request successful:', res.data)
             }
         }).catch(err=>console.error('Error in Register Post request:', err));
@@ -113,8 +116,8 @@ const Register = ({onLogin}) => {
                                 <Form.Label>Dropdown</Form.Label>
                                 <DropdownButton id="dropdown-basic-button" title={gender || 'Select your gender'}
                                     onSelect={handleDropdownSelect}>   
-                                    <Dropdown.Item eventKey="Male">Male</Dropdown.Item>
-                                    <Dropdown.Item eventKey="Female">Female</Dropdown.Item>
+                                    <Dropdown.Item eventKey="M">Male</Dropdown.Item>
+                                    <Dropdown.Item eventKey="F">Female</Dropdown.Item>
                                 </DropdownButton>
                                 {errors.gender && <span className="text-danger">{errors.gender}</span>}
                             </Form.Group>

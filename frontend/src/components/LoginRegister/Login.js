@@ -9,10 +9,8 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { useAuth } from '../../store/AuthContext';
 
-const Login = () => {
-    const { login } = useAuth();
+const Login = ({login}) => {
     const onLogin = (userV) => login(userV)  
 
     const [email, setEmail]       = useState('');

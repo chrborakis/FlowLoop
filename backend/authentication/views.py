@@ -1,7 +1,7 @@
 import json
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 import requests
 from apps.users.models import UsersCredentials,Users
 from apps.companies.models import WorksOn, WorkRequests
@@ -10,6 +10,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 
 from backend.api.serializers import WorksOnSerializer
+
+def get_base_url(request: HttpRequest) -> str:
+    # Get the protocol (http or https)
+    protocol = 'https' if request.is_secure() else 'http'
+    # Get the domain and port
+    domain = request.get_host()
+    # Construct the base URL
+    base_url = f'{protocol}://{domain}'
+    return base_url
 
 @csrf_exempt
 def login_view(request):
@@ -24,34 +33,35 @@ def login_view(request):
 
             if password_matches:
                 print("Authentication successful for user:", user.email)
-                # login(request, user) 
+                # login(request, user)  //ERROR
                 try:
                     fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
                     user_data = Users.objects.values(*fields_to_select).get(user=user)
                     user_dict = {key: str(value) for key, value in user_data.items()}
-                    name = f"{user_dict['firstname']} {user_dict['lastname']}"
+
+                    user1 = {
+                        'id': user.user_id,
+                        'name':  f"{user_dict['firstname']} {user_dict['lastname']}",
+                        'slug':  user_dict['slug'],
+                        'image': user_dict['image'],
+                        'company': None,
+                        'work_id': None
+                    }
 
                     try:
                         instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_dict['user'])
                         serializers = WorksOnSerializer(instance)
-                        
-                        user1 = {
-                        'id': user.user_id,
-                        'name':  name,
-                        'slug':  user_dict['slug'],
-                        'image': user_dict['image'],
-                        'company': serializers.data['company'],
-                        'work_id': serializers.data['id']
-                    }
-                    except:
-                        user1 = {
-                            'id': user.user_id,
-                            'name':  name,
-                            'slug':  user_dict['slug'],
-                            'image': user_dict['image'],
-                            'company': serializers.data['company'],
-                        }
 
+                        user1['company'] = serializers.data['company']
+                        user1['work_id'] = serializers.data['id']
+                    except:
+                        print('Not working!')
+                        return JsonResponse({
+                            'message': 'Login Successful',
+                            'user': json.dumps(user1),
+                            'authenticated': True
+                        })
+                        
                     return JsonResponse({
                         'message': 'Login Successful',
                         'user': json.dumps(user1),
@@ -78,37 +88,46 @@ def register_view(request):
         }
 
         print(user_credentials)
+        base_url = get_base_url(request)
         try:
-            response_cred = requests.post('/api/userscredential', json=user_credentials)
-            print('ok')
+            response_cred = requests.post(base_url+'/backend/api/userscredential', json=user_credentials)
             print("userscredential status: ", response_cred.status_code)
             user_cred_data = response_cred.json()
-            print("Response data:", user_cred_data)
+            print("userscredential Response data:", user_cred_data)
 
             if response_cred.status_code == 200:
                 user = {
-                    "user":       user_cred_data.user_id,
+                    "user":    user_cred_data['user_id'],
                     "firstname":  data.get('formData').get('firstname'),
                     "lastname":   data.get('formData').get('lastname'),
                     "occupation": data.get('formData').get('occupation'),
                     "gender":     data.get('formData').get('gender'),
-                    "phone":      data.get('formData').get('phone'),
                     "country":    data.get('formData').get('country'),
+                    "phone":      data.get('formData').get('phone'),
                 }
-
-                response_user = requests.post('../api/users', json=user)
+                response_user = requests.post(base_url+'/backend/api/users', json=user)
                 
                 print("users status: ", response_user.status_code)
                 user_data = response_user.json()
                 print("Response data:", user_data)
-                
-                
 
+                user1 = {
+                    'id': user_data['user'],
+                    'name':  f"{user_data['firstname']} {user_data['lastname']}",
+                    'slug':  user_data['slug'],
+                    'image': user_data['image'],
+                    'company': None,
+                    'work_id': None
+                }
+
+                return JsonResponse({
+                    'message': 'Register Successful',
+                    # 'user': user_cred_data,
+                    'user': json.dumps(user1),
+                    'authenticated': True
+                })
+                
         except:
             return JsonResponse({'message': 'Error creating user credentials'})
-
-        
-
-        
 
         return JsonResponse({'message': 'Valid credentials'})

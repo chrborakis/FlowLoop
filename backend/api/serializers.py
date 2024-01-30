@@ -11,19 +11,20 @@ class UsersCredentialSerializer(serializers.ModelSerializer):
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = (
-            # 'user',
-            'firstname',
-            'midname',
-            'lastname',
-            'slug',
-            'occupation',
-            'gender',
-            'image',
-            'phone',
-            'about',
-            'country'
-        )
+        fields = '__all__'
+        # (
+        #     'user_id',
+        #     'firstname',
+        #     'midname',
+        #     'lastname',
+        #     'slug',
+        #     'occupation',
+        #     'gender',
+        #     'image',
+        #     'phone',
+        #     'about',
+        #     'country'
+        # )
 
 class CompaniesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,10 +63,14 @@ class WorksOnSerializer(serializers.ModelSerializer):
         )
 
     def get_company(self,obj):
-        return{
-            'id':   str(obj.employee.company.company_id),
-            'name': str(obj.employee.company),
-        }
+        company = obj.employee.company
+        if company:
+            return {
+                'id': str(company.company_id),
+                'name': str(company),
+            }
+        else:
+            return None
     
 class PostsPublicSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()

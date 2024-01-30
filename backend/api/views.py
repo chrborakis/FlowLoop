@@ -17,7 +17,7 @@ from rest_framework.decorators import action
 class UsersView(APIView):
     def get( self, request):
         output = [{
-            "user": str(output.user),
+            "user_id": str(output.user),
             "firstname": output.firstname,
             "midname": output.midname if output.midname is not None else '',
             "lastname": output.lastname,
@@ -35,9 +35,15 @@ class UsersView(APIView):
         serializer = UsersSerializer(data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-    
+class UserView(APIView):
+    def get(self, request, pk):
+        user = get_object_or_404(Users, user_id=pk)
+        serializer = UsersSerializer(user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
 class UsersCredentialView(APIView):
     def get( self, request):
         output = [{

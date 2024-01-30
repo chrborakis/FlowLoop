@@ -57,10 +57,10 @@ const HomePage = ({user}) => {
                     style={{ backgroundColor: url.post === 'postpublic' ? 'green' : 'gray' }}>
                     Public Feed
                 </button>
-                {user.company.name && 
+                {user?.company?.name && 
                     <button onClick={getPrivate}
                         style={{ backgroundColor: url.post !== 'postpublic' ? 'green' : 'gray' }}>
-                        {user.company.name}
+                        {user?.company?.name}
                     </button>
                 }
             </div>
