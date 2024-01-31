@@ -8,17 +8,10 @@ from apps.companies.models import WorksOn, WorkRequests
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
-
 from backend.api.serializers import WorksOnSerializer
 
-def get_base_url(request: HttpRequest) -> str:
-    # Get the protocol (http or https)
-    protocol = 'https' if request.is_secure() else 'http'
-    # Get the domain and port
-    domain = request.get_host()
-    # Construct the base URL
-    base_url = f'{protocol}://{domain}'
-    return base_url
+from backend.get_url import get_base_url
+
 
 @csrf_exempt
 def login_view(request):

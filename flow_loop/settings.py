@@ -85,6 +85,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     "http://localhost:5500", 
 # ]
 
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = None
 
 TEMPLATES = [
     {

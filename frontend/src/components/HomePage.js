@@ -7,7 +7,6 @@ import NewPost from "./Posts/NewPost";
 const HomePage = ({user}) => {
     const [ posts, setPosts] = useState([]);
     const [ newPost, setNewPost] = useState();
-
     const [loading, setLoading] = useState(false);
 
     const [url, setUrl] = useState({

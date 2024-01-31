@@ -103,6 +103,7 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
         fields = (
             'post_id',
             'slug',
+            'author',
             'user',
             'title',
             'body',

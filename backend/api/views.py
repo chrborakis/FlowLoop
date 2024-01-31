@@ -1,7 +1,7 @@
 import json
 from django.http import HttpResponse, JsonResponse
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import get_list_or_404, render
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -131,57 +131,13 @@ class WorksOnView(APIView):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
-
-
-class PostsPrivateView(APIView):
-    def get( self, request):
-        try:
-            output = [{
-                'post': output.post_id,
-                'slug': output.slug,
-                'author': {
-                    'user': {
-                        'id':   output.author.employee.user.user_id,
-                        'name': str(output.author.employee.user)
-                    },
-                    'company': {
-                        'id':   output.author.employee.company.company_id,
-                        'name': output.author.employee.company.company_name,
-                    },
-                },
-                'title': output.title,
-                'body': output.body,
-                'publish_date': output.publish_date,
-                "image": str(output.image.url) if output.image else '',
-            }for output in PostsPrivate.objects.all()]
-            return Response(output)
-    
-        except UnicodeDecodeError:
-            return Response({"error": "UnicodeDecodeError occurred while processing data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    def post( self, request):
-        serializers = PostsPrivateSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
-
+        
 class PostsPublicView(APIView):
     def get( self, request):
-        output = [{
-            'post': output.post_id,
-            'slug': output.slug,
-            'author': {
-                'id':   output.author.user_id,
-                'name': str(output.author)
-            },
-            'title': output.title,
-            'body': output.body,
-            'publish_date': output.publish_date,
-            "image": str(output.image.url) if output.image else '',
-            }for output in PostsPublic.objects.all()
-        ]
-        print(output)
-        return Response(output)
+        instances = get_list_or_404(PostsPublic.objects.all())
+        serializers = PostsPublicSerializer(instances, many=True)        
+        print(serializers.data)
+        return Response(serializers.data)
 
     def post( self, request):
         print(request.data)
@@ -189,7 +145,33 @@ class PostsPublicView(APIView):
         if serializers.is_valid(raise_exception=True):
             saved_instance = serializers.save()
             serialized_data = PostsPublicSerializer(saved_instance).data
-            return JsonResponse({"data": serialized_data}, status=201)
+            return JsonResponse(data=serialized_data, status=201)
+
+class AllPostsPrivateView(APIView):
+    def get( self, request):
+        instances = get_list_or_404(PostsPrivate.objects.all())
+        serializers = PostsPrivateSerializer(instances, many=True)        
+        print(serializers.data)
+        return Response(serializers.data)
+
+    def post( self, request):
+        serializers = PostsPrivateSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+
+class PostsPrivateView(APIView):    
+    def get( self, request, company):
+        instances = PostsPrivate.objects.filter(author__employee__company = company)
+        serializers = PostsPrivateSerializer(instances, many=True)
+        print(serializers.data)
+        return Response(serializers.data)
+
+    def post( self, request, company):
+        serializers = PostsPrivateSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
 
 class PostPublicCommentView(APIView):
     def get( self, request):

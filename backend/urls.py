@@ -13,11 +13,12 @@ urlpatterns = [
 
     path("user/<slug:slug>", UserProfile.as_view()),
 
-    path("postpublic/<slug:post>",    GetPostPublic.as_view()),
-    path("postpublic",               AllPostsPublic.as_view()),
+    path("postpublic/<slug:post>",   SinglePostPublic.as_view()),
+    path("postpublic", views.post_public),
 
-    path("postprivate/<slug:company>/<slug:post>",     GetPostPrivate.as_view()),
-    path("postprivate/<slug:company>",  AllPostPrivate.as_view()),
+    path("postprivate/<slug:company>/<slug:post>",    SinglePostPrivate.as_view()),
+    # path("postprivate/<slug:company>",  PostsPrivate.as_view()),
+    path("postprivate/<slug:company>", views.post_private),
 
     path("publiccomments/<slug:slug>",  GetPublicComments.as_view()),
     path("privatecomments/<slug:slug>", GetPrivateComments.as_view()),

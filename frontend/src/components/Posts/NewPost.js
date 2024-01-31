@@ -39,8 +39,12 @@ const NewPost = ({user, url, newPost}) => {
         }
 
         console.log("data: ", data)
-        await axios.post(`backend/api/${url}`, data,{
-            headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}}
+
+        await axios.post(`backend/api/${url}`, data,
+        {
+            headers: {'X-CSRFToken': Cookies.get('csrftoken'),
+            'Content-Type': 'application/json'}
+        }
         ).then(  res => {
             {console.log("New Post res.data: ", res.data)
             newPost(res.data);
@@ -49,7 +53,9 @@ const NewPost = ({user, url, newPost}) => {
       };
 
     return(<>
-        <button onClick={handleButtonClick}>New Public</button>
+        <button onClick={handleButtonClick}> 
+            {url == 'postpublic' ? 'New Post Public' : `New ${user?.company?.name} Post`}
+        </button>
 
         { isContentVisible && (
             <Form onSubmit={handleSubmit}>
