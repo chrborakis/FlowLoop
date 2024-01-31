@@ -134,7 +134,7 @@ class WorksOnView(APIView):
         
 class PostsPublicView(APIView):
     def get( self, request):
-        instances = get_list_or_404(PostsPublic.objects.all())
+        instances = get_list_or_404(PostsPublic.objects.order_by('-publish_date'))
         serializers = PostsPublicSerializer(instances, many=True)        
         print(serializers.data)
         return Response(serializers.data)
@@ -149,7 +149,7 @@ class PostsPublicView(APIView):
 
 class AllPostsPrivateView(APIView):
     def get( self, request):
-        instances = get_list_or_404(PostsPrivate.objects.all())
+        instances = get_list_or_404(PostsPrivate.objects.order_by('-publish_date'))
         serializers = PostsPrivateSerializer(instances, many=True)        
         print(serializers.data)
         return Response(serializers.data)

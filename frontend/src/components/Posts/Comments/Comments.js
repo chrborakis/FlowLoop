@@ -3,15 +3,17 @@ import GetComments from "./GetComments";
 import NewComment from "./NewComment";
 
 const Comments = ({post,url}) => {
+    console.log("POSTID",post)
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState();
 
     useEffect( () => {
-        GetComments({ onFetch: setComments, url: url+post});
+        GetComments({ onFetch: setComments, url: `${url}/${post}`});
     }, [newComment]);
 
     return (
         <div>
+            {console.log("URLCOMMENT -> ", url)}
             {comments ? (
                 comments.map( comment => 
                     <div key={comment.id}>

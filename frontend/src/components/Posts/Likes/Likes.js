@@ -22,17 +22,18 @@ const Likes = ({post, url}) => {
         <div>
             { likes && <>
                 <p>Likes: {likes.length}</p>
+                {/* Find if liked by current user */}
                 { likes.find(like => like.user.slug === user.slug) ? (
                     <p>
                         Liked
                     </p>
-                ) : (
-                    <button onClick={handleLike}>Like</button>
+                ) : (<></>
                 )}
             </>
             }
-            
-            
+            {(likes === undefined || likes.length === 0 || !likes.find((like) => like.user.slug === user.slug)) && (
+                <button onClick={handleLike}>Like</button>
+            )}                 
         </div>
     )
 }

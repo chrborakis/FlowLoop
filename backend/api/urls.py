@@ -15,8 +15,8 @@ urlpatterns = [
     path("postprivate",      AllPostsPrivateView.as_view()),
     path("postprivate/<slug:company>", PostsPrivateView.as_view()),
 
-    path("postpubliccomments/", PostPublicCommentView.as_view()),
-    path("postprivatecomments/", PostPrivateCommentView.as_view()),
+    path("postpubliccomments", PostPublicCommentView.as_view()),
+    path("postprivatecomments", PostPrivateCommentView.as_view()),
 
     path("publiclikes/", PublicLikesView.as_view()),
     path("privatelikes/", PrivateLikesView.as_view())

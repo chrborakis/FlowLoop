@@ -21,7 +21,7 @@ import { useAuth } from "../../store/AuthContext";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import UserProfile from '../User/UserProfile';
-import HomePage from '../HomePage';
+import HomePage1 from '../HomePage1';
 
 const Search = styled('div')(({ theme }) => ({ 
     position: 'relative', 
@@ -188,7 +188,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
 
         <Switch>
             <Route path="/user/:slug"> <UserProfile /></Route>
-            <Route path="/"><HomePage user={user}/></Route>   
+            <Route path="/"><HomePage1 user={user}/></Route>   
         </Switch>
 
         </>

@@ -2,10 +2,9 @@ import React from "react";
 import Comments from "./Comments/Comments";
 import Likes from "./Likes/Likes";
 
-const Post = ({post, url, ready}) => {
+const Post = ({post, url}) => {
     return(
         <div key={post.post_id} className="card">
-            {/* {console.log("Post: ", post)} */}
             <div className="card-title">
                 { post.user.company_name && <h2>{post.user.company_name}</h2>}
                 <h3>{post.user.user_name}</h3>
@@ -19,9 +18,10 @@ const Post = ({post, url, ready}) => {
             </div>
             <div className="comments">
                 <hr></hr>
-                <Likes    post={post.post_id} url={url.like+post.post_id}/>
+
+                <Likes post={post.post_id} url={`${url}likes/${post.post_id}`}/>
                 <hr></hr>
-                <Comments post={post.post_id} url={url.comment}/>
+                <Comments post={post.post_id} url={`${url}comments`}/>
             </div>
         </div>
     )
