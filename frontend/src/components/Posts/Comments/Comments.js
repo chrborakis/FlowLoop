@@ -3,7 +3,6 @@ import GetComments from "./GetComments";
 import NewComment from "./NewComment";
 
 const Comments = ({post,url}) => {
-    console.log("POSTID",post)
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState();
 
@@ -13,7 +12,6 @@ const Comments = ({post,url}) => {
 
     return (
         <div>
-            {console.log("URLCOMMENT -> ", url)}
             {comments ? (
                 comments.map( comment => 
                     <div key={comment.id}>

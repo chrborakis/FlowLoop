@@ -11,7 +11,10 @@ urlpatterns = [
     path('api/',            include('backend.api.urls')),
     path('authentication/', include('backend.authentication.urls')),
 
-    path("user/<slug:slug>", UserProfile.as_view()),
+    path("user/<slug:slug>",    UserProfile.as_view()),
+    path("company/<slug:pk>",   views.company),
+
+    path("workrequests",   views.workrequests),
 
     path("postpublic/<slug:post>",   SinglePostPublic.as_view()),
     path("postpublic", views.post_public),

@@ -1,13 +1,20 @@
 import React from "react";
 import Comments from "./Comments/Comments";
 import Likes from "./Likes/Likes";
+import { Link } from "react-router-dom";
 
 const Post = ({post, url}) => {
     return(
         <div key={post.post_id} className="card">
             <div className="card-title">
-                { post.user.company_name && <h2>{post.user.company_name}</h2>}
-                <h3>{post.user.user_name}</h3>
+                { post.user.company_name && 
+                    <Link to={`/company/${post.user.company_slug}`}>
+                        <h2>{post.user.company_name}</h2>
+                    </Link>
+                }
+                    <Link to={`/user/${post.user.user_slug}`}>
+                        <h3>{post.user.user_name}</h3>
+                    </Link>
                 <p>{post.title}</p>
                 <div>
                     <h6>{post.upload_date}</h6>

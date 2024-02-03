@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 from backend.api.serializers import WorksOnSerializer
 
-from backend.get_url import get_base_url
+from backend.util import get_base_url, get_workson_instance
 
 
 @csrf_exempt
@@ -38,17 +38,20 @@ def login_view(request):
                         'slug':  user_dict['slug'],
                         'image': user_dict['image'],
                         'company': None,
-                        'work_id': None
+                        'work_id': None,
+                        'is_admin': None
                     }
 
                     try:
-                        instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_dict['user'])
-                        serializers = WorksOnSerializer(instance)
+                        # instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_dict['user'])
+                        # serializers = WorksOnSerializer(instance)
+                        workOn = get_workson_instance(user_dict['user'])
+                        print("WORNON AUTH -> ", workOn)
 
-                        user1['company'] = serializers.data['company']
-                        user1['work_id'] = serializers.data['id']
+                        user1['company'] = workOn['company']
+                        user1['work_id'] = workOn['id']
+                        user1['is_admin'] = workOn['is_admin']
                     except:
-                        print('Not working!')
                         return JsonResponse({
                             'message': 'Login Successful',
                             'user': json.dumps(user1),

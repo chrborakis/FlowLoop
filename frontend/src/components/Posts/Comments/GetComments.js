@@ -3,7 +3,6 @@ import React from "react";
 
 const GetComments = ({onFetch, url}) => {
     const getComments = async(e) => {
-        console.log(url)
         axios.get(`backend/${url}`)
         .then( res => 
             // onFetch((prevComments) => [...prevComments, res.data.data])

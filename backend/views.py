@@ -14,7 +14,7 @@ from rest_framework.decorators import action
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
-from backend.get_url import get_base_url
+from backend.util import get_base_url, get_workson_instance
 
 @action(detail=True, methods=['post'])
 class UserProfile(APIView):
@@ -32,6 +32,69 @@ class UserProfile(APIView):
                 'message': err
             })
         
+@csrf_exempt
+def company(request, pk):
+    base_url = get_base_url(request)
+    # if request.method == 'POST':
+        # data = json.loads(request.body.decode('utf-8'))
+        # post = {
+        #     "author": data.get('author'),
+        #     "title":  data.get('title'),
+        #     "body":   data.get('body'),
+        #     "image":  data.get('image')
+        # }
+        # base_url = get_base_url(request)
+        # try:
+        #     response = requests.post(base_url+'/backend/api/postpublic', json=post)
+        #     print("new_post data:", response.json())
+        #     return JsonResponse({
+        #         'message': 'Posts Public Succesfully posting',
+        #         'data': response.json(),
+        #         'status': response.status_code
+        #     })
+        # except:
+        #     return JsonResponse({
+        #         'message': 'Post Public Failed posting',
+        #         'data': response.json(),
+        #         'status': response.status_code
+        #     })
+    if request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/companies/'+str(pk))
+        print(response.json())
+        return JsonResponse({
+            'message': 'Company Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })
+        
+@csrf_exempt
+def workrequests(request):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        # req = {        
+        #     "user":    data.get('user'),
+        #     "company": data.get('company'),
+        #     "status":     data.get('status')
+        # }
+        response = requests.post(base_url+'/backend/api/workrequests', json=data)
+        result = response.json()
+        status = result.get("status")
+        work = None
+        if( status == 'A'):
+            print("WORK ON INSTANCE EXISTS")
+            workOn = get_workson_instance(data.get('user'))
+            work = {"company": workOn.data["company"], "work_id": workOn.data["id"]}
+            # user1['company'] = workOn.data['company']
+            # user1['work_id'] = workOn.data['id']
+        return JsonResponse({
+            'message': 'Work Request POST succesfully',
+            'data': response.json(),
+            "work": work,
+            'status': response.status_code
+        })       
+
+
 # @action(detail=True, methods=['get'])
 # class PostPublic(APIView):
 #     def get( self, request, *args, **kwargs):
@@ -77,7 +140,9 @@ def post_public(request):
                 'status': response.status_code
             })
     elif request.method == 'GET':
+        print("IN GET")
         response = requests.get(base_url+'/backend/api/postpublic')
+        print(response.json())
         return JsonResponse({
             'message': 'Posts Public Fetched succesfully',
             'data': response.json(),

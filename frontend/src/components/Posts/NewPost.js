@@ -5,7 +5,7 @@ import '../../../static/css/PostForm.css'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-const NewPost = ({user, url, newPost}) => {
+const NewPost = ({ user, url, newPost}) => {
     const [isContentVisible, setIsContentVisible] = useState(false);
     const handleButtonClick = () => setIsContentVisible(!isContentVisible); 
     const [formData, setFormData] = useState({ title: '', description: '', image: null,});

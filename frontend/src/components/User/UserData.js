@@ -1,21 +1,16 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import Cookies from 'js-cookie';
-const UserData = (props) => {
 
+const UserData = (props) => {
     const getUser = async(e) => {
-        try {
-            const response = await axios.get(`/backend/user/${props.slug}`, {
-                headers: {
-                  'X-CSRFToken': Cookies.get('csrftoken'),
-                },
-              });
-            props.onfetch(response.data.data);
-            console.log(response.data.data);
-        }catch (error) {
-            console.error('Error in Fetch User Data', error);
-        }
-    }
+      axios.get(`/backend/user/${props.slug}`
+      // ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
+      ).then(  res => {
+          props.onfetch(res.data.data);
+          console.log(res.data.data);
+      }).catch( err => console.log(err))
+  };
 
     useEffect(() => {
         getUser();

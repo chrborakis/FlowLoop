@@ -22,6 +22,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import UserProfile from '../User/UserProfile';
 import HomePage1 from '../HomePage1';
+import CompanyProfile from '../Company/CompanyProfile';
 
 const Search = styled('div')(({ theme }) => ({ 
     position: 'relative', 
@@ -95,6 +96,11 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             <Link to={`/user/${user.slug}`}>
                 <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             </Link>
+            {user?.company?.slug && 
+                <Link to={`/company/${user.company.slug}`}>
+                    <MenuItem onClick={handleMenuClose}>{user?.company?.name}</MenuItem>
+                </Link>
+            }
             <MenuItem onClick={logOut}>Log Out</MenuItem>
         </Menu>
     );
@@ -187,7 +193,8 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
         </Box>
 
         <Switch>
-            <Route path="/user/:slug"> <UserProfile /></Route>
+            <Route path="/user/:slug">    <UserProfile /></Route>
+            <Route path="/company/:slug"> <CompanyProfile /></Route>
             <Route path="/"><HomePage1 user={user}/></Route>   
         </Switch>
 

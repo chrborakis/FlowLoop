@@ -46,8 +46,8 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
         model = WorkRequests
         fields = (
             'id',
-            'user_id',
-            'company_id',
+            'user',
+            'company',
             'status'
         )
 
@@ -68,6 +68,7 @@ class WorksOnSerializer(serializers.ModelSerializer):
             return {
                 'id': str(company.company_id),
                 'name': str(company),
+                'slug': str(company.slug)
             }
         else:
             return None
@@ -115,8 +116,10 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
         return {
             'company_id':   str(obj.author.employee.company.company_id),
             'company_name': str(obj.author.employee.company),
+            'company_slug': str(obj.author.employee.company.slug),
             'user_id':      str(obj.author.employee.user_id),
             'user_name':    str(obj.author.employee.user),
+            'user_slug':    str(obj.author.employee.user.slug)
         }
     
 

@@ -78,13 +78,27 @@ class CompaniesView(APIView):
         except UnicodeDecodeError:
             return Response({"error": "UnicodeDecodeError occurred while processing data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     def post( self, request):
         serializers = CompaniesSerializer(data = request.data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
         
+
+class CompanyView(APIView):    
+    def get( self, request, pk):
+        instance = get_object_or_404(Companies, slug=pk)
+        serializers = CompaniesSerializer(instance)
+        # print(serializers.data)
+        return Response(serializers.data)
+
+    def post( self, request, company):
+        serializer = PostsPrivateSerializer( data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
 class WorkRequestsView(APIView):
     def get( self, request):
         output = [{
@@ -103,10 +117,19 @@ class WorkRequestsView(APIView):
         return Response(output)
     
     def post( self, request):
-        serializers = WorkRequestsSerializer(data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        print(request.data)
+        serializer = WorkRequestsSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+class GetWorkRequestView(APIView):
+    def get( self, request, user):
+        instance = get_object_or_404(WorkRequests, user=user)
+        serializers = WorkRequestsSerializer(instance)
+        # print(serializers.data)
+        return Response(serializers.data)
+
 
 class WorksOnView(APIView):
     def get( self, request):
@@ -136,7 +159,6 @@ class PostsPublicView(APIView):
     def get( self, request):
         instances = get_list_or_404(PostsPublic.objects.order_by('-publish_date'))
         serializers = PostsPublicSerializer(instances, many=True)        
-        print(serializers.data)
         return Response(serializers.data)
 
     def post( self, request):
@@ -151,7 +173,6 @@ class AllPostsPrivateView(APIView):
     def get( self, request):
         instances = get_list_or_404(PostsPrivate.objects.order_by('-publish_date'))
         serializers = PostsPrivateSerializer(instances, many=True)        
-        print(serializers.data)
         return Response(serializers.data)
 
     def post( self, request):
@@ -164,7 +185,6 @@ class PostsPrivateView(APIView):
     def get( self, request, company):
         instances = PostsPrivate.objects.filter(author__employee__company = company)
         serializers = PostsPrivateSerializer(instances, many=True)
-        print(serializers.data)
         return Response(serializers.data)
 
     def post( self, request, company):
@@ -182,7 +202,6 @@ class PostPublicCommentView(APIView):
             'date': str(output.date),
         }for output in PostsPublicComments.objects.all()
     ]
-        print(output)
         return Response(output)
     
     def post( self, request):
@@ -201,7 +220,6 @@ class PostPrivateCommentView(APIView):
             'date': str(output.date),
         }for output in PostsPrivateComments.objects.all()
     ]
-        print(output)
         return Response(output)
     
     def post( self, request):

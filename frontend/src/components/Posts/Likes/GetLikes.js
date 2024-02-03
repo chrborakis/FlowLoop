@@ -6,7 +6,6 @@ const GetLikes = ({onFetch, url}) => {
         axios.get(`backend/${url}`)
         .then(  res => {
             onFetch(res.data.data)
-            console.log(res.data.data)
         })
         .catch( err => console.log(err))
     };

@@ -1,10 +1,11 @@
 import React from "react";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import '../../static/css/HomePage.css'
+
 import PostsPublic from "./Posts/PostsPublic";
 import PostsPrivate from "./Posts/PostsPrivate";
 
+import '../../static/css/HomePage.css'
 
 const HomePage1 = ({user}) => {
     return (

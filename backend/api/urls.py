@@ -8,7 +8,10 @@ urlpatterns = [
     path("user/<slug:pk>",   UserView.as_view()),
     
     path("companies",        CompaniesView.as_view()),
+    path("companies/<slug:pk>", CompanyView.as_view()),
+
     path("workrequests",     WorkRequestsView.as_view()),
+    path("workrequests/<slug:user>",  GetWorkRequestView.as_view()),
     path("workson",          WorksOnView.as_view()),
 
     path("postpublic",       PostsPublicView.as_view()),

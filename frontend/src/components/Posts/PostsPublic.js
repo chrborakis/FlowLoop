@@ -12,7 +12,7 @@ const PostsPublic = ({user}) => {
 
     useEffect( () => {
         GetPosts({ onFetch: setPosts, url: url, setLoading: setLoading});
-    }, []);
+    });
 
     useEffect( () => {  
         if (newPost) {
