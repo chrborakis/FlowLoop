@@ -3,7 +3,7 @@ import GetPosts from "./GetPosts";
 import Post from "./Post";
 import NewPost from "./NewPost";
 
-const PostsPublic = ({user, url}) => {
+const PostsPublic = ({user, url, slug}) => {
     // url: ../backend/postpublic OR backend/postpublic
 
     const [ posts, setPosts] = useState([]);
@@ -11,7 +11,7 @@ const PostsPublic = ({user, url}) => {
     const [ loading, setLoading] = useState(false);
 
     useEffect( () => {
-        GetPosts({ onFetch: setPosts, url: url, setLoading: setLoading});
+        GetPosts({ onFetch: setPosts, url: url+slug, setLoading: setLoading});
     }, []);
 
     useEffect( () => {  

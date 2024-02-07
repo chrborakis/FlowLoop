@@ -16,10 +16,10 @@ urlpatterns = [
 
     path("workrequests",   views.workrequests),
 
-    path("postpublic/<slug:post>",   SinglePostPublic.as_view()),
-    path("postpublic", views.post_public),
+    # path("postpublic/<slug:post>",   SinglePostPublic.as_view()),
+    path("postpublic/<slug:user>", views.post_public),
 
-    path("postprivate/<slug:company>/<slug:post>",    SinglePostPrivate.as_view()),
+    # path("postprivate/<slug:company>/<slug:post>",    SinglePostPrivate.as_view()),
     # path("postprivate/<slug:company>",  PostsPrivate.as_view()),
     path("postprivate/<slug:company>", views.post_private),
 

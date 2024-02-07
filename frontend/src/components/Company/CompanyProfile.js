@@ -67,10 +67,7 @@ const CompanyProfile = () => {
             <button disabled={!isCompanyNameUnavailable || requested} onClick={sendWorkRequest}
                 title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
                 {requested ? 'Request send...' : <p>Send work request</p>}
-            </button>
-              
-            
-          
+            </button>         
      
       </div>
     );

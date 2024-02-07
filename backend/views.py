@@ -114,7 +114,7 @@ def workrequests(request):
 #             return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
         
 @csrf_exempt
-def post_public(request):
+def post_public(request, user):
     base_url = get_base_url(request)
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
@@ -134,7 +134,13 @@ def post_public(request):
                 'status': response.status_code
             })
     elif request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/postpublic')
+        print("USER", user)
+        print(type(user))
+        response = None
+        if user == '0':
+            response = requests.get(base_url+'/backend/api/postpublic')
+        elif user != '0':
+            response = requests.get(base_url+'/backend/api/postpublic/'+str(user))
         print(response.json())
 
         data = None
@@ -150,23 +156,23 @@ def post_public(request):
         })
 
 
-@action(detail=True, methods=['get'])
-class SinglePostPublic(APIView):
-    def get( self, request, post, *args, **kwargs):
-        try:
-            instance = get_object_or_404(PostsPublic, post_id=post)
-            serializers = PostsPublicSerializer(instance)        
-            print("SERIALIZERS DATA: ", serializers.data)
-            return JsonResponse({
-                'message': 'Posts Public Fetched succesfully',
-                'data': serializers.data,
-                'status': status.HTTP_200_OK
-            })
+# @action(detail=True, methods=['get'])
+# class SinglePostPublic(APIView):
+#     def get( self, request, post, *args, **kwargs):
+#         try:
+#             instance = get_object_or_404(PostsPublic, post_id=post)
+#             serializers = PostsPublicSerializer(instance)        
+#             print("SERIALIZERS DATA: ", serializers.data)
+#             return JsonResponse({
+#                 'message': 'Posts Public Fetched succesfully',
+#                 'data': serializers.data,
+#                 'status': status.HTTP_200_OK
+#             })
         
-        except ValueError as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
-        except Exception as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+#         except ValueError as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
+#         except Exception as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
         
 # @action(detail=True, methods=['get'])
 # class PostPrivate(APIView):
@@ -224,22 +230,22 @@ def post_private(request, company):
             'status': response.status_code
         })
 
-@action(detail=True, methods=['get'])
-class SinglePostPrivate(APIView):
-    def get( self, request, post, *args, **kwargs):
-        try:
-            instance = get_object_or_404(PostsPrivate, post_id=post)
-            serializers = PostsPrivateSerializer(instance)        
-            return JsonResponse({
-                'message': 'Posts Private Fetched succesfully',
-                'data': serializers.data,
-                'status': status.HTTP_200_OK
-            })
+# @action(detail=True, methods=['get'])
+# class SinglePostPrivate(APIView):
+#     def get( self, request, post, *args, **kwargs):
+#         try:
+#             instance = get_object_or_404(PostsPrivate, post_id=post)
+#             serializers = PostsPrivateSerializer(instance)        
+#             return JsonResponse({
+#                 'message': 'Posts Private Fetched succesfully',
+#                 'data': serializers.data,
+#                 'status': status.HTTP_200_OK
+#             })
 
-        except ValueError as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
-        except Exception as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+#         except ValueError as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
+#         except Exception as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
 
 @csrf_exempt
 def public_comments(request, post):

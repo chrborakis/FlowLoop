@@ -14,7 +14,8 @@ urlpatterns = [
     path("workrequests/<slug:user>",  GetWorkRequestView.as_view()),
     path("workson",          WorksOnView.as_view()),
 
-    path("postpublic",       PostsPublicView.as_view()),
+    path("postpublic",       AllPostsPublicView.as_view()),
+    path("postpublic/<slug:user>",     PostsPublicView.as_view()),
     path("postprivate",      AllPostsPrivateView.as_view()),
     path("postprivate/<slug:company>", PostsPrivateView.as_view()),
 

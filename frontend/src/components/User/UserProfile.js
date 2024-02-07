@@ -17,7 +17,7 @@ const UserProfile = () => {
                 <div>
                     <Info data={data}/>
                     <hr></hr>
-                    <PostsPublic user={user} url='../backend/postpublic'/>
+                    <PostsPublic user={user} url='../backend/postpublic' slug={`/${user.id}`}/>
                 </div>
             ) : (
                   <UserData onfetch={setData} slug={slug}/>

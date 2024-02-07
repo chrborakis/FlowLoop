@@ -155,9 +155,23 @@ class WorksOnView(APIView):
             serializers.save()
             return Response(serializers.data)
         
-class PostsPublicView(APIView):
+class AllPostsPublicView(APIView):
     def get( self, request):
         instances = get_list_or_404(PostsPublic.objects.order_by('-publish_date'))
+        serializers = PostsPublicSerializer(instances, many=True)        
+        return Response(serializers.data)
+
+    def post( self, request):
+        print(request.data)
+        serializers = PostsPublicSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            saved_instance = serializers.save()
+            serialized_data = PostsPublicSerializer(saved_instance).data
+            return JsonResponse(data=serialized_data, status=201)
+        
+class PostsPublicView(APIView):
+    def get( self, request, user):
+        instances = get_list_or_404(PostsPublic.objects.filter( author=user).order_by('-publish_date'))
         serializers = PostsPublicSerializer(instances, many=True)        
         return Response(serializers.data)
 
