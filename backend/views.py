@@ -134,8 +134,6 @@ def post_public(request, user):
                 'status': response.status_code
             })
     elif request.method == 'GET':
-        print("USER", user)
-        print(type(user))
         response = None
         if user == '0':
             response = requests.get(base_url+'/backend/api/postpublic')
