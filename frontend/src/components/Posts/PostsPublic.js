@@ -4,7 +4,7 @@ import Post from "./Post";
 import NewPost from "./NewPost";
 
 const PostsPublic = ({user, url}) => {
-    // const url = 'postpublic';
+    // url: ../backend/postpublic OR backend/postpublic
 
     const [ posts, setPosts] = useState([]);
     const [ newPost, setNewPost] = useState();
@@ -29,7 +29,7 @@ const PostsPublic = ({user, url}) => {
             <p>Loading posts...</p>
         ): (
             posts && posts.map( post => 
-                post && <Post key={post.post_id} post={post} url='public'/>
+                post && <Post key={post.post_id} post={post} url={url}/>
             )
         )}
     </>);

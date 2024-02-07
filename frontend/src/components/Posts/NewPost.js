@@ -38,6 +38,9 @@ const NewPost = ({ user, url, newPost}) => {
         }
 
         console.log("data: ", data)
+        if(url.includes('private')){
+            url += '/0';
+        }
 
         await axios.post(url, data,
         {

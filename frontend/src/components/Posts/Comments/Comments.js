@@ -3,6 +3,9 @@ import GetComments from "./GetComments";
 import NewComment from "./NewComment";
 
 const Comments = ({post,url}) => {
+    // post: post_id
+    // url: ../backend/postpubliccomments OR backend/postpubliccomments
+
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState();
 
@@ -15,7 +18,6 @@ const Comments = ({post,url}) => {
             {comments ? (
                 comments.map( comment => 
                     <div key={comment.id}>
-                        {console.log(comment)}
                         <div className="uploader">
                             <image src={comment.user.image}/>
                             <h4>{comment.user.name}</h4>

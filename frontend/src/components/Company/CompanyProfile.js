@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import CompanyData from './CompanyData';
 import { useAuth } from '../../store/AuthContext';
+
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import PostsPrivate from '../Posts/PostsPrivate';
@@ -12,12 +13,11 @@ const CompanyProfile = () => {
     const [ data, setData] = useState();
 
     const [requested, setRequested] = useState(false);
-
     const isCompanyNameUnavailable = user?.company?.name === undefined || user?.company?.name === null;
 
     useEffect(() => {
         const get_request = async () => {
-            axios.get(`/backend/api/workrequests/${user.id}`
+            axios.get(`/backend/api/workrequests/${user?.id}`
             ).then(  res => {
                 if( data?.company_id == res.data.company){
                     setRequested(true)
@@ -57,7 +57,7 @@ const CompanyProfile = () => {
 
                 <hr></hr>
 
-                <PostsPrivate />
+                <PostsPrivate user={user} url='../backend/postprivate'/>
             </div>
         ) : (
             <CompanyData onfetch={setData} slug={slug}/>

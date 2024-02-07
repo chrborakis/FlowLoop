@@ -6,9 +6,9 @@ const PostLike = ({ url, post_id, like_id, setLiked}) => {
     const postLike = async(e) => {
         const post_url = url.replace(post_id, "0")
         const data = { "post":post_id, "like": like_id}
-
+        console.log("PostLike -> ", post_url)
         // url={`${url}likes/${post.post_id}`}
-        await axios.post(`backend/${post_url}`, data,{
+        await axios.post(post_url, data,{
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
             'Content-Type': 'application/json'}
         })

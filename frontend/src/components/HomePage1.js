@@ -17,7 +17,7 @@ const HomePage1 = ({user}) => {
                     </Tab>
                     {user?.company?.name && 
                         <Tab eventKey="private" title={user?.company?.name}>
-                            <PostsPrivate user={user} url={`backend/postprivate/${user.company.id}`}/>
+                            <PostsPrivate user={user} url='backend/postprivate'/>
                         </Tab>
                     }
                 </Tabs>

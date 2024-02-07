@@ -4,7 +4,6 @@ import UserData from './UserData';
 import PostsPublic from '../Posts/PostsPublic';
 import Info from './Info';
 import { useAuth } from '../../store/AuthContext';
-import axios from 'axios';
 
 const UserProfile = () => {
     const { user } = useAuth();

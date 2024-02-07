@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 
 const PostComment = ({data, url, onComment, comment, commentRef}) => {
     const postComment = async(e) => {
-        await axios.post(`backend/${url}/0`, data,{
+        await axios.post(`${url}/0`, data,{
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
             'Content-Type': 'application/json'}
         })

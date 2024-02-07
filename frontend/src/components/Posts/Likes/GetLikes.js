@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 const GetLikes = ({onFetch, url}) => {
     //${url}likes/${post.post_id}
     const getLikes = async(e) => {
-        axios.get(`backend/${url}`)
+        console.log("GetLikes -> ", url)
+        axios.get(url)
         .then(  res => {
             onFetch(res.data.data)
         })

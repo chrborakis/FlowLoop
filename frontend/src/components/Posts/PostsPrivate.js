@@ -4,14 +4,14 @@ import Post from "./Post";
 import NewPost from "./NewPost";
 
 const PostsPrivate = ({user, url}) => {
-    // const url = `${url}/${user.company.id}`;
+    // url: ../backend/postprivate OR backend/postprivate
 
     const [ posts, setPosts] = useState([]);
     const [ newPost, setNewPost] = useState();
     const [ loading, setLoading] = useState(false);
 
     useEffect( () => {
-        GetPosts({ onFetch: setPosts, url: url, setLoading: setLoading});
+        GetPosts({ onFetch: setPosts, url: `${url}/${user.company.id}`, setLoading: setLoading});
     }, []);
 
     useEffect( () => {  
@@ -30,7 +30,7 @@ const PostsPrivate = ({user, url}) => {
                 <p>Loading posts...</p>
             ): (
                 posts && posts.map( post => 
-                    post && <Post key={post.post_id} post={post} url='private'/>
+                    post && <Post key={post.post_id} post={post} url={url}/>
                 )
             )}
     </>);
