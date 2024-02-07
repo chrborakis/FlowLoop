@@ -3,8 +3,8 @@ import GetPosts from "./GetPosts";
 import Post from "./Post";
 import NewPost from "./NewPost";
 
-const PostsPublic = ({user}) => {
-    const url = 'postpublic';
+const PostsPublic = ({user, url}) => {
+    // const url = 'postpublic';
 
     const [ posts, setPosts] = useState([]);
     const [ newPost, setNewPost] = useState();
@@ -12,7 +12,7 @@ const PostsPublic = ({user}) => {
 
     useEffect( () => {
         GetPosts({ onFetch: setPosts, url: url, setLoading: setLoading});
-    });
+    }, []);
 
     useEffect( () => {  
         if (newPost) {
@@ -22,17 +22,16 @@ const PostsPublic = ({user}) => {
         }
     }, [newPost])
 
-    return (
-        <>
-            <NewPost user={user} url={url} newPost={setNewPost}/>
+    return (<>
+        <NewPost user={user} url={url} newPost={setNewPost}/>
 
-            {loading ?(
-                <p>Loading posts...</p>
-            ): (
-                posts && posts.map( post => 
-                    post && <Post key={post.post_id} post={post} url='public'/>
-                )
-            )}
+        {loading ?(
+            <p>Loading posts...</p>
+        ): (
+            posts && posts.map( post => 
+                post && <Post key={post.post_id} post={post} url='public'/>
+            )
+        )}
     </>);
 };
 

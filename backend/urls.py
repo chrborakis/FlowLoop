@@ -23,10 +23,10 @@ urlpatterns = [
     # path("postprivate/<slug:company>",  PostsPrivate.as_view()),
     path("postprivate/<slug:company>", views.post_private),
 
-    path("publiccomments/<slug:slug>",  GetPublicComments.as_view()),
-    path("privatecomments/<slug:slug>", GetPrivateComments.as_view()),
+    path("publiccomments/<slug:post>",  views.public_comments, name='public_comments'),
+    path("privatecomments/<slug:post>", views.private_comments,name='private_comments'),
 
-    path("publiclikes/<slug:slug>",   GetPublicLikes.as_view()),
-    path("privatelikes/<slug:slug>",  GetPrivateLikes.as_view())
+    path("publiclikes/<slug:post>",   views.public_likes),
+    path("privatelikes/<slug:post>",  views.private_likes),
 ]
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

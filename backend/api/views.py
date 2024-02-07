@@ -192,8 +192,8 @@ class PostsPrivateView(APIView):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
-
-class PostPublicCommentView(APIView):
+        
+class AllPublicCommentView(APIView):
     def get( self, request):
         output = [{
             'post': str(output.post),
@@ -211,7 +211,7 @@ class PostPublicCommentView(APIView):
             serializers.save()
             return Response(serializers.data)
         
-class PostPrivateCommentView(APIView):
+class AllPrivateCommentView(APIView):
     def get( self,request):
         output = [{
             'post': str(output.post),
@@ -228,8 +228,34 @@ class PostPrivateCommentView(APIView):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
+
+class PublicCommentView(APIView):
+    def get( self, request, post):
+        instances = PostsPublicComments.objects.filter(post = post)
+        serializers = PostsPublicCommentsSerializer(instances, many=True)
+        return Response(serializers.data)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PostsPublicCommentsSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
         
-class PublicLikesView(APIView):
+class PrivateCommentView(APIView):
+    def get( self, request, post):
+        instances = PostsPrivateComments.objects.filter(post = post)
+        serializers = PostsPrivateCommentsSerializer(instances, many=True)
+        return Response(serializers.data)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PostsPrivateCommentsSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+
+class AllPublicLikesView(APIView):
     def get( self, request):
         output = [{
             "id": output.id,
@@ -248,13 +274,13 @@ class PublicLikesView(APIView):
             return Response(serializers.data)
         else:
             print(serializers.errors)
-        
-class PrivateLikesView(APIView):
+
+class AllPrivateLikesView(APIView):
     def get( self, request):
         output = [{
-            'id': output.id,
-            'post_id': output.post_id,
-            'like_id': output.like_id,
+            "id": output.id,
+            "post_id": output.post_id,
+            "like_id": output.like_id,
         }for output in PostsPrivateLikes.objects.all()
     ]
         print(output)
@@ -263,6 +289,35 @@ class PrivateLikesView(APIView):
     def post( self, request):
         print("data : ", request.data)
         serializers = PrivateLikesSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+        else:
+            print(serializers.errors)
+
+class PublicLikesView(APIView):
+    def get( self, request, post):
+        instances = PostsPublicLikes.objects.filter(post = post)
+        serializers = PostsPublicLikesSerializer(instances, many=True)
+        return Response(serializers.data)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PostsPublicLikesSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+        
+
+class PrivateLikesView(APIView):
+    def get( self, request, post):
+        instances = PostsPrivateLikes.objects.filter(post = post)
+        serializers =PostsPrivateLikesSerializer(instances, many=True)
+        return Response(serializers.data)
+    
+    def post( self, request):
+        print("data : ", request.data)
+        serializers = PostsPrivateLikesSerializer( data = request.data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)

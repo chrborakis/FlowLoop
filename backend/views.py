@@ -118,15 +118,9 @@ def post_public(request):
     base_url = get_base_url(request)
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        post = {
-            "author": data.get('author'),
-            "title":  data.get('title'),
-            "body":   data.get('body'),
-            "image":  data.get('image')
-        }
         base_url = get_base_url(request)
         try:
-            response = requests.post(base_url+'/backend/api/postpublic', json=post)
+            response = requests.post(base_url+'/backend/api/postpublic', json=data)
             print("new_post data:", response.json())
             return JsonResponse({
                 'message': 'Posts Public Succesfully posting',
@@ -140,12 +134,18 @@ def post_public(request):
                 'status': response.status_code
             })
     elif request.method == 'GET':
-        print("IN GET")
         response = requests.get(base_url+'/backend/api/postpublic')
         print(response.json())
+
+        data = None
+        message = 'Posts Public Fetched FAILED'
+        if( response.json()):
+            message = 'Posts Public Fetched succesfully'
+            data = response.json()
+
         return JsonResponse({
-            'message': 'Posts Public Fetched succesfully',
-            'data': response.json(),
+            'message': message,
+            'data': data,
             'status': response.status_code
         })
 
@@ -240,79 +240,154 @@ class SinglePostPrivate(APIView):
             return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
         except Exception as err:
             return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
-        
-@action(detail=True, methods=['get'])
-class GetPublicComments(APIView):
-    def get( self, request, slug, *args, **kwargs):
+
+@csrf_exempt
+def public_comments(request, post):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        base_url = get_base_url(request)
         try:
-            instances = get_list_or_404(PostsPublicComments, post_id=slug)
-            serializers = PostsPublicCommentsSerializer(instances, many=True)
-
+            response = requests.post(base_url+'/backend/api/postpubliccomments', json=data)
+            print("new_comment data:", response.json())
             return JsonResponse({
-                'message': 'Post Public Comments Fetched succesfully',
-                'data': serializers.data,
-                'status': status.HTTP_200_OK
+                'message': 'Public Comment Succesfully posting',
+                'data': response.json(),
+                'status': response.status_code
             })
+        except:
+            return JsonResponse({
+                'message': 'Public Comment Failed posting',
+                'data': response.json(),
+                'status': response.status_code
+            })
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/postpubliccomments/'+str(post))
+        return JsonResponse({
+            'message': 'Public Comment Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })
 
-        except ValueError as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
-        except Exception as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
-        
-
-@action(detail=True, methods=['get'])
-class GetPrivateComments(APIView):
-    def get( self, request, slug, *args, **kwargs):
+@csrf_exempt
+def private_comments(request, post):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        base_url = get_base_url(request)
         try:
-            instances = get_list_or_404(PostsPrivateComments, post_id=slug)
-            serializers = PostsPrivateCommentsSerializer(instances, many=True)
-
+            response = requests.post(base_url+'/backend/api/postprivatecomments', json=data)
+            print("new_comment data:", response.json())
             return JsonResponse({
-                'message': 'Post Private Comments Fetched succesfully',
-                'data': serializers.data,
-                'status': status.HTTP_200_OK
+                'message': 'Private Comment Succesfully posting',
+                'data': response.json(),
+                'status': response.status_code
             })
-
-        except ValueError as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
-        except Exception as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+        except:
+            return JsonResponse({
+                'message': 'Private Comment Failed posting',
+                'data': response.json(),
+                'status': response.status_code
+            })
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/postprivatecomments/'+str(post))
+        return JsonResponse({
+            'message': 'Private Comment Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })
         
-@action(detail=True, methods=['get'])
-class GetPublicLikes(APIView):
-    def get(self,request,slug,*args,**kwargs):
-        try:
-            instances = get_list_or_404(PostsPublicLikes, post=slug)
-            serializers = PostsPublicLikesSerializer(instances, many=True)
+# @action(detail=True, methods=['get'])
+# class GetPublicLikes(APIView):
+#     def get(self,request,slug,*args,**kwargs):
+#         try:
+#             instances = get_list_or_404(PostsPublicLikes, post=slug)
+#             serializers = PostsPublicLikesSerializer(instances, many=True)
 
-            return JsonResponse({
-                'message': "Post Public Likes Fetched succesfully",
-                'data': serializers.data,
-                'count': len(instances),
-                'status': status.HTTP_200_OK
-            })
+#             return JsonResponse({
+#                 'message': "Post Public Likes Fetched succesfully",
+#                 'data': serializers.data,
+#                 'count': len(instances),
+#                 'status': status.HTTP_200_OK
+#             })
 
-        except ValueError as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
-        except Exception as err:
-            return JsonResponse({'message': str(err),'status' : status.HTTP_500_INTERNAL_SERVER_ERROR})
+#         except ValueError as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
+#         except Exception as err:
+#             return JsonResponse({'message': str(err),'status' : status.HTTP_500_INTERNAL_SERVER_ERROR})
         
-@action(detail=True, methods=['get'])
-class GetPrivateLikes(APIView):
-    def get(self,request,slug,*args,**kwargs):
+@csrf_exempt
+def public_likes(request, post):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        base_url = get_base_url(request)
         try:
-            instances = get_list_or_404(PostsPrivateLikes, post_id=slug)
-            serializers = PostsPrivateLikesSerializer(instances, many=True)
-
+            response = requests.post(base_url+'/backend/api/publiclikes', json=data)
+            print("new_Like data:", response.json())
             return JsonResponse({
-                'message': "Post Private Likes Fetched succesfully",
-                'data': serializers.data,
-                'count': len(instances),
-                'status': status.HTTP_200_OK
+                'message': 'Public Like Succesfully posting',
+                'data': response.json(),
+                'status': response.status_code
             })
+        except:
+            return JsonResponse({
+                'message': 'Public Like Failed posting',
+                'data': response.json(),
+                'status': response.status_code
+            })
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/publiclikes/'+str(post))
+        return JsonResponse({
+            'message': 'Public Like Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })
+    
+@csrf_exempt
+def private_likes(request, post):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        base_url = get_base_url(request)
+        try:
+            response = requests.post(base_url+'/backend/api/privatelikes', json=data)
+            print("new_Like data:", response.json())
+            return JsonResponse({
+                'message': 'Private Like Succesfully posting',
+                'data': response.json(),
+                'status': response.status_code
+            })
+        except:
+            return JsonResponse({
+                'message': 'Private Like Failed posting',
+                'data': response.json(),
+                'status': response.status_code
+            })
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/privatelikes/'+str(post))
+        return JsonResponse({
+            'message': 'Private Like Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })
 
-        except ValueError as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
-        except Exception as err:
-            return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
+# @action(detail=True, methods=['get'])
+# class GetPrivateLikes(APIView):
+#     def get(self,request,slug,*args,**kwargs):
+#         try:
+#             instances = get_list_or_404(PostsPrivateLikes, post_id=slug)
+#             serializers = PostsPrivateLikesSerializer(instances, many=True)
+
+#             return JsonResponse({
+#                 'message': "Post Private Likes Fetched succesfully",
+#                 'data': serializers.data,
+#                 'count': len(instances),
+#                 'status': status.HTTP_200_OK
+#             })
+
+#         except ValueError as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_400_BAD_REQUEST})
+#         except Exception as err:
+#             return JsonResponse({'message': str(err),'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
         

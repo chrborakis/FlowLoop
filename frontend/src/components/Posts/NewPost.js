@@ -30,7 +30,6 @@ const NewPost = ({ user, url, newPost}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         const data = {
             "author": url.includes('public') ? user.id : user.work_id,
             "title": formData.title,
@@ -40,7 +39,7 @@ const NewPost = ({ user, url, newPost}) => {
 
         console.log("data: ", data)
 
-        await axios.post(`backend/api/${url}`, data,
+        await axios.post(url, data,
         {
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
             'Content-Type': 'application/json'}
@@ -54,7 +53,7 @@ const NewPost = ({ user, url, newPost}) => {
 
     return(<>
         <button onClick={handleButtonClick}> 
-            {url == 'postpublic' ? 'New Post Public' : `New ${user?.company?.name} Post`}
+            {url.includes('public') ? 'New Post Public' : `New ${user?.company?.name} Post`}
         </button>
 
         { isContentVisible && (

@@ -3,8 +3,8 @@ import GetPosts from "./GetPosts";
 import Post from "./Post";
 import NewPost from "./NewPost";
 
-const PostsPrivate = ({user}) => {
-    const url = `postprivate/${user.company.id}`;
+const PostsPrivate = ({user, url}) => {
+    // const url = `${url}/${user.company.id}`;
 
     const [ posts, setPosts] = useState([]);
     const [ newPost, setNewPost] = useState();

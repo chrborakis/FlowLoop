@@ -13,11 +13,11 @@ const HomePage1 = ({user}) => {
             <div className="feed">
                 <Tabs defaultActiveKey="public" id="justify-tab-example" className="mb-3" justify>
                     <Tab eventKey="public" title="Public">
-                        <PostsPublic user={user}/>
+                        <PostsPublic user={user} url='backend/postpublic'/>
                     </Tab>
                     {user?.company?.name && 
                         <Tab eventKey="private" title={user?.company?.name}>
-                            <PostsPrivate user={user}/>
+                            <PostsPrivate user={user} url={`backend/postprivate/${user.company.id}`}/>
                         </Tab>
                     }
                 </Tabs>

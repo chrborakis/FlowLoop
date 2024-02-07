@@ -14,6 +14,7 @@ const Likes = ({post, url}) => {
     }, [url, liked]);
 
     const handleLike = () => {
+        //like id: Foreign key depends Public Or Private
         PostLike({ url: url, post_id: post, like_id: url.includes('public') ? user.id : user.work_id, post: post, setLiked: setLiked})
         console.log("Liked: ", liked)
     };

@@ -15,6 +15,7 @@ const Comments = ({post,url}) => {
             {comments ? (
                 comments.map( comment => 
                     <div key={comment.id}>
+                        {console.log(comment)}
                         <div className="uploader">
                             <image src={comment.user.image}/>
                             <h4>{comment.user.name}</h4>

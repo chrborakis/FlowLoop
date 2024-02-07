@@ -4,8 +4,8 @@ import Cookies from 'js-cookie';
 
 const GetPosts = ({onFetch, url, setLoading}) => {
     const getData = async(e) => {
-        axios.get(`backend/${url}`
-        // ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
+        console.log(url)
+        axios.get(url
         ).then(  res => {
             // onFetch(prevPosts => [...prevPosts, ...res.data.data]);
             onFetch(res.data.data);
