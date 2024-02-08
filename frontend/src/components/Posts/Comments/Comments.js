@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import GetComments from "./GetComments";
+import {getComments} from "./CommentsUtils";
 import NewComment from "./NewComment";
 
 const Comments = ({post,url}) => {
@@ -10,7 +10,7 @@ const Comments = ({post,url}) => {
     const [newComment, setNewComment] = useState();
 
     useEffect( () => {
-        GetComments({ onFetch: setComments, url: `${url}/${post}`});
+        getComments( setComments, `${url}/${post}`);
     }, [newComment]);
 
     return (

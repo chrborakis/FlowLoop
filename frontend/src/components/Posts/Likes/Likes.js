@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import GetLikes from "./GetLikes";
-import PostLike from "./PostLike";
+import { getLikes, postLike} from "./LikesUtils";
 import { useAuth } from "../../../store/AuthContext";
 
 const Likes = ({post, url}) => {
@@ -10,12 +9,13 @@ const Likes = ({post, url}) => {
     const [liked, setLiked] = useState(true);
 
     useEffect( () => {
-        GetLikes({ onFetch: setLikes, url});
+        getLikes( setLikes, url);
     }, [url, liked]);
 
     const handleLike = () => {
         //like id: Foreign key depends Public Or Private
-        PostLike({ url: url, post_id: post, like_id: url.includes('public') ? user.id : user.work_id, post: post, setLiked: setLiked})
+        // const like = url.includes('public') ? user.id : user.work_id
+        postLike( url, post, url.includes('public') ? user.id : user.work_id, setLiked)
         console.log("Liked: ", liked)
     };
     

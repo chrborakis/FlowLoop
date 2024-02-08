@@ -197,7 +197,7 @@ class AllPostsPrivateView(APIView):
 
 class PostsPrivateView(APIView):    
     def get( self, request, company):
-        instances = PostsPrivate.objects.filter(author__employee__company = company)
+        instances = PostsPrivate.objects.filter(author__employee__company__slug = company)
         serializers = PostsPrivateSerializer(instances, many=True)
         return Response(serializers.data)
 
@@ -206,6 +206,19 @@ class PostsPrivateView(APIView):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
+        
+class IdPostsPrivateView(APIView):
+    def get( self, request, id):
+        instances = PostsPrivate.objects.filter(author__employee__company = id)
+        serializers = PostsPrivateSerializer(instances, many=True)
+        return Response(serializers.data)
+
+    def post( self, request, company):
+        serializers = PostsPrivateSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)
+        
         
 class AllPublicCommentView(APIView):
     def get( self, request):

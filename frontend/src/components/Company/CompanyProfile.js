@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import CompanyData from './CompanyData';
+import { getCompany, get_request, sendWorkRequest } from './CompanyUtils';
 import { useAuth } from '../../store/AuthContext';
 
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import PostsPrivate from '../Posts/PostsPrivate';
+import Info from './Info';
 
 const CompanyProfile = () => {
     const { user } = useAuth();
@@ -15,60 +16,33 @@ const CompanyProfile = () => {
     const [requested, setRequested] = useState(false);
     const isCompanyNameUnavailable = user?.company?.name === undefined || user?.company?.name === null;
 
+    useEffect( () => {getCompany(setData, slug)}, []);
+
     useEffect(() => {
-        const get_request = async () => {
-            axios.get(`/backend/api/workrequests/${user?.id}`
-            ).then(  res => {
-                if( data?.company_id == res.data.company){
-                    setRequested(true)
-                }
-            }).catch( err => console.log(err))
-        };
-        if(data) {
-            get_request();
-        }
+        if(data) get_request(user?.id, data?.company_id, setRequested);
     }, [data]);
 
-    const sendWorkRequest = async () => {
-        axios.post('/backend/workrequests', {
-            "user": user.id,
-            "company": data.company_id,
-            "status": "P"
-        }
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
-        ).then(  res => {
-            setRequested(true)
-            console.log(res.data)
-            console.log(res.data.work)      //IF WORKS, Update user data in AUTH
-        }).catch( err => console.log(err))
-    };
+    const sendRequest = () => sendWorkRequest( user.id, data?.company_id, setRequested);
 
     return (
       <div>
         <h1>Company {slug} Profile</h1>
-        { data ? (
-            <div>
-                <div>
-                    <h1>{ data.company_name }</h1>
-                    <p>{data.description} </p>
-                    <p>{data.establishment_date} </p>
-                    <p>{data.phone} </p>   
-                </div>
 
-                <hr></hr>
+        {data && <Info data={data} />}
 
-                <PostsPrivate user={user} url='../backend/postprivate'/>
-            </div>
-        ) : (
-            <CompanyData onfetch={setData} slug={slug}/>
-        )}
-          
-        {/* {user?.company?.name === undefined || user?.company?.name === null ? ( */}
-            <button disabled={!isCompanyNameUnavailable || requested} onClick={sendWorkRequest}
+        {/* If user is member of company! */}
+        <hr></hr>
+        {user?.company?.id == data?.company_id ? (
+            <PostsPrivate user={user} url='../backend/postprivate' slug={slug}/>
+        ) : (<>
+            {/* If user is not member of company! */}
+            <p>You should grant access to view content!</p>
+            <button disabled={!isCompanyNameUnavailable || requested} onClick={sendRequest}
                 title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
                 {requested ? 'Request send...' : <p>Send work request</p>}
-            </button>         
-     
+            </button> </>
+        )}
+                   
       </div>
     );
 };

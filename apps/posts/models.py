@@ -21,7 +21,7 @@ class PostsPrivate(models.Model):
     image   = models.ImageField(upload_to=get_upload_path_private, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        compo_slug = f'{self.author.employee.company}{self.title}'
+        compo_slug = f'{self.author.employee.company}{self.post_id}'
         self.slug = slugify(compo_slug)
         super().save(*args, **kwargs)
     class Meta: 
@@ -64,7 +64,7 @@ class PostsPublic(models.Model):
     image = models.ImageField(upload_to=get_upload_path_public, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        compo_slug = f'{self.author}{self.title}'
+        compo_slug = f'{self.author}{self.post_id}'
         self.slug = slugify(compo_slug)
         super().save(*args, **kwargs)
     class Meta: 

@@ -21,7 +21,7 @@ import { useAuth } from "../../store/AuthContext";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import UserProfile from '../User/UserProfile';
-import HomePage1 from '../HomePage1';
+import HomePage from '../HomePage';
 import CompanyProfile from '../Company/CompanyProfile';
 
 const Search = styled('div')(({ theme }) => ({ 
@@ -85,6 +85,8 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
     };
     const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);;
 
+
+    //Profile Button Menu
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -146,28 +148,36 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static"  style={{ backgroundColor: 'rgb(61, 1, 72)' }}>
                 <Toolbar>
-                    <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
+
+                    {/* Drawer */}
+                    {/* <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
                         <MenuIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                    {user.name}
+                        <div>
+                            { user.image && <img src={'files/'+user.image} alt="" width="50px" height="50px"/>}
+                            {user.name}
+                        </div>
                     </Typography>
-                    <Search>
+
+                    {/* Search */}
+                    {/* <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }}/>
-                    </Search>
+                    </Search> */}
+
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <Link to="/">
                             <IconButton size="large" aria-label="home" color="inherit">
                                 <Badge color="error">
-                                    <HomeIcon />
+                                    <HomeIcon sx={{ color: 'white' }} />
                                 </Badge>
                             </IconButton>
                         </Link>
-                        <IconButton size="large" aria-label={messages_label} color="inherit">
+                        {/* <IconButton size="large" aria-label={messages_label} color="inherit">
                             <Badge badgeContent={messages} color="error">
                                 <MailIcon />
                             </Badge>
@@ -176,7 +186,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
                             <Badge badgeContent={notifications} color="error">
                                 <NotificationsIcon />
                             </Badge>
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="inherit">
                             <AccountCircle />
                         </IconButton>
@@ -195,7 +205,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
         <Switch>
             <Route path="/user/:slug">    <UserProfile /></Route>
             <Route path="/company/:slug"> <CompanyProfile /></Route>
-            <Route path="/"><HomePage1 user={user}/></Route>   
+            <Route path="/"><HomePage user={user}/></Route>   
         </Switch>
 
         </>

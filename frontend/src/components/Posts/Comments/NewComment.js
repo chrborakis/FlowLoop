@@ -1,6 +1,6 @@
 import React, { useRef} from "react";
 import { useAuth } from "../../../store/AuthContext";
-import PostComment from "./PostComment";
+import {postComment} from "./CommentsUtils";
 
 const NewComment = ({post, onComment, url}) => {
     const { user} = useAuth();
@@ -15,7 +15,7 @@ const NewComment = ({post, onComment, url}) => {
         const commentor = url.includes('public') ? user.id : user.work_id;
         const data = {post:post, commentor, comment: commentValue}
 
-        PostComment({data, url, onComment, comment: commentValue, commentRef});
+        postComment(data, url, onComment, commentValue, commentRef);
     }
 
 

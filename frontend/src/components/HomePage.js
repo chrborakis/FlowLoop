@@ -1,82 +1,29 @@
-import React, { useState, useEffect } from "react";
-import Post from "./Posts/Post";
-import GetPosts from "./Posts/GetPosts";
+import React from "react";
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+
+import PostsPublic from "./Posts/PostsPublic";
+import PostsPrivate from "./Posts/PostsPrivate";
+
 import '../../static/css/HomePage.css'
-import NewPost from "./Posts/NewPost";
 
-const HomePage = ({user}) => {
-    const [ posts, setPosts] = useState([]);
-    const [ newPost, setNewPost] = useState();
-    const [loading, setLoading] = useState(false);
-
-    const [url, setUrl] = useState({
-        post:    'postpublic',
-        comment: 'publiccomments/',
-        like:    'publiclikes/',
-    });
-
-    const getPublic  = () => {
-        setPosts('');
-        setUrl({...url,
-            post:    'postpublic',
-            comment: 'publiccomments/',
-            like:    'publiclikes/',
-        });
-        setLoading(true);
-    };
-    const getPrivate = () => {
-        setPosts('');
-        setUrl({...url,
-            post:    `postprivate/${user.company.id}`,
-            comment: 'privatecomments/',
-            like:    'privatelikes/',
-        });
-        setLoading(true);
-    };
-
-    useEffect( () => {
-        console.log(url.post)
-        GetPosts({ onFetch: setPosts, url: url.post, setLoading: setLoading});
-    }, [url.post]);
-
-    useEffect( () => {  
-        if (newPost) {
-            console.log('newPost:', newPost);
-            setPosts((prevPosts) => [newPost.data, ...prevPosts]);
-            console.log('posts:', posts); 
-        }
-    }, [newPost])
-
-    return(
+const HomePage1 = ({user}) => {
+    return (
         <div className="homepage">
-        {/* <div className="body"> */}
-            <h1>HomePage</h1>
-            <div className="changeFeed">
-                <button onClick={getPublic}
-                    style={{ backgroundColor: url.post === 'postpublic' ? 'green' : 'gray' }}>
-                    Public Feed
-                </button>
-                {user?.company?.name && 
-                    <button onClick={getPrivate}
-                        style={{ backgroundColor: url.post !== 'postpublic' ? 'green' : 'gray' }}>
-                        {user?.company?.name}
-                    </button>
-                }
+            <div className="feed">
+                <Tabs defaultActiveKey="public" id="justify-tab-example" className="mb-3" justify>
+                    <Tab eventKey="public" title="Public">
+                        <PostsPublic user={user} url='backend/postpublic' slug='/0'/>
+                    </Tab>
+                    {user?.company?.name && 
+                        <Tab eventKey="private" title={user?.company?.name}>
+                            <PostsPrivate user={user} url='backend/postprivate' slug={user.company.slug}/>
+                        </Tab>
+                    }
+                </Tabs>
             </div>
-
-            <NewPost user={user} url={url.post} newPost={setNewPost}/>
-
-            {loading ?(
-                <p>Loading posts...</p>
-            ): (
-                posts && posts.map( post => 
-                    post && <Post key={post.post_id} post={post} url={url}/>
-                )
-            )}
-            
-        {/* </div> */}
         </div>
-    )
-}
+    );
+};
 
-export default HomePage; 
+export default HomePage1; 

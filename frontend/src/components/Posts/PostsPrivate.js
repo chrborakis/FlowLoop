@@ -3,7 +3,7 @@ import GetPosts from "./GetPosts";
 import Post from "./Post";
 import NewPost from "./NewPost";
 
-const PostsPrivate = ({user, url}) => {
+const PostsPrivate = ({user, url, slug}) => {
     // url: ../backend/postprivate OR backend/postprivate
 
     const [ posts, setPosts] = useState([]);
@@ -11,7 +11,7 @@ const PostsPrivate = ({user, url}) => {
     const [ loading, setLoading] = useState(false);
 
     useEffect( () => {
-        GetPosts({ onFetch: setPosts, url: `${url}/${user.company.id}`, setLoading: setLoading});
+        GetPosts({ onFetch: setPosts, url: `${url}/${slug}`, setLoading: setLoading});
     }, []);
 
     useEffect( () => {  

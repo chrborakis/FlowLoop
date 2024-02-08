@@ -18,6 +18,7 @@ urlpatterns = [
     path("postpublic/<slug:user>",     PostsPublicView.as_view()),
     path("postprivate",      AllPostsPrivateView.as_view()),
     path("postprivate/<slug:company>", PostsPrivateView.as_view()),
+    path("postprivate/<int:id>", IdPostsPrivateView.as_view()),
 
     path("postpubliccomments",  AllPublicCommentView.as_view()),
     path("postpubliccomments/<slug:post>",  PublicCommentView.as_view()),

@@ -7,6 +7,7 @@ const Info = ({data}) => {
               <p>{data.firstname} </p> 
               <p>{data.midname} </p> 
               <p>{data.lastname} </p> 
+              { data.image && <img src={'files/'+data.image} alt="user.name" width="150px" height="150px"/>}
               <p>{data.slug} </p> 
               <p>{data.occupation} </p> 
               <p>{data.gender} </p> 
