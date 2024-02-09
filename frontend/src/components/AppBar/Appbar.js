@@ -155,7 +155,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
                     </IconButton> */}
                     <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
                         <div>
-                            { user.image && <img src={'files/'+user.image} alt="" width="50px" height="50px"/>}
+                            <img src={user.image ? user.image : "/files/user_image/dummy-user.png"} width={60}/>
                             {user.name}
                         </div>
                     </Typography>

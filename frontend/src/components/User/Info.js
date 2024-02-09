@@ -1,21 +1,23 @@
 import React, {useState, useEffect} from 'react';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 const Info = ({data}) => {
-    return(<>
-        <div>
-            <h1>User Profile</h1>
-              <p>{data.firstname} </p> 
-              <p>{data.midname} </p> 
-              <p>{data.lastname} </p> 
-              { data.image && <img src={'files/'+data.image} alt="user.name" width="150px" height="150px"/>}
-              <p>{data.slug} </p> 
-              <p>{data.occupation} </p> 
-              <p>{data.gender} </p> 
-              <p>{data.image} </p> 
-              <p>{data.phone} </p> 
-              <p>{data.about} </p> 
-              <p>{data.country} </p>   
-        </div>
+    return(<>   
+        <Card>
+            <Card.Body>
+                <Card.Title><h3>User Information</h3></Card.Title>
+                <Card.Text>
+                <div>
+                    <p><h4>Occupation: </h4>{data.occupation} </p> 
+                    <p><h4>About: </h4>{data.about} </p> 
+                    <p><h4>Gender: </h4>{data.gender ? "Male" : "Female"} </p>                
+                    <p><h4>Country: </h4>{data.country} </p>   
+                    <p><h4>Phone:</h4>{data.phone} </p> 
+                </div>
+                </Card.Text>
+            </Card.Body>
+        </Card>  
     </>);
 }
 

@@ -28,9 +28,15 @@ const PostsPublic = ({user, url, slug}) => {
         {loading ?(
             <p>Loading posts...</p>
         ): (
-            posts && posts.map( post => 
-                post && <Post key={post.post_id} post={post} url={url}/>
-            )
+            <>
+                {posts?.length === 0 ? (
+                    <p>No posts found!</p>
+                ):(
+                    posts && posts.length > 0 && posts.map( post => 
+                        post && <Post key={post.post_id} post={post} url={url}/>
+                    )
+                )}
+            </> 
         )}
     </>);
 };

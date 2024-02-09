@@ -15,12 +15,7 @@ urlpatterns = [
     path("company/<slug:pk>",   views.company),
 
     path("workrequests",   views.workrequests),
-
-    # path("postpublic/<slug:post>",   SinglePostPublic.as_view()),
     path("postpublic/<slug:user>", views.post_public),
-
-    # path("postprivate/<slug:company>/<slug:post>",    SinglePostPrivate.as_view()),
-    # path("postprivate/<slug:company>",  PostsPrivate.as_view()),
     path("postprivate/<slug:company>", views.post_private),
 
     path("postpubliccomments/<slug:post>",  views.public_comments, name='public_comments'),
@@ -29,4 +24,3 @@ urlpatterns = [
     path("postpubliclikes/<slug:post>",   views.public_likes),
     path("postprivatelikes/<slug:post>",  views.private_likes),
 ]
-# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

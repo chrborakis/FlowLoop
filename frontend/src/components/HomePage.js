@@ -7,7 +7,7 @@ import PostsPrivate from "./Posts/PostsPrivate";
 
 import '../../static/css/HomePage.css'
 
-const HomePage1 = ({user}) => {
+const HomePage = ({user}) => {
     return (
         <div className="homepage">
             <div className="feed">
@@ -26,4 +26,4 @@ const HomePage1 = ({user}) => {
     );
 };
 
-export default HomePage1; 
+export default HomePage; 

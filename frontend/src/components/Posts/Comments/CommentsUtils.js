@@ -2,10 +2,9 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const getComments = async( setComments, url) => {
+    // url = /backend/comments
     axios.get(url)
-    .then( res =>  // onFetch((prevComments) => [...prevComments, res.data.data])
-        setComments( res.data.data)
-    )
+    .then( res => setComments( res.data.data))
     .catch(err => console.log(err.data))
 };
 

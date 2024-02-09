@@ -12,19 +12,6 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = '__all__'
-        # (
-        #     'user_id',
-        #     'firstname',
-        #     'midname',
-        #     'lastname',
-        #     'slug',
-        #     'occupation',
-        #     'gender',
-        #     'image',
-        #     'phone',
-        #     'about',
-        #     'country'
-        # )
 
 class CompaniesSerializer(serializers.ModelSerializer):
     class Meta:

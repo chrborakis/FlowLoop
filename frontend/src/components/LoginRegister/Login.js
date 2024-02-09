@@ -23,7 +23,9 @@ const Login = ({login}) => {
         },{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
         ).then(res => {
             if(res.data.authenticated){
-                onLogin(JSON.parse(res.data.user));
+                let user = JSON.parse(res.data.user);
+                if( user.image === "") user.image = "user_image/dummy-user.png"
+                onLogin(user);
                 console.log('Login Post request successful:', res.data)
             }
         }).catch(err=>console.error('Error in Login Post request:', err));

@@ -19,7 +19,6 @@ const App = () => {
                 ) : (
                     <div>
                         <h1>FlowLoop</h1>
-                        <p>Login</p>
                         <LoginRegister/>
                     </div>
                 )}
