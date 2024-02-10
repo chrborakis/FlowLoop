@@ -66,7 +66,7 @@ def login_view(request):
                 except:
                     return JsonResponse({'message': 'User Data not Found'})
             else:
-                print("Invalid password for user:", user.email)
+                print("Invalid password for user:", user.email, password)
                 return JsonResponse({'message': 'Invalid credentials'})
 
         except UsersCredentials.DoesNotExist:

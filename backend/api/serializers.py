@@ -29,14 +29,27 @@ class CompaniesSerializer(serializers.ModelSerializer):
         )
 
 class WorkRequestsSerializer(serializers.ModelSerializer):
+    user_info = serializers.SerializerMethodField()
     class Meta:
         model = WorkRequests
         fields = (
             'id',
             'user',
+            'user_info',
             'company',
             'status'
         )
+
+    def get_user_info(self,obj):
+        user_image = obj.user.image
+        if user_image is None:
+            user_image = "user_image/dummy-user.png "
+        return {
+            'id':    str(obj.user.user_id),
+            'name':  str(obj.user.firstname) + ' ' + str(obj.user.lastname),
+            'slug':  str(obj.user.slug),
+            'image': str(user_image)
+        }
 
 class WorksOnSerializer(serializers.ModelSerializer):
     company = serializers.SerializerMethodField()

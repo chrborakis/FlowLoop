@@ -16,13 +16,16 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import HomeIcon from '@mui/icons-material/Home';
-
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useAuth } from "../../store/AuthContext";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import UserProfile from '../User/UserProfile';
+import UserProfile from '../Profiles/User/UserProfile'
 import HomePage from '../HomePage';
-import CompanyProfile from '../Company/CompanyProfile';
+import CompanyProfile from '../Profiles/Company/CompanyProfile';
+
+import WorkRequests from '../Requests/WorkRequests';
 
 const Search = styled('div')(({ theme }) => ({ 
     position: 'relative', 
@@ -72,19 +75,33 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
         window.location.reload();
     }
 
-
+    //Menu
     const [anchorEl, setAnchorEl] = React.useState(null);
+    //Request
+    const [anchorReqEl, setAnchorReqEl] = React.useState(null);
+
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const [mobileMoreAnchorReqEl, setMobileMoreAnchorReqEl] = React.useState(null);
     const isMenuOpen = Boolean(anchorEl);
+    const isReqOpen =  Boolean(anchorReqEl);
+
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleRequestMenuOpen = (event) => setAnchorReqEl(event.currentTarget);
+
     const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
+    const handleMobileReqMenuClose = () => setMobileMoreAnchorReqEl(null);
+
     const handleMenuClose = () => {
         setAnchorEl(null);
         handleMobileMenuClose();
     };
-    const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);;
-
+    const handleReqClose = () => {
+        setAnchorReqEl(null);
+        handleMobileReqMenuClose();
+    };
+    const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);
+    const handleMobileReqOpen  = (event) => setMobileMoreAnchorReqEl(event.currentTarget);
 
     //Profile Button Menu
     const menuId = 'primary-search-account-menu';
@@ -99,7 +116,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
                 <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             </Link>
             {user?.company?.slug && 
-                <Link to={`/company/${user.company.slug}`}>
+                <Link to={`/company/${user?.company?.slug}`}>
                     <MenuItem onClick={handleMenuClose}>{user?.company?.name}</MenuItem>
                 </Link>
             }
@@ -107,6 +124,18 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
         </Menu>
     );
 
+    //Request modal
+    const reqId = 'primary-search-account-menu';
+    const renderReq = (
+        <Menu
+            anchorEl={anchorReqEl}
+            anchorOrigin={{vertical: 'top',horizontal: 'right',}}
+            id={reqId} keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right',}}
+            open={isReqOpen}onClose={handleReqClose}>
+                <WorkRequests company={user?.company?.id}/>
+        </Menu>
+    );
     
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -134,11 +163,22 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             </IconButton>
             <p>Notifications</p>
         </MenuItem>
-        <MenuItem onClick={handleProfileMenuOpen}>
+        {
+            user.is_admin &&
+                <MenuItem onClick={handleProfileMenuOpen}>
+                    <Tooltip title="Requests">
+                    <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
+                        <AddBusinessIcon />
+                    </IconButton>
+                    </Tooltip>
+                </MenuItem>
+        }
+        <MenuItem onClick={handleRequestMenuOpen}>
+            <Tooltip title="Account">
             <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
                 <AccountCircle />
             </IconButton>
-                <p>Profile</p>
+            </Tooltip>
         </MenuItem>
     </Menu>
     );
@@ -187,6 +227,12 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton> */}
+                        {
+                            user.is_admin &&
+                            <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={reqId} aria-haspopup="true" onClick={handleRequestMenuOpen} color="inherit">
+                                <AddBusinessIcon />
+                            </IconButton>
+                        }
                         <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="inherit">
                             <AccountCircle />
                         </IconButton>
@@ -198,6 +244,8 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
                     </Box>
                 </Toolbar>
             </AppBar>
+          {renderReq}
+
           {renderMobileMenu}
           {renderMenu}
         </Box>

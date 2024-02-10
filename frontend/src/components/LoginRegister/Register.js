@@ -63,7 +63,6 @@ const Register = ({login}) => {
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
         ).then(res => {
             if(res.data.authenticated){
-                console.log('OK')
                 console.log(JSON.parse(res.data.user))
                 onLogin(JSON.parse(res.data.user));
                 console.log('Register request successful:', res.data)

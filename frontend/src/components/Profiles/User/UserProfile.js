@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import UserData from './UserData';
-import PostsPublic from '../Posts/PostsPublic';
+import { getUser } from './UserUtils';
+import PostsPublic from '../../Posts/PostsPublic';
 import Info from './Info';
-import { useAuth } from '../../store/AuthContext';
+import { useAuth } from '../../../store/AuthContext';
 
-import '../../../static/css/Profile.css'
+import '../../../../static/css/Profile.css'
 import Card from 'react-bootstrap/Card';
 
 
@@ -13,6 +13,9 @@ const UserProfile = () => {
     const { user } = useAuth();
     const { slug } = useParams();
     const [ data, setData] = useState();
+
+    useEffect( () => {getUser(setData, slug)}, [slug]);
+
     return (
         <div>
             <h1>User {slug} Profile</h1>
@@ -33,12 +36,12 @@ const UserProfile = () => {
                             <Info data={data} />
                         </div>
                         <div className="right-side">
-                            <PostsPublic user={user} url='../backend/postpublic' slug={`/${user.id}`}/>
+                            <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                         </div>
                     </div>
                 </>
             ) : (
-                  <UserData onfetch={setData} slug={slug}/>
+                <></>
             )}
         </div>
     );

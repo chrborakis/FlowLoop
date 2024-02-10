@@ -100,21 +100,10 @@ class CompanyView(APIView):
 
 
 class WorkRequestsView(APIView):
-    def get( self, request):
-        output = [{
-            'id': output.id,
-            'user': {
-                'id':   output.user.user_id,
-                'name': str(output.user)
-            },
-            'company': {
-                'id':   output.company.company_id,
-                'name': output.company.company_name,
-            },
-            'status': output.status
-            }for output in WorkRequests.objects.all()
-        ]
-        return Response(output)
+    def get( self, request, company):
+        instances = get_list_or_404(WorkRequests.objects.filter( company=company, status="P"))
+        serializers = WorkRequestsSerializer(instances, many=True)        
+        return Response(serializers.data)
     
     def post( self, request):
         print(request.data)
@@ -127,8 +116,14 @@ class GetWorkRequestView(APIView):
     def get( self, request, user):
         instance = get_object_or_404(WorkRequests, user=user)
         serializers = WorkRequestsSerializer(instance)
-        # print(serializers.data)
         return Response(serializers.data)
+    
+    def post( self, request, user):
+        print("DATA IN API -> ", request.data)
+        serializer = WorkRequestsSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
 
 
 class WorksOnView(APIView):
@@ -169,7 +164,19 @@ class AllPostsPublicView(APIView):
             serialized_data = PostsPublicSerializer(saved_instance).data
             return JsonResponse(data=serialized_data, status=201)
         
-class PostsPublicView(APIView):
+class PostsPublicView(APIView):    
+    def get( self, request, user):
+        instances = get_list_or_404(PostsPublic.objects.filter( author__slug=user).order_by('-publish_date'))
+        serializers = PostsPublicSerializer(instances, many=True)        
+        return Response(serializers.data)
+
+    def post( self, request, company):
+        serializers = PostsPrivateSerializer( data = request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save()
+            return Response(serializers.data)       
+        
+class IdPostsPublicView(APIView):
     def get( self, request, user):
         instances = get_list_or_404(PostsPublic.objects.filter( author=user).order_by('-publish_date'))
         serializers = PostsPublicSerializer(instances, many=True)        
