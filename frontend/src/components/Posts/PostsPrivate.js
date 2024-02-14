@@ -18,7 +18,6 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
         if (newPost) {
             console.log('newPost:', newPost);
             setPosts((prevPosts) => [newPost.data, ...prevPosts]);
-            console.log('posts:', posts); 
         }
     }, [newPost])
 

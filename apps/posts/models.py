@@ -13,7 +13,7 @@ def get_upload_path_private(instance, filename):
 
 class PostsPrivate(models.Model):
     post_id = models.AutoField(primary_key=True)
-    slug    = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
+    # slug    = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
     author  = models.ForeignKey(WorksOn, to_field="id", on_delete=models.CASCADE)
     title   = models.CharField(max_length=64, blank=True, null=True)
     body    = models.TextField(blank=False, null=False)
@@ -21,8 +21,7 @@ class PostsPrivate(models.Model):
     image   = models.ImageField(upload_to=get_upload_path_private, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        compo_slug = f'{self.author.employee.company}{self.post_id}'
-        self.slug = slugify(compo_slug)
+        self.clean()
         super().save(*args, **kwargs)
     class Meta: 
         db_table = 'posts_private'
@@ -56,7 +55,7 @@ def get_upload_path_public(instance, filename):
 
 class PostsPublic(models.Model):
     post_id = models.AutoField(primary_key=True)
-    slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
+    # slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False, max_length=128)
     author = models.ForeignKey(Users, to_field="user", on_delete=models.CASCADE)
     title = models.CharField(max_length=64, blank=True, null=True)
     body = models.TextField(blank=False, null=False)
@@ -64,9 +63,14 @@ class PostsPublic(models.Model):
     image = models.ImageField(upload_to=get_upload_path_public, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        compo_slug = f'{self.author}{self.post_id}'
-        self.slug = slugify(compo_slug)
+        self.clean()
         super().save(*args, **kwargs)
+
+    # def update_slug(self):
+    #     compo_slug = f'{self.author}{self.post_id}'
+    #     self.slug = slugify(compo_slug)
+    #     self.save(update_fields=['slug']) 
+
     class Meta: 
         db_table = 'posts_public'
 

@@ -7,14 +7,16 @@ import { useAuth } from '../../../store/AuthContext';
 
 import '../../../../static/css/Profile.css'
 import Card from 'react-bootstrap/Card';
+import { Link } from 'react-router-dom';
 
 
 const UserProfile = () => {
     const { user } = useAuth();
     const { slug } = useParams();
     const [ data, setData] = useState();
+    const [ work, setWork] = useState();
 
-    useEffect( () => {getUser(setData, slug)}, [slug]);
+    useEffect( () => {getUser(setData, setWork, slug)}, [slug]);
 
     return (
         <div>
@@ -27,6 +29,12 @@ const UserProfile = () => {
                         </div>
                         <div className="name">
                             <h3>{data.firstname}  {data.lastname}</h3>
+                            {
+                                work && 
+                                <Link to={`../company/${work.company.slug}`}>
+                                    <h3>{work.company.name}</h3>
+                                </Link>
+                            }
                         </div>
                     </div>
 

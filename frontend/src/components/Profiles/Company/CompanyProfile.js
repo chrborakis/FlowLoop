@@ -1,12 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, { useContext, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import { getCompany, get_request, sendWorkRequest } from './CompanyUtils';
-import { useAuth } from '../../../store/AuthContext';
+
+import { useAuth }    from '../../../store/AuthContext';
+import { RequestContext, useReq } from '../../../store/RequestContext';
 
 import PostsPrivate from '../../Posts/PostsPrivate';
 import Info from './Info';
 
 const CompanyProfile = () => {
+    // const { addRequest } = useReq();   
+
     const { user } = useAuth();
     const { slug } = useParams();
     const [ data, setData] = useState();
@@ -18,7 +22,7 @@ const CompanyProfile = () => {
 
     useEffect(() => {
         if(data) get_request( user, user?.id, data?.company_id, setRequested);
-    }, [slug, data]);
+    }, [slug, data, requested]);
 
     const sendRequest = () => sendWorkRequest( user.id, data?.company_id, setRequested);
 
@@ -42,14 +46,13 @@ const CompanyProfile = () => {
                     </div>
                     <div className="right-side">
                     {user?.company?.id == data?.company_id ? (
-                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug}/>
+                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={requested==='A'}/>
                     ) : (<>
                         {/* If user is not member of company! */}
                         <p>You should grant access to view content!</p>
                         <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest}
                             title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
-                            {/* {requested ? 'Request send...' : <p>Send work request</p>} */}
-                            {requested === 'A' && 'Arleady work there!'}
+                            {requested ==='No' && 'Send work request'}
                             {requested === 'P' && 'Arleady requested!'}
                         </button> </>
                     )}

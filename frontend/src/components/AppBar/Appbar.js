@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -25,6 +26,7 @@ import UserProfile from '../Profiles/User/UserProfile'
 import HomePage from '../HomePage';
 import CompanyProfile from '../Profiles/Company/CompanyProfile';
 
+import BarItems from '../AppBar/BarItems';
 import WorkRequests from '../Requests/WorkRequests';
 
 const Search = styled('div')(({ theme }) => ({ 
@@ -76,12 +78,12 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
     }
 
     //Menu
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     //Request
-    const [anchorReqEl, setAnchorReqEl] = React.useState(null);
+    const [anchorReqEl, setAnchorReqEl] = useState(null);
 
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-    const [mobileMoreAnchorReqEl, setMobileMoreAnchorReqEl] = React.useState(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+    const [mobileMoreAnchorReqEl, setMobileMoreAnchorReqEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const isReqOpen =  Boolean(anchorReqEl);
 
@@ -103,6 +105,10 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
     const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);
     const handleMobileReqOpen  = (event) => setMobileMoreAnchorReqEl(event.currentTarget);
 
+    const [refreshWorkRequests, setRefreshWorkRequests] = useState(false);
+    const handleWorkRequestsUpdate = () => {
+        setRefreshWorkRequests(prevRefresh => !prevRefresh);
+    };
     //Profile Button Menu
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -111,7 +117,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             anchorOrigin={{vertical: 'top',horizontal: 'right',}}
             id={menuId} keepMounted
             transformOrigin={{ vertical: 'top', horizontal: 'right',}}
-            open={isMenuOpen}onClose={handleMenuClose}>
+            open={isMenuOpen} onClose={handleMenuClose}>
             <Link to={`/user/${user.slug}`}>
                 <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             </Link>
@@ -132,11 +138,10 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             anchorOrigin={{vertical: 'top',horizontal: 'right',}}
             id={reqId} keepMounted
             transformOrigin={{ vertical: 'top', horizontal: 'right',}}
-            open={isReqOpen}onClose={handleReqClose}>
-                <WorkRequests company={user?.company?.id}/>
+            open={isReqOpen} onClose={handleReqClose} onClick={handleWorkRequestsUpdate}>
+                <WorkRequests company={user?.company?.id}  refresh={refreshWorkRequests} />
         </Menu>
     );
-    
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
@@ -165,7 +170,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
         </MenuItem>
         {
             user.is_admin &&
-                <MenuItem onClick={handleProfileMenuOpen}>
+                <MenuItem onClick={handleRequestMenuOpen}>
                     <Tooltip title="Requests">
                     <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
                         <AddBusinessIcon />
@@ -173,7 +178,7 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
                     </Tooltip>
                 </MenuItem>
         }
-        <MenuItem onClick={handleRequestMenuOpen}>
+        <MenuItem onClick={handleProfileMenuOpen}>
             <Tooltip title="Account">
             <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
                 <AccountCircle />
@@ -183,72 +188,10 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
     </Menu>
     );
 
-    return (
-        <>
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static"  style={{ backgroundColor: 'rgb(61, 1, 72)' }}>
-                <Toolbar>
-
-                    {/* Drawer */}
-                    {/* <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
-                        <MenuIcon />
-                    </IconButton> */}
-                    <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        <div>
-                            <img src={user.image ? user.image : "/files/user_image/dummy-user.png"} width={60}/>
-                            {user.name}
-                        </div>
-                    </Typography>
-
-                    {/* Search */}
-                    {/* <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }}/>
-                    </Search> */}
-
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <Link to="/">
-                            <IconButton size="large" aria-label="home" color="inherit">
-                                <Badge color="error">
-                                    <HomeIcon sx={{ color: 'white' }} />
-                                </Badge>
-                            </IconButton>
-                        </Link>
-                        {/* <IconButton size="large" aria-label={messages_label} color="inherit">
-                            <Badge badgeContent={messages} color="error">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton size="large" aria-label={notifications_label} color="inherit">
-                            <Badge badgeContent={notifications} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton> */}
-                        {
-                            user.is_admin &&
-                            <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={reqId} aria-haspopup="true" onClick={handleRequestMenuOpen} color="inherit">
-                                <AddBusinessIcon />
-                            </IconButton>
-                        }
-                        <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="inherit">
-                            <AccountCircle />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton size="large" aria-label="show more" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} color="inherit">
-                            <MoreIcon />
-                        </IconButton>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-          {renderReq}
-
-          {renderMobileMenu}
-          {renderMenu}
-        </Box>
+    return (<>
+        <BarItems user={user} menuId={menuId} mobileMenuId ={mobileMenuId } reqId={reqId}
+            handleProfileMenuOpen={handleProfileMenuOpen} handleMobileMenuOpen={handleMobileMenuOpen } handleRequestMenuOpen={handleRequestMenuOpen }
+        renderReq={renderReq} renderMobileMenu={renderMobileMenu} renderMenu={renderMenu}/>
 
         <Switch>
             <Route path="/user/:slug">    <UserProfile /></Route>
@@ -256,6 +199,5 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             <Route path="/"><HomePage user={user}/></Route>   
         </Switch>
 
-        </>
-  );
+    </>);
 }

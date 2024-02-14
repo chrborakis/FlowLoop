@@ -9,9 +9,9 @@ const Info = ({data}) => {
                 <Card.Title><h3>Company Information</h3></Card.Title>
                 <Card.Text>
                 <div>
-                    <p><h4>About: </h4>{data.description} </p> 
-                    <p><h4>Started: </h4>{data.establishment_date} </p> 
-                    <p><h4>Phone:</h4>{data.phone} </p> 
+                    <div><h4>About:</h4>   <p>{data.description} </p> </div>
+                    <div><h4>Started:</h4> <p>{data.establishment_date} </p> </div>
+                    <div><h4>Phone:</h4>   <p>{data.phone} </p> </div>
                 </div>
                 </Card.Text>
             </Card.Body>

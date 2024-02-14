@@ -19,7 +19,7 @@ const Comments = ({post,url}) => {
                 comments.map( comment => 
                     <div key={comment.id}>
                         <div className="uploader">
-                            <image src={comment.user.image}/>
+                            <img src={comment.user.image}/>
                             <h4>{comment.user.name}</h4>
                         </div>
                         <div className="content">

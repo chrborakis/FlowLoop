@@ -38,21 +38,16 @@ const NewPost = ({ user, url, newPost}) => {
         }
 
         console.log("data: ", data)
-        if(url.includes('private')){
-            url += '/0';
-        }
 
-        await axios.post(url, data,
-        {
+        axios.post(url += '/0', data,{
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
             'Content-Type': 'application/json'}
-        }
-        ).then(  res => {
+        }).then(  res => {
             {console.log("New Post res.data: ", res.data)
             newPost(res.data);
             setIsContentVisible(false)}
-        }).catch( err => console.log(err.message))
-      };
+        }).catch( err => console.log(err))
+    };
 
     return(<>
         <button onClick={handleButtonClick}> 

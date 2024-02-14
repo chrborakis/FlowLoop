@@ -22,9 +22,13 @@ class UserProfile(APIView):
         try:
             instance = get_object_or_404(Users, slug=slug)
             serializers = UsersSerializer(instance)
+
+            workOn = get_workson_instance(serializers.data['user'])
+
             return JsonResponse({
                 'message': 'User Data Fetched succesfully',
                 'data': serializers.data,
+                'workon': workOn or None,
                 'status': status.HTTP_200_OK
             })
         except Exception as err:
@@ -69,19 +73,35 @@ def company(request, pk):
 
 
 # THIS IS FOR HEADER REQUEST MODAL QUERY BY COMPANY_ID 
+# for admins
 @csrf_exempt
-def workrequests(request, company):   
+def workrequests(request, id):   
     base_url = get_base_url(request)  
     if request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/workrequests_comp/'+str(company))
+        response = requests.get(base_url+'/backend/api/workrequests_comp/'+str(id)) #company_id, for each logged in admin
         print(response.json())
         return JsonResponse({
             'message': 'Work Requests Fetched succesfully',
             'data': response.json(),
             'status': response.status_code
         })    
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        status = data.get('status')
+        
+        instance = WorkRequests.objects.get(pk=id)     #work_request id
+        if status=='A':
+            instance.status = status
+            instance.save()
+        elif status=='D':
+            instance.delete()
+        
+        return JsonResponse({'message': "Work Request: " + str(id) + "set to "+str(status)})
+    else:
+        return JsonResponse({'error': '[WORKREQ]Invalid request method'})
     
-# FOR POST/GET ACTIONS BASED ON WORK_ID
+# FOR POST/GET ACTIONS BASED ON WORK_ID 
+# for users
 @csrf_exempt
 def id_workrequests(request, user):
     base_url = get_base_url(request)

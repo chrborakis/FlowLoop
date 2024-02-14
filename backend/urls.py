@@ -14,7 +14,7 @@ urlpatterns = [
     path("user/<slug:slug>",    UserProfile.as_view()),
     path("company/<slug:pk>",   views.company),
 
-    path("workrequests/<int:company>", views.workrequests),
+    path("workrequests/<int:id>", views.workrequests),
     path("id_workrequests/<int:user>", views.id_workrequests),
 
     path("postpublic/<slug:user>", views.post_public),

@@ -83,7 +83,8 @@ class PostsPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostsPublic
         fields = (
-            'post_id','slug',
+            'post_id',
+            # 'slug',
             'author',
             'user','title','body',
             'publish_date','image'
@@ -103,7 +104,7 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
         model = PostsPrivate
         fields = (
             'post_id',
-            'slug',
+            # 'slug',
             'author',
             'user',
             'title',

@@ -11,16 +11,16 @@ export const getCompany = async( setData, slug) => {
 export const get_request = async ( user, user_id, company_id, setRequested) => {
     axios.get(`/backend/id_workrequests/${user_id}`)
     .then(  res => {
-        console.log(res.data.data)
-        console.log(company_id)
-        console.log(res.data.data.company)
         //if visited page = requested page
         console.log("user?.company?.id res.data.data.company",user?.company?.id, res.data.data.company )
-        if( res.data.data.company === undefined)
-            setRequested('No')
-        if( company_id == res.data.data.company)setRequested('P')
+        if( company_id!=res.data.data.company) setRequested('No')
+        console.log("company_id: ",company_id,
+            "res.data.data.company: ",res.data.data.company,
+            "res.data.data.status: ",res.data.data.status
+        )
+        if( company_id == res.data.data.company && res.data.data.status==='P')setRequested('P')
         //if works
-        else if( user?.company?.id == res.data.data.company && res.data.data.company!=undefined)setRequested('A')
+        else if( user?.company?.id == res.data.data.company && res.data.data.status==='A')setRequested('A')
     })
     .catch( err => console.log(err))
 };  
@@ -34,6 +34,7 @@ export const sendWorkRequest = async (user_id, company_id, setRequested) => {
     ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
     ).then(  res => {
         setRequested(true)
+        // addRequest(res.data);
         console.log(res.data)
         console.log(res.data.work)      //IF WORKS, Update user data in AUTH
     }).catch( err => console.log(err))
