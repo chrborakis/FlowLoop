@@ -107,11 +107,6 @@ def id_workrequests(request, user):
     base_url = get_base_url(request)
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        # req = {        
-        #     "user":    data.get('user'),
-        #     "company": data.get('company'),
-        #     "status":     data.get('status')
-        # }
         try:
             response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
             if response.status_code == 200:
@@ -122,8 +117,6 @@ def id_workrequests(request, user):
                     print("WORK ON INSTANCE EXISTS")
                     workOn = get_workson_instance(data.get('user'))
                     work = {"company": workOn.data["company"], "work_id": workOn.data["id"]}
-                    # user1['company'] = workOn.data['company']
-                    # user1['work_id'] = workOn.data['id']
                 return JsonResponse({
                     'message': 'Work Request POST succesfully',
                     'data': response.json(),
@@ -144,6 +137,80 @@ def id_workrequests(request, user):
             'data': response.json(),
             'status': response.status_code
         })   
+
+@csrf_exempt
+def friend_requests_list(request, id):
+    base_url = get_base_url(request)  
+    if request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/friend_requests/'+str(id))
+        print(response.json())
+        return JsonResponse({
+            'message': 'Friend Requests Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })      
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+
+        request = id
+        user1  = data.get("req_id")
+        status = data.get('status')
+
+        print("BEFORE POST:" , request, user1, status)
+
+        instance = FriendRequests.objects.get(request=id, user1=user1)     #friend_request id
+        if status=='A':
+            instance.status = status
+            instance.save()
+        elif status=='D':
+            instance.delete()
+        
+        return JsonResponse({'message': "Friend Request: " + str(id) + "set to "+str(status)})
+    else:
+        return JsonResponse({'error': '[FRIENDREQ]Invalid request method'})
+
+
+@csrf_exempt
+def friend_requests(request):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            print("DATA -> ", data)
+            response = requests.post(base_url+'/backend/api/friend_requests/', json=data)
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': 'Friend Request POST succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })  
+            else:
+                response.raise_for_status()
+            return JsonResponse({
+                'message': 'Friend Request POST succesfully',
+                'data': response.json(),
+                'status': response.status_code
+            })  
+        except requests.exceptions.RequestException as e:
+            print("Friend Request Failed: ", e)
+        return None
+
+    elif request.method == 'GET':
+        try:
+            user1         = request.GET.get('user1')
+            request_param = request.GET.get('request')
+            data = { 'user1':user1, 'request':request_param}
+            response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+            print("RESPONSE -> ",response.json())
+            return JsonResponse({
+                'message': 'Friend Request Fetched succesfully',
+                'data': response.json(),
+                'status': response.status_code
+            })  
+        except requests.exceptions.RequestException as e:
+            print("Friend Request Failed: ", e)
+        return None
+         
 
 @csrf_exempt
 def post_public(request, user):

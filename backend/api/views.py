@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.views import View
 from django.shortcuts import get_list_or_404, render
 from rest_framework import generics
@@ -13,6 +13,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class UsersView(APIView):
     def get( self, request):
@@ -150,6 +153,61 @@ class WorksOnView(APIView):
             serializers.save()
             return Response(serializers.data)
         
+class FriendRequestList(APIView):
+    def get( self, request, id):
+        try:
+            instances = get_list_or_404(FriendRequests.objects.filter( request=id, status="P"))
+            serializers = FriendsRequestsSerializer(instances, many=True)        
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'FriendRequests instances not found.'}, status=404)    
+    def post( self, request):
+        serializer = FriendsRequestsSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+        
+class FriendRequest(APIView):
+    def get( self, request):
+        user1 = request.data.get("user1")
+        reque = request.data.get("request")
+        try:
+            # request.query_params
+            instance = get_object_or_404(FriendRequests, user1=user1, request=reque)
+            serializers = FriendsRequestsSerializer(instance)
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'FriendRequests instance not found.'}, status=404)    
+        
+class AllFriendsRequestsView(APIView):
+    def get( self, request):
+        instances = get_list_or_404( FriendRequests)
+        serializers = FriendsRequestsSerializer(instances, many=True)        
+        return Response(serializers.data)
+    def post( self, request):
+        pass
+        
+class FriendsView(APIView):
+    def get( self, request, user, friend):
+        instance = get_object_or_404(Friends, user1=user, friend=friend)
+        serializers = FriendsSerializer(instance)
+        return Response(serializers.data)
+    
+    def post( self, request, user):
+        print("DATA IN API -> ", request.data)
+        serializer = FriendsSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+class AllFriendsView(APIView):
+    def get( self, request):
+        instances = get_list_or_404(Friends)
+        serializers = FriendsSerializer(instances, many=True)        
+        return Response(serializers.data)
+    def post( self, request):
+        pass
+
 class AllPostsPublicView(APIView):
     def get( self, request):
         instances = get_list_or_404(PostsPublic.objects.order_by('-publish_date'))

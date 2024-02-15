@@ -17,6 +17,9 @@ urlpatterns = [
     path("workrequests/<int:id>", views.workrequests),
     path("id_workrequests/<int:user>", views.id_workrequests),
 
+    path("friend_requests/", views.friend_requests),
+    path("friend_requests/<int:id>", views.friend_requests_list),
+
     path("postpublic/<slug:user>", views.post_public),
     path("postprivate/<slug:company>", views.post_private),
 

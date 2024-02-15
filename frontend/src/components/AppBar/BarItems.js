@@ -54,12 +54,9 @@ const BarItems = ({ user, menuId, reqId, mobileMenuId, handleProfileMenuOpen, ha
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton> */}
-                        {
-                            user.is_admin &&
-                            <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={reqId} aria-haspopup="true" onClick={handleRequestMenuOpen} color="inherit">
-                                <AddBusinessIcon />
-                            </IconButton>
-                        }
+                        <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={reqId} aria-haspopup="true" onClick={handleRequestMenuOpen} color="inherit">
+                            <AddBusinessIcon />
+                        </IconButton>
                         <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="inherit">
                             <AccountCircle />
                         </IconButton>

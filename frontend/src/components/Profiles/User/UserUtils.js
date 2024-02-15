@@ -10,3 +10,24 @@ export const getUser = async( setData, setWork, slug) => {
     })
     .catch( err => console.log(err))
 };
+
+export const get_request = async ( user1, request, setRequested) => {
+    console.log(user1, request)
+    axios.get('/backend/friend_requests/', {params: { user1, request}}
+    ).then(  res => {
+        console.log(res.data.data)
+        setRequested(res.data.data.status)
+    })
+    .catch( err => console.log(err))
+};  
+
+export const send_request = async (user1, request, setRequested) => {
+    console.log(user1, request)
+    axios.post('/backend/friend_requests/', { user1, request, status:"P"}
+    ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
+    ).then(  res => {
+        setRequested(true)
+        // addRequest(res.data);
+        console.log(res.data)
+    }).catch( err => console.log(err))
+};

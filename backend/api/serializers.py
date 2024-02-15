@@ -73,6 +73,57 @@ class WorksOnSerializer(serializers.ModelSerializer):
         else:
             return None
     
+class FriendsSerializer(serializers.ModelSerializer):
+    person_info = serializers.SerializerMethodField()
+    friend_info = serializers.SerializerMethodField()
+    class Meta:
+        model = Friends
+        fields = (
+            'person',
+            'person_info',
+            'friend',
+            'friend_info',
+        )
+    def get_person_info( self, obj):
+        return{
+            'name':  str(obj.person),
+            'slug':  str(obj.person.slug),
+            'image': str(obj.person.image)
+        }
+    
+    def get_friend_info( self, obj):
+        return{
+            'name':  str(obj.friend),
+            'slug':  str(obj.friend.slug),
+            'image': str(obj.friend.image)
+        }
+    
+class FriendsRequestsSerializer(serializers.ModelSerializer):
+    user1_info = serializers.SerializerMethodField()
+    request_info = serializers.SerializerMethodField()
+    class Meta:
+        model = FriendRequests
+        fields = (
+            'user1',
+            'user1_info',
+            'request',
+            'request_info',
+            'status'
+        )
+    def get_user1_info( self, obj):
+        return{
+            'name':  str(obj.user1),
+            'slug':  str(obj.user1.slug),
+            'image': str(obj.user1.image)
+        }
+    
+    def get_request_info( self, obj):
+        return{
+            'name':  str(obj.request),
+            'slug':  str(obj.request.slug),
+            'image': str(obj.request.image)
+        }
+
 class PostsPublicSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 

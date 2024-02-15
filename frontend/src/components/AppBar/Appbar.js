@@ -29,6 +29,11 @@ import CompanyProfile from '../Profiles/Company/CompanyProfile';
 import BarItems from '../AppBar/BarItems';
 import WorkRequests from '../Requests/WorkRequests';
 
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+
+import FriendRequests from '../Requests/FriendRequests';
+
 const Search = styled('div')(({ theme }) => ({ 
     position: 'relative', 
     borderRadius: theme.shape.borderRadius, 
@@ -139,7 +144,16 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             id={reqId} keepMounted
             transformOrigin={{ vertical: 'top', horizontal: 'right',}}
             open={isReqOpen} onClose={handleReqClose} onClick={handleWorkRequestsUpdate}>
-                <WorkRequests company={user?.company?.id}  refresh={refreshWorkRequests} />
+                <Tabs defaultActiveKey="friend" id="justify-tab-example" className="mb-3" justify>
+                    <Tab eventKey="friend" title="Friend Requests">
+                        <FriendRequests refresh={refreshWorkRequests} />
+                    </Tab>
+                    {user.is_admin && 
+                        <Tab eventKey="work" title="Work Requests">
+                            <WorkRequests company={user?.company?.id}  refresh={refreshWorkRequests} />
+                        </Tab>
+                    }
+                </Tabs>
         </Menu>
     );
 
@@ -168,16 +182,13 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             </IconButton>
             <p>Notifications</p>
         </MenuItem>
-        {
-            user.is_admin &&
-                <MenuItem onClick={handleRequestMenuOpen}>
-                    <Tooltip title="Requests">
-                    <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
-                        <AddBusinessIcon />
-                    </IconButton>
-                    </Tooltip>
-                </MenuItem>
-        }
+            <MenuItem onClick={handleRequestMenuOpen}>
+                <Tooltip title="Requests">
+                <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
+                    <AddBusinessIcon />
+                </IconButton>
+                </Tooltip>
+            </MenuItem>
         <MenuItem onClick={handleProfileMenuOpen}>
             <Tooltip title="Account">
             <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >

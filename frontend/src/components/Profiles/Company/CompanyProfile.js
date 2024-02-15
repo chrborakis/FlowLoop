@@ -52,7 +52,7 @@ const CompanyProfile = () => {
                         <p>You should grant access to view content!</p>
                         <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest}
                             title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
-                            {requested ==='No' && 'Send work request'}
+                            {'Send work request'}
                             {requested === 'P' && 'Arleady requested!'}
                         </button> </>
                     )}
@@ -60,7 +60,6 @@ const CompanyProfile = () => {
                 </div>
             </>
         ) : (<></>
-            // <CompanyData onfetch={setData} slug={slug}/>
         )}
         </div>
     );
