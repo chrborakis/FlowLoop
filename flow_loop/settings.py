@@ -115,16 +115,21 @@ WSGI_APPLICATION = 'flow_loop.wsgi.application'
 
 DATABASES = {
     # 'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'railway',
+    #     'USER': 'postgres',
+    #     'PASSWORD': '65fabf41ce*5A5cB*41B5d**34DaFb*4',
+    #     'HOST': 'viaduct.proxy.rlwy.net',
+    #     'PORT': '51923'
+    # }
+    #updated 160224
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': '65fabf41ce*5A5cB*41B5d**34DaFb*4',
-        'HOST': 'viaduct.proxy.rlwy.net',
-        'PORT': '51923'
+        'PASSWORD': 'AG1afe1g3g62gF33dcE*bF5-BBBgf24B',
+        'HOST': 'monorail.proxy.rlwy.net',
+        'PORT': '40958'
     }
 #     'default': {
 #        'ENGINE': 'django.db.backends.postgresql',

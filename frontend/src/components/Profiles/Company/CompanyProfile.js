@@ -50,12 +50,16 @@ const CompanyProfile = () => {
                     ) : (<>
                         {/* If user is not member of company! */}
                         <p>You should grant access to view content!</p>
-                        <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest}
-                            title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
-                            {'Send work request'}
-                            {requested === 'P' && 'Arleady requested!'}
-                        </button> </>
-                    )}
+                        {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
+
+                        <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
+                        {
+                            requested === 'P' ? 'Already requested!' : 
+                                requested === 'A' ? 'Delete' : 'Send request'
+                        }
+                        </button>
+                    </>)
+                    }
                     </div>
                 </div>
             </>

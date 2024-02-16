@@ -58,7 +58,6 @@ const Register = ({login}) => {
         formData.gender = gender;
         console.log(formData);
 
-        
         axios.post('backend/authentication/register', { formData }
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
         ).then(res => {
@@ -83,7 +82,9 @@ const Register = ({login}) => {
                                     placeholder="Enter your First Name" 
                                     value={formData.firstname} onChange={handleInputChange} required  
                                 />
-                                {errors.firstname && <span className="text-danger">{errors.firstname}</span>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.firstname && <span className="text-danger">{errors.firstname}</span>}
+                                </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Last Name</Form.Label>
@@ -91,7 +92,9 @@ const Register = ({login}) => {
                                     placeholder="Enter your Last Name" 
                                     value={formData.lastname} onChange={handleInputChange}  required  
                                 />
-                                {errors.lastname && <span className="text-danger">{errors.lastname}</span>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.lastname && <span className="text-danger">{errors.lastname}</span>}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -100,7 +103,10 @@ const Register = ({login}) => {
                                 placeholder="Enter your Email" 
                                 value={formData.email} onChange={handleInputChange} required  
                             />
-                            {errors.email && <span className="text-danger">{errors.email}</span>}
+                            <Form.Control.Feedback type="invalid">
+                                {errors.email }
+                                {/*  && <span className="text-danger">{errors.email}</span>} */}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
@@ -108,7 +114,9 @@ const Register = ({login}) => {
                                 placeholder="Enter your Password" 
                                 value={formData.password} onChange={handleInputChange} required  
                             />
-                            {errors.password && <span className="text-danger">{errors.password}</span>}
+                            <Form.Control.Feedback type="invalid">
+                                {errors.password && <span className="text-danger">{errors.password}</span>}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Row>
                             <Form.Group as={Col} controlId="formBasicDropdown">
@@ -118,7 +126,9 @@ const Register = ({login}) => {
                                     <Dropdown.Item eventKey="M">Male</Dropdown.Item>
                                     <Dropdown.Item eventKey="F">Female</Dropdown.Item>
                                 </DropdownButton>
-                                {errors.gender && <span className="text-danger">{errors.gender}</span>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.gender && <span className="text-danger">{errors.gender}</span>}
+                                </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="occupation">
                                 <Form.Label>Occupation</Form.Label>
@@ -126,7 +136,9 @@ const Register = ({login}) => {
                                     placeholder="Enter your Occupation" 
                                     value={formData.occupation} onChange={handleInputChange} required  
                                 />
-                                {errors.occupation && <span className="text-danger">{errors.occupation}</span>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.occupation && <span className="text-danger">{errors.occupation}</span>}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row>
@@ -136,7 +148,9 @@ const Register = ({login}) => {
                                     placeholder="Enter your Country" 
                                     value={formData.country} onChange={handleInputChange}  
                                 />
-                                {errors.country && <span className="text-danger">{errors.country}</span>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.country && <span className="text-danger">{errors.country}</span>}
+                                </Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} className="mb-3" controlId="contact">
                                 <Form.Label>Phone</Form.Label>
@@ -144,7 +158,9 @@ const Register = ({login}) => {
                                     placeholder="Enter your Phone" 
                                     value={formData.phone} onChange={handleInputChange} required  
                                 />
-                                {errors.phone && <span className="text-danger">{errors.phone}</span>}
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.phone && <span className="text-danger">{errors.phone}</span>}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                     </Card.Body>

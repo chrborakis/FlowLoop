@@ -17,9 +17,10 @@ from backend.util import get_base_url, get_workson_instance
 def login_view(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        email = data.get('email')
-        password = data.get('password')
+        email    = data.get('formData').get('email')
+        password = data.get('formData').get('password')
         print(email,password)
+
         try:
             user = UsersCredentials.objects.get(email=email)
             password_matches = check_password(password, user.password)
@@ -65,11 +66,17 @@ def login_view(request):
                     return JsonResponse({'message': 'User Data not Found'})
             else:
                 print("Invalid password for user:", user.email, password)
-                return JsonResponse({'message': 'Invalid credentials'})
+                return JsonResponse({
+                    'password': True,
+                    'message': 'Invalid credentials'
+                })
 
         except UsersCredentials.DoesNotExist:
             print("Account not found!")            
-            return JsonResponse({'message': 'Account not found!'})
+            return JsonResponse({
+                'account': True,
+                'message': 'Account not found!'
+            })
     return JsonResponse({'error': 'Only POST requests are allowed'})
 
 @csrf_exempt

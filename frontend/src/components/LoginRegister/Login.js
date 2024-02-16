@@ -13,14 +13,34 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const Login = ({login}) => {
     const onLogin = (userV) => login(userV)  
 
-    const [email, setEmail]       = useState('');
-    const [password, setPassword] = useState('');
+    // const [email, setEmail]       = useState('');
+    // const [password, setPassword] = useState('');
 
     const [formData, setFormData] = useState({ email: '', password: ''});
-    const handleLogin = async(e) => {
+    const [errors, setErrors] = useState({});
+
+    const [error, setError] = useState({email:"", password:""})
+    
+    const handleLogin = (e) => {
         e.preventDefault()
-        axios.post('backend/authentication/login', { email, password
-        },{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
+        setError({email:"", password:""})
+        console.log(formData)
+
+        const newErrors = {};
+        Object.keys(formData).forEach( field => {
+            if( !formData[field]) newErrors[field] = `Please insert your ${field}`
+        })
+
+        if(formData.password.length < 6) newErrors.password = "Password must be more that 6 digits"
+
+        if( Object.keys(newErrors).length>0) setErrors(newErrors);
+        else doLogin();
+        
+    }
+
+    const doLogin = async(e) => {
+        axios.post('backend/authentication/login', { formData},
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
         ).then(res => {
             if(res.data.authenticated){
                 let user = JSON.parse(res.data.user);
@@ -28,8 +48,25 @@ const Login = ({login}) => {
                 onLogin(user);
                 console.log('Login Post request successful:', res.data)
             }
+            if(res.data?.account === true) {setError(prevState => ({
+                ...prevState,
+                email: res.data?.message
+                }))
+            }
+            else if(res.data?.password === true) {setError(prevState => ({
+                ...prevState,
+                password: res.data?.message
+                }))
+            }
+            console.log(error)
+        
         }).catch(err=>console.error('Error in Login Post request:', err));
     }
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({...formData,[name]: value,});
+    };
 
     return(
         <div className='form'>
@@ -41,15 +78,25 @@ const Login = ({login}) => {
                             <Form.Label>Email</Form.Label>
                             <Form.Control name="email" type="email" 
                                 placeholder="Enter your Email" 
-                                value={email} onChange={(e)=>setEmail(e.target.value)}
+                                value={formData.email} onChange={handleInputChange} required
+                                // value={email} onChange={(e)=>setEmail(e.target.value)}
                             />
+                            {/* <Form.Control.Feedback type="invalid"> */}
+                                {errors.email } 
+                                <span class="text-danger">{error.email}</span>
+                            {/* </Form.Control.Feedback> */}
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control name="password" type="password" 
                                 placeholder="Enter your Password" 
-                                value={password} onChange={(e)=>setPassword(e.target.value)}
+                                value={formData.password} onChange={handleInputChange} required
+                                // value={password} onChange={(e)=>setPassword(e.target.value)}
                             />
+                            {/* <Form.Control.Feedback type="invalid"> */}
+                                {errors.password } 
+                                <span class="text-danger">{error.password}</span>
+                            {/* </Form.Control.Feedback> */}
                         </Form.Group>
                     </Card.Body>
                     <Card.Footer className="text-muted">
