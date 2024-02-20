@@ -269,3 +269,23 @@ class PrivateLikesSerializer(serializers.ModelSerializer):
             "post",
             "like"
         )
+
+
+class EducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationDetails
+        fields = (
+            "user_id",
+            "name",
+            "graduation",
+        )
+
+class UniversitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UniversityDetails
+        fields = (
+            "user_id",
+            "name",
+            "graduation",
+            "degree"
+        )

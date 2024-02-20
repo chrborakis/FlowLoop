@@ -10,6 +10,9 @@ urlpatterns = [
     path("companies",        CompaniesView.as_view()),
     path("companies/<slug:pk>", CompanyView.as_view()),
 
+    path("education/<int:user>",  EducationView.as_view()),
+    path("university/<int:user>", UniversityView.as_view()),
+
     path("workrequests_comp/<int:company>",  WorkRequestsView.as_view()),
     path("workrequests/<int:user>",     GetWorkRequestView.as_view()),
     path("workson",          WorksOnView.as_view()),

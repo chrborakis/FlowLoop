@@ -8,10 +8,16 @@
   
   .left-side,
   .right-side {
-    flex: 1; 
+    /* flex: 1;  */
     padding: 2%;
   }
 
+  .left-side{
+    max-width: 50%;
+  }
+  .right-side{
+    max-width: 50%;
+  }
 
   .preview {
     display: flex;

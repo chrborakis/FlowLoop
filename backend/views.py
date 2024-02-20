@@ -35,6 +35,63 @@ class UserProfile(APIView):
             return JsonResponse({
                 'message': err
             })
+
+@csrf_exempt
+def education(request, user):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        try:
+            response = requests.post(base_url+'/backend/api/education/0', json=data)
+            if response.status_code == 200:
+                print(response.json())
+                return JsonResponse({
+                    'message': 'Education POST succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })  
+            else: response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            print("Education Request Failed: ", e)
+        return None
+
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/education/'+str(user))
+        print(response.json())
+        return JsonResponse({
+            'message': 'Education Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })   
+
+@csrf_exempt
+def university(request, user):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        try:
+            response = requests.post(base_url+'/backend/api/university/0', json=data)
+            if response.status_code == 200:
+                print(response.json())
+                return JsonResponse({
+                    'message': 'university POST succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })  
+            else:
+                response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            print("university Failed: ", e)
+        return None
+
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/university/'+str(user))
+        print(response.json())
+        return JsonResponse({
+            'message': 'university Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+        })   
         
 @csrf_exempt
 def company(request, pk):

@@ -14,6 +14,9 @@ urlpatterns = [
     path("user/<slug:slug>",    UserProfile.as_view()),
     path("company/<slug:pk>",   views.company),
 
+    path("education/<int:user>",  views.education),
+    path("university/<int:user>", views.university),
+
     path("workrequests/<int:id>", views.workrequests),
     path("id_workrequests/<int:user>", views.id_workrequests),
 

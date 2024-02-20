@@ -9,7 +9,11 @@ import '../../../../static/css/Profile.css'
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+
 import { get_request, send_request } from './UserUtils';
+import Education from './Education';
 
 
 const UserProfile = () => {
@@ -29,7 +33,7 @@ const UserProfile = () => {
     const sendRequest = () => send_request( user.id, data?.user, setRequested);
 
     return (
-        <div>
+        <div className='profile'>
             <h1>User {slug} Profile</h1>
             { data ? (
                 <> 
@@ -51,7 +55,14 @@ const UserProfile = () => {
 
                     <div className="page">
                         <div className="left-side">
-                            <Info data={data} />
+                            <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
+                                <Tab eventKey="basic-info" title="User Info">
+                                    <Info data={data} admin={user.id===data?.user}/>
+                                </Tab>
+                                <Tab eventKey="education" title="Education">
+                                    <Education user={data.user} admin={user.id===data?.user}/>
+                                </Tab>
+                            </Tabs>
                         </div>
                         <div className="right-side">
                             {

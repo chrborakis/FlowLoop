@@ -62,6 +62,36 @@ class UsersCredentialView(APIView):
             serializers.save()
             return Response(data=serializers.data, status=status.HTTP_200_OK)
         
+class EducationView(APIView):
+    def get(self, request, user):
+        try:
+            instance = get_object_or_404(EducationDetails, user_id=user)
+            serializers = EducationSerializer(instance)
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Education instance not found.'}, status=404)    
+    def post( self, request):
+        serializer = EducationSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+class UniversityView(APIView):
+    def get(self, request, user):
+        try:
+            instances = get_list_or_404(UniversityDetails, user_id=user)
+            serializers = UniversitySerializer(instances, many=True)
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'University instance not found.'}, status=404)    
+    
+    def post( self, request):
+        serializer = UniversitySerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+        
 class CompaniesView(APIView):
     def get( self, request):
         try:

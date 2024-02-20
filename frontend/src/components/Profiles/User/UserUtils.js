@@ -31,3 +31,24 @@ export const send_request = async (user1, request, setRequested) => {
         console.log(res.data)
     }).catch( err => console.log(err))
 };
+
+export const getEducation = async( user, setEducation) => {
+    axios.get(`/backend/education/${user}`)
+    .then(  res => {
+        if(res.data.status !== 404){
+            setEducation(res.data.data)
+        }
+    })
+    .catch( err => console.log(err))
+}
+
+export const getUniversity = async( user, setUniversity) => {
+    axios.get(`/backend/university/${user}`)
+    .then(  res => {
+        if(res.data.status !== 404){
+            console.log(res.data)
+            setUniversity(res.data.data)
+        }
+    })
+    .catch( err => console.log(err))
+}
