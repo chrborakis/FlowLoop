@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getLikes, postLike} from "./LikesUtils";
 import { useAuth } from "../../../store/AuthContext";
+import Button from 'react-bootstrap/Button';
+import { Provider, LikeButton } from "@lyket/react";
 
 const Likes = ({post, url}) => {
     const { user } = useAuth();
@@ -33,8 +35,14 @@ const Likes = ({post, url}) => {
             </>
             }
             {(likes === undefined || likes.length === 0 || !likes.find((like) => like.user.slug === user.slug)) && (
-                <button onClick={handleLike}>Like</button>
-            )}                 
+                <Button onClick={handleLike}>Like</Button>
+            )}         
+            
+        {/* <Provider apiKey="acc0dbccce8e557db5ebbe6d605aaa">
+        <LikeButton namespace="my-blog-post" 
+            id="how-to-beat-me-at-chess" onPress={openSubscribeModal}
+        />
+        </Provider> */}
         </div>
     )
 }

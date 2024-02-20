@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -13,11 +13,16 @@ import { Row, Col } from 'react-bootstrap';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useAuth } from '../../store/AuthContext';
+import { getCountries } from '../Extra/Countries';
+
 
 const Register = ({login}) => {
     const onLogin = (userV) => login(userV)
 
     const [gender, setGender] = useState('');
+
+    const [countries, setCountries] = useState([]);
+    useEffect(() => { getCountries(countries, setCountries)}, []);
 
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({ 
@@ -49,7 +54,10 @@ const Register = ({login}) => {
 
         if( Object.keys(newErrors).length>0){
             setErrors(newErrors);
+            console.log("ERROR")
+            return;
         }else{
+            console.log("OK")
             register();
         }
     }
@@ -82,9 +90,7 @@ const Register = ({login}) => {
                                     placeholder="Enter your First Name" 
                                     value={formData.firstname} onChange={handleInputChange} required  
                                 />
-                                <Form.Control.Feedback type="invalid">
                                     {errors.firstname && <span className="text-danger">{errors.firstname}</span>}
-                                </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Last Name</Form.Label>
@@ -92,9 +98,7 @@ const Register = ({login}) => {
                                     placeholder="Enter your Last Name" 
                                     value={formData.lastname} onChange={handleInputChange}  required  
                                 />
-                                <Form.Control.Feedback type="invalid">
                                     {errors.lastname && <span className="text-danger">{errors.lastname}</span>}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -103,10 +107,8 @@ const Register = ({login}) => {
                                 placeholder="Enter your Email" 
                                 value={formData.email} onChange={handleInputChange} required  
                             />
-                            <Form.Control.Feedback type="invalid">
                                 {errors.email }
                                 {/*  && <span className="text-danger">{errors.email}</span>} */}
-                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
@@ -114,9 +116,7 @@ const Register = ({login}) => {
                                 placeholder="Enter your Password" 
                                 value={formData.password} onChange={handleInputChange} required  
                             />
-                            <Form.Control.Feedback type="invalid">
                                 {errors.password && <span className="text-danger">{errors.password}</span>}
-                            </Form.Control.Feedback>
                         </Form.Group>
                         <Row>
                             <Form.Group as={Col} controlId="formBasicDropdown">
@@ -126,9 +126,7 @@ const Register = ({login}) => {
                                     <Dropdown.Item eventKey="M">Male</Dropdown.Item>
                                     <Dropdown.Item eventKey="F">Female</Dropdown.Item>
                                 </DropdownButton>
-                                <Form.Control.Feedback type="invalid">
                                     {errors.gender && <span className="text-danger">{errors.gender}</span>}
-                                </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="occupation">
                                 <Form.Label>Occupation</Form.Label>
@@ -136,21 +134,17 @@ const Register = ({login}) => {
                                     placeholder="Enter your Occupation" 
                                     value={formData.occupation} onChange={handleInputChange} required  
                                 />
-                                <Form.Control.Feedback type="invalid">
                                     {errors.occupation && <span className="text-danger">{errors.occupation}</span>}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row>
                             <Form.Group as={Col} className="mb-3" controlId="contact">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Control name="country" type="text" required
-                                    placeholder="Enter your Country" 
-                                    value={formData.country} onChange={handleInputChange}  
-                                />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control as="select" name="country" value={formData.country} onChange={handleInputChange} required>
+                                    <option value="">Select a country</option>
+                                    {countries.map(country => (<option key={country} value={country}>{country}</option>))}
+                                </Form.Control>
                                     {errors.country && <span className="text-danger">{errors.country}</span>}
-                                </Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} className="mb-3" controlId="contact">
                                 <Form.Label>Phone</Form.Label>
@@ -158,9 +152,7 @@ const Register = ({login}) => {
                                     placeholder="Enter your Phone" 
                                     value={formData.phone} onChange={handleInputChange} required  
                                 />
-                                <Form.Control.Feedback type="invalid">
                                     {errors.phone && <span className="text-danger">{errors.phone}</span>}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                     </Card.Body>

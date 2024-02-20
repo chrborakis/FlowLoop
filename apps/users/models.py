@@ -31,7 +31,7 @@ class Users(models.Model):
         choices=[("M", "Male"),("F", "Female")],
         blank=False, null=False
     )
-    image = models.ImageField(upload_to="user_image", blank=True, null=True)
+    image = models.ImageField(default='user_image/dummy-user.png', upload_to="user_image", blank=True, null=True)
     phone = PhoneNumberField(unique=True, blank=False, null=False)
     about = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=64, blank=False,null=False)

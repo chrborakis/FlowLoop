@@ -12,10 +12,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = ({login}) => {
     const onLogin = (userV) => login(userV)  
-
-    // const [email, setEmail]       = useState('');
-    // const [password, setPassword] = useState('');
-
     const [formData, setFormData] = useState({ email: '', password: ''});
     const [errors, setErrors] = useState({});
 
@@ -79,24 +75,18 @@ const Login = ({login}) => {
                             <Form.Control name="email" type="email" 
                                 placeholder="Enter your Email" 
                                 value={formData.email} onChange={handleInputChange} required
-                                // value={email} onChange={(e)=>setEmail(e.target.value)}
                             />
-                            {/* <Form.Control.Feedback type="invalid"> */}
                                 {errors.email } 
                                 <span class="text-danger">{error.email}</span>
-                            {/* </Form.Control.Feedback> */}
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control name="password" type="password" 
                                 placeholder="Enter your Password" 
                                 value={formData.password} onChange={handleInputChange} required
-                                // value={password} onChange={(e)=>setPassword(e.target.value)}
                             />
-                            {/* <Form.Control.Feedback type="invalid"> */}
                                 {errors.password } 
                                 <span class="text-danger">{error.password}</span>
-                            {/* </Form.Control.Feedback> */}
                         </Form.Group>
                     </Card.Body>
                     <Card.Footer className="text-muted">

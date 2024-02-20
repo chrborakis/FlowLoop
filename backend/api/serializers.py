@@ -246,6 +246,8 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
         return{
             'id':   str(obj.commentor.employee.user.user_id),
             'name': str(obj.commentor.employee.user),
+            'slug':  str(obj.commentor.employee.slug),
+            'image': str(obj.commentor.employee.image)
         }
 
 class PublicLikesSerializer(serializers.ModelSerializer):

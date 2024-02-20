@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import '../../../static/css/PostForm.css'
+import '../../../static/css/Posts/PostForm.css'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 

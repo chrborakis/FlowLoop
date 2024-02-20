@@ -22,7 +22,7 @@ const BarItems = ({ user, menuId, reqId, mobileMenuId, handleProfileMenuOpen, ha
                     </IconButton> */}
                     <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
                         <div>
-                            <img src={user.image ? user.image : "/files/user_image/dummy-user.png"} width={60}/>
+                            <img src={user.image} width={60}/>
                             {user.name}
                         </div>
                     </Typography>

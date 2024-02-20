@@ -35,7 +35,8 @@ const UserProfile = () => {
                 <> 
                     <div className='preview'>
                         <div className="image">
-                            <img src={data?.image ? data?.image : "/files/user_image/dummy-user.png"} width={150}/>
+                            {console.log}
+                            <img src={data?.image} width={150}/>
                         </div>
                         <div className="name">
                             <h3>{data.firstname} {data.lastname}</h3>

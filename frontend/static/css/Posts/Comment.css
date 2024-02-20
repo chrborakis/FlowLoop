@@ -1,0 +1,21 @@
+.comments{
+    padding: 2%;
+}
+
+.comment{
+    text-align: left;
+    background-color: #D4D4D4;
+    border-radius: 10px;
+}
+
+.imagecol{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagecol img{
+    /* max-width: 100%; */
+    /* max-height: 100%; */
+    width: 70px;
+}
