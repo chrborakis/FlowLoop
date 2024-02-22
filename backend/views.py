@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_list_or_404, render
 import requests
 from rest_framework.views import APIView
@@ -19,22 +19,50 @@ from backend.util import get_base_url, get_workson_instance
 @action(detail=True, methods=['post'])
 class UserProfile(APIView):
     def get(self,request,slug,*args,**kwargs):
+        instance = get_object_or_404(Users, slug=slug)
         try:
-            instance = get_object_or_404(Users, slug=slug)
             serializers = UsersSerializer(instance)
-
             workOn = get_workson_instance(serializers.data['user'])
-
             return JsonResponse({
                 'message': 'User Data Fetched succesfully',
                 'data': serializers.data,
                 'workon': workOn or None,
                 'status': status.HTTP_200_OK
             })
+        except Http404:
+            return JsonResponse({'error': 'User not found', 'status': status.HTTP_404_NOT_FOUND})
         except Exception as err:
-            return JsonResponse({
-                'message': err
-            })
+            return JsonResponse({'error': str(err), 'status': status.HTTP_400_BAD_REQUEST})
+        
+    def post(self,request,slug):
+        data = request.data.get('data', {})
+        instance = get_object_or_404(Users, slug=slug)
+        print("DATA", str(data))
+        print("INSTANCE", str(instance))
+        try:
+            serializer = UsersSerializer(instance, data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
+            else:
+                print(serializer.errors)
+                return JsonResponse({'error': serializer.errors,'status': status.HTTP_400_BAD_REQUEST}) 
+        except Http404:
+            return JsonResponse({'error': 'User not found', 'status': status.HTTP_404_NOT_FOUND})
+        except ValidationError as err:
+            return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as err:
+            return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # try:
+        #     instance = get_object_or_404(Users, slug=slug)
+        # except Users.DoesNotExist:
+        #     return JsonResponse({'error': 'Instance not found'}, status=404)
+        
+        # for key, value in data.items():
+        #     print('Key ' +str(key)+ ' Value' +str(value))
+        #     setattr(instance, key, value)
+        # instance.save() 
+        # return JsonResponse({'message': 'User '+str(slug)+' updated successfully'})
 
 @csrf_exempt
 def education(request, user):

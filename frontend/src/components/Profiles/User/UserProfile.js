@@ -17,7 +17,7 @@ import Education from './Education';
 
 
 const UserProfile = () => {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { slug } = useParams();
     const [ data, setData] = useState();
     const [ work, setWork] = useState();
@@ -43,7 +43,7 @@ const UserProfile = () => {
                             <img src={data?.image} width={150}/>
                         </div>
                         <div className="name">
-                            <h3>{data.firstname} {data.lastname}</h3>
+                            <h3>{data.firstname} {data.midname} {data.lastname}</h3>
                             {
                                 work && 
                                 <Link to={`../company/${work.company.slug}`}>
@@ -57,7 +57,7 @@ const UserProfile = () => {
                         <div className="left-side">
                             <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
                                 <Tab eventKey="basic-info" title="User Info">
-                                    <Info data={data} admin={user.id===data?.user}/>
+                                    <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
                                 </Tab>
                                 <Tab eventKey="education" title="Education">
                                     <Education user={data.user} admin={user.id===data?.user}/>

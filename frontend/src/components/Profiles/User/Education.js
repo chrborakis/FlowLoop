@@ -14,7 +14,6 @@ const Education = ({user, admin}) => {
 
     return(<>   
         <Card>
-            { admin && <Button variant="outline-secondary">Edit</Button>}
             <Card.Body>
             <Card.Title><h3>Education</h3></Card.Title>
                 {
@@ -23,12 +22,12 @@ const Education = ({user, admin}) => {
                         <Row><h4>Graduation: </h4> {education?.graduation}</Row>
                     </>) : (
                         <div>No education information available</div>
-                    )
-                }
+                        )
+                    }
             </Card.Body>
+            { admin && <Button variant="outline-secondary">Edit</Button>}
         </Card>
         <Card>
-            { admin && <Button variant="outline-secondary">Edit</Button> }
             <Card.Body>
             <Card.Title><h3>University</h3></Card.Title>
                 {
@@ -40,11 +39,12 @@ const Education = ({user, admin}) => {
                                 <Row><h4>Degree: </h4> {uni?.degree}</Row>
                             </div>
                         ))
-                    ) : (
-                        <div>No university information available</div>
-                    )
-                }
+                        ) : (
+                            <div>No university information available</div>
+                            )
+                        }
             </Card.Body>
+        { admin && <Button variant="outline-secondary">Edit</Button> }
         </Card>  
     </>);
 }

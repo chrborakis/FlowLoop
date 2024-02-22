@@ -13,6 +13,12 @@ class UsersSerializer(serializers.ModelSerializer):
         model = Users
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        phone = validated_data.get('phone')
+        if phone and Users.objects.exclude(pk=instance.pk).filter(phone=phone).exists():
+            raise serializers.ValidationError("Phone number already exists")
+        return super().update(instance, validated_data)
+
 class CompaniesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Companies
@@ -246,8 +252,8 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
         return{
             'id':   str(obj.commentor.employee.user.user_id),
             'name': str(obj.commentor.employee.user),
-            'slug':  str(obj.commentor.employee.slug),
-            'image': str(obj.commentor.employee.image)
+            'slug':  str(obj.commentor.employee.user.slug),
+            'image': str(obj.commentor.employee.user.image)
         }
 
 class PublicLikesSerializer(serializers.ModelSerializer):

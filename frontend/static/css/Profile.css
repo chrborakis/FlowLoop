@@ -3,20 +3,15 @@
     width: 100vw; 
     height: 100vh; 
     /* align-items: center; */
-    justify-content: center; 
+    /* justify-content: center;  */
   }
   
   .left-side,
   .right-side {
     /* flex: 1;  */
     padding: 2%;
-  }
-
-  .left-side{
-    max-width: 50%;
-  }
-  .right-side{
-    max-width: 50%;
+    width: 50%;
+    margin: 0 auto;
   }
 
   .preview {

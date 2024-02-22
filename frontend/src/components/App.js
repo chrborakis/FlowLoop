@@ -16,7 +16,6 @@ const App = () => {
 
     return(
         <Router basename="/">
-            {console.log('In App')}
             <div className="body">
                 { user ? (
                     <Appbar user={user} messages={0} notifications={0}/>
