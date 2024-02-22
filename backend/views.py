@@ -37,8 +37,6 @@ class UserProfile(APIView):
     def post(self,request,slug):
         data = request.data.get('data', {})
         instance = get_object_or_404(Users, slug=slug)
-        print("DATA", str(data))
-        print("INSTANCE", str(instance))
         try:
             serializer = UsersSerializer(instance, data, partial=True)
             if serializer.is_valid():
@@ -53,16 +51,6 @@ class UserProfile(APIView):
             return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        # try:
-        #     instance = get_object_or_404(Users, slug=slug)
-        # except Users.DoesNotExist:
-        #     return JsonResponse({'error': 'Instance not found'}, status=404)
-        
-        # for key, value in data.items():
-        #     print('Key ' +str(key)+ ' Value' +str(value))
-        #     setattr(instance, key, value)
-        # instance.save() 
-        # return JsonResponse({'message': 'User '+str(slug)+' updated successfully'})
 
 @csrf_exempt
 def education(request, user):
@@ -223,6 +211,7 @@ def id_workrequests(request, user):
             'status': response.status_code
         })   
 
+# In Friend Requests Modal - For approve or decline
 @csrf_exempt
 def friend_requests_list(request, id):
     base_url = get_base_url(request)  
@@ -254,31 +243,50 @@ def friend_requests_list(request, id):
     else:
         return JsonResponse({'error': '[FRIENDREQ]Invalid request method'})
 
-
+# USER - IN User Profile Button for send requests or delete
 @csrf_exempt
 def friend_requests(request):
     base_url = get_base_url(request)
     if request.method == 'POST':
         try:
             data = json.loads(request.body.decode('utf-8'))
-            print("DATA -> ", data)
-            response = requests.post(base_url+'/backend/api/friend_requests/', json=data)
-            if response.status_code == 200:
-                return JsonResponse({
-                    'message': 'Friend Request POST succesfully',
-                    'data': response.json(),
-                    'status': response.status_code
-                })  
-            else:
-                response.raise_for_status()
-            return JsonResponse({
-                'message': 'Friend Request POST succesfully',
-                'data': response.json(),
-                'status': response.status_code
-            })  
+            # data = { 'user1':user1, 'request':request_param}
+            if data.get("status") == 'P':
+                response = requests.post(base_url+'/backend/api/friend_requests/', json=data)
+                if response.status_code == 200:
+                    return JsonResponse({
+                        'created': True,
+                        'message': 'Friend Request POST succesfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })  
+                else:
+                    response.raise_for_status()
+                if response.status_code == 404:
+                    return JsonResponse({
+                        'error': 'Friend Request POST failed',
+                        'status': response.status_code
+                    })  
+            if data.get("status") == "D":
+                try:
+                    instance = get_object_or_404(FriendRequests, user1=data.get("user1"), request=data.get("request"))
+                    instance.delete()
+                    return JsonResponse({
+                        'deleted': True,
+                        'message': 'Friend deleted successfully',
+                        "status":status.HTTP_200_OK
+                    })  
+                except Http404:
+                    instance = get_object_or_404(FriendRequests, user1=data.get("request"), request=data.get("user1"))
+                    instance.delete()
+                    return JsonResponse({
+                        'deleted': True,
+                        'message': 'Friend deleted successfully',
+                        "status":status.HTTP_200_OK
+                    })  
+            
         except requests.exceptions.RequestException as e:
             print("Friend Request Failed: ", e)
-        return None
 
     elif request.method == 'GET':
         try:
@@ -286,6 +294,9 @@ def friend_requests(request):
             request_param = request.GET.get('request')
             data = { 'user1':user1, 'request':request_param}
             response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+            if response.status_code == 404:
+                data = { 'user1':request_param, 'request':user1}
+                response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
             print("RESPONSE -> ",response.json())
             return JsonResponse({
                 'message': 'Friend Request Fetched succesfully',

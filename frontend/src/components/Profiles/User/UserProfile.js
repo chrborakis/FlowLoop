@@ -8,13 +8,12 @@ import { useAuth } from '../../../store/AuthContext';
 import '../../../../static/css/Profile.css'
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
-
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-import { get_request, send_request } from './UserUtils';
+import { get_request } from './UserUtils';
 import Education from './Education';
-
+import FriendButton from './FriendButton';
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();
@@ -24,17 +23,15 @@ const UserProfile = () => {
     const [requested, setRequested] = useState(false);
 
     useEffect( () => {getUser(setData, setWork, slug)}, [slug]);
-    
+
     useEffect(() => {
         if(data && user.id!=data.user)
             get_request( user?.id, data?.user, setRequested);
     }, [slug, data, requested]);
 
-    const sendRequest = () => send_request( user.id, data?.user, setRequested);
 
     return (
         <div className='profile'>
-            <h1>User {slug} Profile</h1>
             { data ? (
                 <> 
                     <div className='preview'>
@@ -66,13 +63,7 @@ const UserProfile = () => {
                         </div>
                         <div className="right-side">
                             {
-                                user.id!=data?.user && 
-                                <button disabled={requested=='P'} onClick={sendRequest}>
-                                    {
-                                        requested === 'P' ? 'Already requested!' : 
-                                            requested === 'A' ? 'Delete' : 'Send request'
-                                    }
-                                </button>
+                                user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested}/>
                             }
                             <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                         </div>

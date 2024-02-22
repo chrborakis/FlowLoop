@@ -204,10 +204,17 @@ class FriendRequest(APIView):
         try:
             # request.query_params
             instance = get_object_or_404(FriendRequests, user1=user1, request=reque)
+            print("INSTANCE: ",instance)
             serializers = FriendsRequestsSerializer(instance)
             return Response(serializers.data)
         except Http404:
-            return Response({'error': 'FriendRequests instance not found.'}, status=404)    
+            return Response({'error': 'FriendRequests instance not found.'}, status=404)  
+    def post( self, request):
+        print("IN API" ,request.data)
+        serializer = FriendsRequestsSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)  
         
 class AllFriendsRequestsView(APIView):
     def get( self, request):

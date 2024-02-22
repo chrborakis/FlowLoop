@@ -21,16 +21,22 @@ export const get_request = async ( user1, request, setRequested) => {
     .catch( err => console.log(err))
 };  
 
-export const send_request = async (user1, request, setRequested) => {
-    console.log(user1, request)
-    axios.post('/backend/friend_requests/', { user1, request, status:"P"}
+export const send_request = async( user1, request, setRequested, status) => {
+    console.log("Friend request...", user1, request, status)
+    axios.post('/backend/friend_requests/', { user1, request, status}
     ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
     ).then(  res => {
-        setRequested(true)
+        // if(res.data.status !== 200)
+            // setRequested(status=="P")
         // addRequest(res.data);
-        console.log(res.data)
+        if(res.data.status===200 && res.data.created){
+            setRequested(status=="P")
+        }else if(res.data.status===200 && res.data.deleted){
+            setRequested("")
+        }
     }).catch( err => console.log(err))
 };
+
 
 export const getEducation = async( user, setEducation) => {
     axios.get(`/backend/education/${user}`)
