@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 
 const GetPosts = ({onFetch, url, setLoading}) => {
     const getData = async(e) => {
-        console.log(url)
         axios.get(url
         ).then(  res => {
             // onFetch(prevPosts => [...prevPosts, ...res.data.data]);

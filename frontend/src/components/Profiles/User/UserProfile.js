@@ -5,7 +5,7 @@ import PostsPublic from '../../Posts/PostsPublic';
 import Info from './Info/Info';
 import { useAuth } from '../../../store/AuthContext';
 
-import '../../../../static/css/Profile.css'
+import '../../../../static/css/Profile/Profile.css'
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import Tab from 'react-bootstrap/Tab';

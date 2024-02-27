@@ -7,7 +7,9 @@ export const getCountries = (countries, setCountries) => {
     .then( response => {
         const data = response.data;
         const countryNames = data.map(country => country.name.common);
-        setCountries(countryNames.sort());
+        if (!response.ok) {
+            throw new Error('Error fetching data from the server');
+        }else setCountries(countryNames.sort());
     })
-    .catch(error => console.error('Error fetching country data:', error));
+    .catch(error => console.log(error));
 }

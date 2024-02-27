@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import '../../../../../static/css/Profile/Forms.css';
 
 import { format } from 'date-fns';
 
@@ -25,7 +26,6 @@ const School = ({education, admin}) => {
     const handleNameChange = (event) => setSelectedName(event.target.value);
     const handleDateChange = (date) => setSelectedDate(new Date(date));
 
-    console.log(education)
     const handleEdit = (e) => {
         e.preventDefault();
         setEdit(true);
@@ -74,14 +74,16 @@ const School = ({education, admin}) => {
                     </Card.Body>
                     <Card.Footer className="text-muted">
                         {editMode ? (
-                            <Button variant="primary" type="submit" disabled={!editMode}>
-                                Save
-                            </Button>   
+                            <div className='center-button'>
+                                <Button variant="primary" type="submit" disabled={!editMode}>
+                                    Save
+                                </Button>   
+                            </div>
                         ) : (
                             admin && 
-                            <>
+                            <div className='center-button'>
                                 <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
-                            </>
+                            </div>
                         )}
                     </Card.Footer>
                 </Card>

@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import '../../../static/css/Posts/PostForm.css'
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import { Container, Row, Col, Button } from 'react-bootstrap'; 
+import '../../../static/css/Profile/Forms.css';
+
 
 const NewPost = ({ user, url, newPost}) => {
     const [isContentVisible, setIsContentVisible] = useState(false);
@@ -15,18 +19,26 @@ const NewPost = ({ user, url, newPost}) => {
         setFormData({...formData,[name]: value,});
     };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
+    // const handleFileChange = (event) => {
+    //     const file = event.target.files[0];
     
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => { setFormData({
-                ...formData,
-                image: reader.result,
-            });};
-            reader.readAsDataURL(file);
-        }
-    };
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => { setFormData({
+    //             ...formData,
+    //             image: reader.result,
+    //         });};
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
+
+    const handleImageChange = (event) => {
+        const imageFile = event.target.files[0];
+        setFormData({
+            ...formData,
+            image: imageFile
+        });
+      };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -37,11 +49,10 @@ const NewPost = ({ user, url, newPost}) => {
             ...(formData.image && { "image": formData.image }),
         }
 
-        console.log("data: ", data)
-
         axios.post(url += '/0', data,{
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
-            'Content-Type': 'application/json'}
+            'Content-Type': 'multipart/form-data'
+        }
         }).then(  res => {
             {console.log("New Post res.data: ", res.data)
             newPost(res.data);
@@ -50,24 +61,32 @@ const NewPost = ({ user, url, newPost}) => {
     };
 
     return(<>
-        <button onClick={handleButtonClick}> 
-            {url.includes('public') ? 'New Post Public' : `New ${user?.company?.name} Post`}
-        </button>
-
+        <div className='center-button'>
+            <Button variant="primary" onClick={handleButtonClick}> 
+                {url.includes('public') ? 'New Post Public' : `New ${user?.company?.name} Post`}
+            </Button>
+        </div>
+            
         { isContentVisible && (
             <Form onSubmit={handleSubmit}>
                 <Form.Group className='mb-3' controlId='formTitle'>
                     <Form.Label>Title</Form.Label>
-                    <Form.Control name="title" type="text" 
+                    <Form.Control name="title" type="text" required
                         placeholder="Post Title" 
                         value={formData.title} onChange={handleInputChange} 
                     />
                 </Form.Group>
                 <Form.Group className='mb-3' controlId='formDescription'>
                     <Form.Label>Description</Form.Label>
-                    <Form.Control name="description" as="textarea" 
+                    <Form.Control name="description" as="textarea" required
                         placeholder="Post Description" 
                         value={formData.description} onChange={handleInputChange} 
+                    />
+                </Form.Group>
+                <Form.Group className='mb-3' controlId='formImage'>
+                    <Form.Label>Image</Form.Label>
+                    <Form.Control type="file" accept="image/*"
+                        onChange={handleImageChange} 
                     />
                 </Form.Group>
                 <Button variant="primary" type="submit">

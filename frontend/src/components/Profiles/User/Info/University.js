@@ -119,7 +119,13 @@ const University = ({user, university, admin}) => {
                                         ) : (<>{uni?.degree}</>)  
                                     }
                                     </Row>
-                                    { editMode && <Button variant="danger" onClick={() => handleRemoveUniversity(uni.id)}>Remove</Button>}
+                                    { editMode && 
+                                        <div className='center-button'>
+                                            <Button variant="danger" onClick={() => handleRemoveUniversity(uni.id)}>
+                                                Remove
+                                            </Button>
+                                        </div>
+                                    }
                                     <hr />              
                                 </div>
                             ))
@@ -127,16 +133,25 @@ const University = ({user, university, admin}) => {
                             !data && <div>No university information available</div>
                         )
                         }
-                        { editMode && <Button variant="outline-secondary" onClick={addUniversity}>Add University</Button>}
+                        { editMode && 
+                            <div className='center-button'>
+                                <Button variant="outline-secondary" onClick={addUniversity}>Add University</Button>
+                            </div>
+                        }
                 </Card.Body>
                 <Card.Footer className="text-muted">
                     {
                         editMode ? (
+                            <div className='center-button'>
                             <Button variant="primary" type="submit" disabled ={!editMode}>
                                 Save
                             </Button>   
+                            </div>
                         ) : (
-                            admin && <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
+                            admin && 
+                            <div className='center-button'>
+                            <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
+                            </div>
                         )
                     }
                 </Card.Footer>     

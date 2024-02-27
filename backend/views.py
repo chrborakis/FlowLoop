@@ -1,4 +1,5 @@
 import json
+from django.forms import model_to_dict
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_list_or_404, render
 import requests
@@ -73,23 +74,6 @@ def education(request, user):
             return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-       # palio
-    # if request.method == 'POST':
-    #     data = json.loads(request.body.decode('utf-8'))
-    #     try:
-    #         response = requests.post(base_url+'/backend/api/education/0', json=data)
-    #         if response.status_code == 200:
-    #             print(response.json())
-    #             return JsonResponse({
-    #                 'message': 'Education POST succesfully',
-    #                 'data': response.json(),
-    #                 'status': response.status_code
-    #             })  
-    #         else: response.raise_for_status()
-    #     except requests.exceptions.RequestException as e:
-    #         print("Education Request Failed: ", e)
-    #     return None
-
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/education/'+str(user))
         print(response.json())
@@ -126,37 +110,6 @@ def university(request, user):
         response = requests.get(base_url+'/backend/api/university/'+str(user))
         print(response.json())
         return JsonResponse({ 'data': response.json(), 'error': log.get('error'), "status":log.get('status')})
-    # if request.method == "POST":
-    #     data = json.loads(request.body.decode('utf-8'))
-    #     print("DATA", data)
-    #     log = {}
-    #     for item in data:
-    #         if( str(item.get("id"))[0] == "_"):
-    #             item.pop('id', None)
-    #             print("[NEW]", item)
-    #             serializer = UniversitySerializer(data = item)
-    #             if serializer.is_valid(raise_exception=True):
-    #                 serializer.save()
-    #                 return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
-    #         else:
-    #             print("[UPT]",item)
-    #             instance = get_object_or_404(UniversityDetails, id=item.get("id"))
-    #             try:
-    #                 serializer = UniversitySerializer(instance, data, partial=True)
-    #                 if serializer.is_valid():
-    #                     serializer.save()
-    #                     return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
-    #                 else:
-    #                     print(serializer.errors)
-    #                     log = {'error': serializer.errors,'status': status.HTTP_400_BAD_REQUEST}
-    #             except Http404:
-    #                 log = {'error': 'Uni details not found', 'status': status.HTTP_404_NOT_FOUND}
-    #             except ValidationError as err:
-    #                 log = {'error': str(err), 'status': status.HTTP_400_BAD_REQUEST}
-    #             except Exception as err:
-    #                 log = {'error': str(err), 'status': status.HTTP_500_INTERNAL_SERVER_ERROR}
-    #     return JsonResponse({'error': log.get('error'), "status":log.get('status')})
-
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/university/'+str(user))
         print(response.json())
@@ -369,21 +322,54 @@ def friend_requests(request):
 def post_public(request, user):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
+        # data = json.loads(request.body.decode('utf-8'))
+        # Get image file
+
+        print(request.FILES.get('image'))
+        title = request.POST.get('title')
+        body  = request.POST.get('body')
+        author= int(request.POST.get('author'))
+        image = request.FILES.get('image')
+
+        # if image:
+        #     with open(image.name, 'wb+') as destination:
+        #         for chunk in image.chunks():
+        #             destination.write(chunk)
+        # print("IMAGGE NAME: ", image.name)
         base_url = get_base_url(request)
         try:
-            response = requests.post(base_url+'/backend/api/postpublic', json=data)
-            print("new_post data:", response.json())
+            # response = requests.post(base_url+'/backend/api/postpublic', json=data)
+            # print("new_post data:", response.json())
+            author_instance = Users.objects.get(user=author)
+            print(author_instance)
+            new_inst = PostsPublic.objects.create(
+                title=title,
+                body=body,
+                author=author_instance,
+                image=image
+            )
+            new_inst.save()
+
+            serialized_data = {
+                'id': new_inst.post_id,
+                'title': new_inst.title,
+                'body': new_inst.body,
+                'author': new_inst.author_id,
+                'publish_date': new_inst.publish_date,
+                'image': new_inst.image.url if new_inst.image else None
+            }
+            print(serialized_data)
             return JsonResponse({
                 'message': 'Posts Public Succesfully posting',
-                'data': response.json(),
-                'status': response.status_code
+                'data': serialized_data
+                # 'data': response.json(),
             })
-        except:
+        except Exception as e:
+            error_message = str(e)  # Convert the exception to a string
+            print("Error:", error_message)  # Print the error message
             return JsonResponse({
                 'message': 'Post Public Failed posting',
-                'data': response.json(),
-                'status': response.status_code
+                'error': error_message
             })
     elif request.method == 'GET':
         response = None

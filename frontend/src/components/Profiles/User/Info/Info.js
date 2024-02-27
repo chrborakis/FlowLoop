@@ -154,7 +154,8 @@ const Info = ({user, _user, updateUser, admin}) => {
                                 Save
                             </Button>   
                         ) : (
-                            admin && <Button variant="outline-secondary" onClick={handleEdit} endIcon={<EditNoteIcon />}>Edit</Button>
+                            // admin && <Button variant="outline-secondary" onClick={handleEdit} endIcon={<EditNoteIcon />}>Edit</Button>
+                            admin && <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
                         )
                     }
 
