@@ -48,12 +48,34 @@ export const getEducation = async( user, setEducation) => {
     .catch( err => console.log(err))
 }
 
+export const postEducation = async( data, setEdit) => {
+    axios.post("/backend/education/0", data)
+    .then(  res => {
+        if(res.data.status === 200){
+            setEdit(false)
+        }
+    })
+    .catch( err => console.log(err))
+}
+
 export const getUniversity = async( user, setUniversity) => {
     axios.get(`/backend/university/${user}`)
     .then(  res => {
         if(res.data.status !== 404){
             console.log(res.data)
             setUniversity(res.data.data)
+        }
+    })
+    .catch( err => console.log(err))
+}
+
+export const postUniversity = async( user, data, setEdit) => {
+    console.log(data)
+    axios.post(`/backend/university/${user}`, data)
+    .then(  res => {
+        console.log(res)
+        if(res.status === 200){
+            setEdit(false)
         }
     })
     .catch( err => console.log(err))

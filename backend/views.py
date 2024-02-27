@@ -55,21 +55,40 @@ class UserProfile(APIView):
 @csrf_exempt
 def education(request, user):
     base_url = get_base_url(request)
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        print("DATA", data)
+        instance = get_object_or_404(EducationDetails, id=data.get("id"))
         try:
-            response = requests.post(base_url+'/backend/api/education/0', json=data)
-            if response.status_code == 200:
-                print(response.json())
-                return JsonResponse({
-                    'message': 'Education POST succesfully',
-                    'data': response.json(),
-                    'status': response.status_code
-                })  
-            else: response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            print("Education Request Failed: ", e)
-        return None
+            serializer = EducationSerializer(instance, data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
+            else:
+                print(serializer.errors)
+                return JsonResponse({'error': serializer.errors,'status': status.HTTP_400_BAD_REQUEST}) 
+        except Http404:
+            return JsonResponse({'error': 'Edu details not found', 'status': status.HTTP_404_NOT_FOUND})
+        except ValidationError as err:
+            return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as err:
+            return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+       # palio
+    # if request.method == 'POST':
+    #     data = json.loads(request.body.decode('utf-8'))
+    #     try:
+    #         response = requests.post(base_url+'/backend/api/education/0', json=data)
+    #         if response.status_code == 200:
+    #             print(response.json())
+    #             return JsonResponse({
+    #                 'message': 'Education POST succesfully',
+    #                 'data': response.json(),
+    #                 'status': response.status_code
+    #             })  
+    #         else: response.raise_for_status()
+    #     except requests.exceptions.RequestException as e:
+    #         print("Education Request Failed: ", e)
+    #     return None
 
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/education/'+str(user))
@@ -83,22 +102,60 @@ def education(request, user):
 @csrf_exempt
 def university(request, user):
     base_url = get_base_url(request)
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        try:
-            response = requests.post(base_url+'/backend/api/university/0', json=data)
-            if response.status_code == 200:
-                print(response.json())
-                return JsonResponse({
-                    'message': 'university POST succesfully',
-                    'data': response.json(),
-                    'status': response.status_code
-                })  
-            else:
-                response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            print("university Failed: ", e)
-        return None
+        print("DATA", data)
+        log = {}
+        UniversityDetails.objects.filter(user=user).delete()
+        for item in data:
+            item.pop('id', None)
+            try:
+                serializer = UniversitySerializer(data = item)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+                    # return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
+                else:
+                    print(serializer.errors)
+                    log = {'error': serializer.errors,'status': status.HTTP_400_BAD_REQUEST}
+            except Http404:
+                log = {'error': 'Uni details not found', 'status': status.HTTP_404_NOT_FOUND}
+            except ValidationError as err:
+                log = {'error': str(err), 'status': status.HTTP_400_BAD_REQUEST}
+            except Exception as err:
+                log = {'error': str(err), 'status': status.HTTP_500_INTERNAL_SERVER_ERROR}
+        response = requests.get(base_url+'/backend/api/university/'+str(user))
+        print(response.json())
+        return JsonResponse({ 'data': response.json(), 'error': log.get('error'), "status":log.get('status')})
+    # if request.method == "POST":
+    #     data = json.loads(request.body.decode('utf-8'))
+    #     print("DATA", data)
+    #     log = {}
+    #     for item in data:
+    #         if( str(item.get("id"))[0] == "_"):
+    #             item.pop('id', None)
+    #             print("[NEW]", item)
+    #             serializer = UniversitySerializer(data = item)
+    #             if serializer.is_valid(raise_exception=True):
+    #                 serializer.save()
+    #                 return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
+    #         else:
+    #             print("[UPT]",item)
+    #             instance = get_object_or_404(UniversityDetails, id=item.get("id"))
+    #             try:
+    #                 serializer = UniversitySerializer(instance, data, partial=True)
+    #                 if serializer.is_valid():
+    #                     serializer.save()
+    #                     return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
+    #                 else:
+    #                     print(serializer.errors)
+    #                     log = {'error': serializer.errors,'status': status.HTTP_400_BAD_REQUEST}
+    #             except Http404:
+    #                 log = {'error': 'Uni details not found', 'status': status.HTTP_404_NOT_FOUND}
+    #             except ValidationError as err:
+    #                 log = {'error': str(err), 'status': status.HTTP_400_BAD_REQUEST}
+    #             except Exception as err:
+    #                 log = {'error': str(err), 'status': status.HTTP_500_INTERNAL_SERVER_ERROR}
+    #     return JsonResponse({'error': log.get('error'), "status":log.get('status')})
 
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/university/'+str(user))

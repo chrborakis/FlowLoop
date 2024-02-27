@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import { getUser } from './UserUtils';
 import PostsPublic from '../../Posts/PostsPublic';
-import Info from './Info';
+import Info from './Info/Info';
 import { useAuth } from '../../../store/AuthContext';
 
 import '../../../../static/css/Profile.css'
@@ -12,7 +12,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 import { get_request } from './UserUtils';
-import Education from './Education';
+import Education from './Info/Education';
 import FriendButton from './FriendButton';
 
 const UserProfile = () => {
