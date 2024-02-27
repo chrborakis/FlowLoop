@@ -322,51 +322,26 @@ def friend_requests(request):
 def post_public(request, user):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        # data = json.loads(request.body.decode('utf-8'))
-        # Get image file
-
-        print(request.FILES.get('image'))
-        title = request.POST.get('title')
-        body  = request.POST.get('body')
         author= int(request.POST.get('author'))
-        image = request.FILES.get('image')
-
-        # if image:
-        #     with open(image.name, 'wb+') as destination:
-        #         for chunk in image.chunks():
-        #             destination.write(chunk)
-        # print("IMAGGE NAME: ", image.name)
-        base_url = get_base_url(request)
         try:
-            # response = requests.post(base_url+'/backend/api/postpublic', json=data)
-            # print("new_post data:", response.json())
             author_instance = Users.objects.get(user=author)
             print(author_instance)
             new_inst = PostsPublic.objects.create(
-                title=title,
-                body=body,
+                title=request.POST.get('title'),
+                body=request.POST.get('body'),
                 author=author_instance,
-                image=image
+                image=request.FILES.get('image')
             )
             new_inst.save()
+            response = requests.get(base_url+'/backend/api/post_public/'+str(new_inst.post_id))
 
-            serialized_data = {
-                'id': new_inst.post_id,
-                'title': new_inst.title,
-                'body': new_inst.body,
-                'author': new_inst.author_id,
-                'publish_date': new_inst.publish_date,
-                'image': new_inst.image.url if new_inst.image else None
-            }
-            print(serialized_data)
             return JsonResponse({
                 'message': 'Posts Public Succesfully posting',
-                'data': serialized_data
-                # 'data': response.json(),
+                'data': response.json()
             })
         except Exception as e:
-            error_message = str(e)  # Convert the exception to a string
-            print("Error:", error_message)  # Print the error message
+            error_message = str(e) 
+            print("Error:", error_message)
             return JsonResponse({
                 'message': 'Post Public Failed posting',
                 'error': error_message
@@ -395,29 +370,52 @@ def post_public(request, user):
 def post_private(request, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        post = {
-            "author": data.get('author'),
-            "title":  data.get('title'),
-            "body":   data.get('body'),
-            "image":  data.get('image')
-        }
-        base_url = get_base_url(request)
-        print(post)
+        author= int(request.POST.get('author'))
         try:
-            response = requests.post(base_url+'/backend/api/postprivate', json=data)
-            print("new_post data:", response.json())
+            new_inst = PostsPrivate.objects.create(
+                title=request.POST.get('title'),
+                body=request.POST.get('body'),
+                author=WorksOn.objects.get(id=author),
+                image=request.FILES.get('image')
+            )
+            new_inst.save()
+            response = requests.get(base_url+'/backend/api/post_private/'+str(new_inst.post_id))
+
             return JsonResponse({
                 'message': 'Posts Private Succesfully posting',
-                'data': response.json(),
-                'status': response.status_code
+                'data': response.json()
             })
-        except:
+        except Exception as e:
+            error_message = str(e) 
+            print("Error:", error_message)
             return JsonResponse({
                 'message': 'Post Private Failed posting',
-                'data': response.json(),
-                'status': response.status_code
+                'error': error_message
             })
+    # if request.method == 'POST':
+    #     data = json.loads(request.body.decode('utf-8'))
+    #     post = {
+    #         "author": data.get('author'),
+    #         "title":  data.get('title'),
+    #         "body":   data.get('body'),
+    #         "image":  data.get('image')
+    #     }
+    #     base_url = get_base_url(request)
+    #     print(post)
+    #     try:
+    #         response = requests.post(base_url+'/backend/api/postprivate', json=data)
+    #         print("new_post data:", response.json())
+    #         return JsonResponse({
+    #             'message': 'Posts Private Succesfully posting',
+    #             'data': response.json(),
+    #             'status': response.status_code
+    #         })
+    #     except:
+    #         return JsonResponse({
+    #             'message': 'Post Private Failed posting',
+    #             'data': response.json(),
+    #             'status': response.status_code
+    #         })
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/postprivate/'+str(company))
         print(response.json())

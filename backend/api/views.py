@@ -296,6 +296,20 @@ class AllPostsPrivateView(APIView):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data)
+        
+# CALL ON EVERY NEW POST TO UPDATE THE ARRAY OF POSTS
+class PostPublicView(APIView):
+    def get( self, request, post):
+        instance = get_object_or_404(PostsPublic, post_id=post)
+        serializers = PostsPublicSerializer(instance)
+        return Response(serializers.data)
+    
+# CALL ON EVERY NEW POST TO UPDATE THE ARRAY OF POSTS
+class PostPrivateView(APIView):
+    def get( self, request, post):
+        instance = get_object_or_404(PostsPrivate, post_id=post)
+        serializers = PostsPrivateSerializer(instance)
+        return Response(serializers.data)
 
 class PostsPrivateView(APIView):    
     def get( self, request, company):
