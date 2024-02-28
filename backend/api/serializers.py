@@ -177,7 +177,8 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
             'company_slug': str(obj.author.employee.company.slug),
             'user_id':      str(obj.author.employee.user_id),
             'user_name':    str(obj.author.employee.user),
-            'user_slug':    str(obj.author.employee.user.slug)
+            'user_slug':    str(obj.author.employee.user.slug),
+            'user_image':    str(obj.author.employee.user.image)
         }
     
 

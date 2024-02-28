@@ -14,7 +14,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
-
+from django.core.paginator import Paginator
 from backend.util import get_base_url, get_workson_instance
 
 @action(detail=True, methods=['post'])
@@ -322,7 +322,7 @@ def friend_requests(request):
 def post_public(request, user):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        author= int(request.POST.get('author'))
+        author = int(request.POST.get('author'))
         try:
             author_instance = Users.objects.get(user=author)
             print(author_instance)
@@ -349,22 +349,51 @@ def post_public(request, user):
     elif request.method == 'GET':
         response = None
         if user == '0':
-            response = requests.get(base_url+'/backend/api/postpublic')
+            try:
+                queryset = PostsPublic.objects.all().order_by('-publish_date')
+                paginator = Paginator(queryset, 5)  # 5 items per scroll down
+                page_number = request.GET.get('page')
+                page_number = int(page_number) if page_number else 1
+                page_obj = paginator.get_page(page_number)
+                next_page_number = page_number + 1 if page_obj.has_next() else None
+                serializer = PostsPublicSerializer(page_obj, many=True)
+                return JsonResponse({
+                    'message': 'Posts Public Fetched succesfully',
+                    'data': serializer.data, 
+                    'has_next': next_page_number,
+                    'status': 200
+                })
+                # response = requests.get(base_url+'/backend/api/postpublic')
+            except Exception as e:
+                print(str(e))
+                return JsonResponse({
+                    'message': 'An error occurred while fetching posts public',
+                    'error': str(e),
+                    'status': 500
+                })
         elif user != '0':
-            response = requests.get(base_url+'/backend/api/postpublic/'+str(user))
-        print(response.json())
-
-        data = None
-        message = 'Posts Public Fetched FAILED'
-        if( response.json()):
-            message = 'Posts Public Fetched succesfully'
-            data = response.json()
-
-        return JsonResponse({
-            'message': message,
-            'data': data,
-            'status': response.status_code
-        })
+            try:
+                queryset = PostsPublic.objects.filter(author__slug=str(user)).order_by('-publish_date')
+                paginator = Paginator(queryset, 5)  #items per scroll down
+                page_number = request.GET.get('page')
+                page_number = int(page_number) if page_number else 1
+                page_obj = paginator.get_page(page_number)
+                next_page_number = page_number + 1 if page_obj.has_next() else None
+                serializer = PostsPublicSerializer(page_obj, many=True)
+                return JsonResponse({
+                    'message': 'Posts Public Fetched succesfully',
+                    'data': serializer.data, 
+                    'has_next': next_page_number,
+                    'status': 200
+                })
+                # response = requests.get(base_url+'/backend/api/postpublic')
+            except Exception as e:
+                print(str(e))
+                return JsonResponse({
+                    'message': 'An error occurred while fetching posts public',
+                    'error': str(e),
+                    'status': 500
+                })
 
 @csrf_exempt
 def post_private(request, company):
@@ -392,38 +421,36 @@ def post_private(request, company):
                 'message': 'Post Private Failed posting',
                 'error': error_message
             })
-    # if request.method == 'POST':
-    #     data = json.loads(request.body.decode('utf-8'))
-    #     post = {
-    #         "author": data.get('author'),
-    #         "title":  data.get('title'),
-    #         "body":   data.get('body'),
-    #         "image":  data.get('image')
-    #     }
-    #     base_url = get_base_url(request)
-    #     print(post)
-    #     try:
-    #         response = requests.post(base_url+'/backend/api/postprivate', json=data)
-    #         print("new_post data:", response.json())
-    #         return JsonResponse({
-    #             'message': 'Posts Private Succesfully posting',
-    #             'data': response.json(),
-    #             'status': response.status_code
-    #         })
-    #     except:
-    #         return JsonResponse({
-    #             'message': 'Post Private Failed posting',
-    #             'data': response.json(),
-    #             'status': response.status_code
-    #         })
     elif request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/postprivate/'+str(company))
-        print(response.json())
-        return JsonResponse({
-            'message': 'Posts Public Fetched succesfully',
-            'data': response.json(),
-            'status': response.status_code
-        })
+        try:
+            queryset = PostsPrivate.objects.filter(author__employee__company__slug = company).order_by('-publish_date')
+            paginator = Paginator(queryset, 5)  #items per scroll down
+            page_number = request.GET.get('page')
+            page_number = int(page_number) if page_number else 1
+            page_obj = paginator.get_page(page_number)
+            next_page_number = page_number + 1 if page_obj.has_next() else None
+            serializer = PostsPrivateSerializer(page_obj, many=True)
+            return JsonResponse({
+                'message': 'Posts Private Fetched succesfully',
+                'data': serializer.data, 
+                'has_next': next_page_number,
+                'status': 200
+                })
+                # response = requests.get(base_url+'/backend/api/postpublic')
+        except Exception as e:
+            print(str(e))
+            return JsonResponse({
+                'message': 'An error occurred while fetching posts Private',
+                'error': str(e),
+                'status': 500
+            })
+        # response = requests.get(base_url+'/backend/api/postprivate/'+str(company))
+        # print(response.json())
+        # return JsonResponse({
+        #     'message': 'Posts Public Fetched succesfully',
+        #     'data': response.json(),
+        #     'status': response.status_code
+        # })
 
 @csrf_exempt
 def public_comments(request, post):

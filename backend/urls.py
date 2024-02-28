@@ -23,8 +23,8 @@ urlpatterns = [
     path("friend_requests/", views.friend_requests),
     path("friend_requests/<int:id>", views.friend_requests_list),
 
-    path("postpublic/<slug:user>", views.post_public),
-    path("postprivate/<slug:company>", views.post_private),
+    path("postpublic/<slug:user>/", views.post_public),
+    path("postprivate/<slug:company>/", views.post_private),
 
     path("postpubliccomments/<slug:post>",  views.public_comments, name='public_comments'),
     path("postprivatecomments/<slug:post>", views.private_comments,name='private_comments'),
