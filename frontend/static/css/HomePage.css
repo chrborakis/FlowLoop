@@ -34,3 +34,15 @@
     color: #fff;
     /* Add any additional styles for the active button */
   }
+
+.infinite-scroll-component{
+  overflow: hidden;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 5%;
+}
