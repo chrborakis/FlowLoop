@@ -1,19 +1,16 @@
+from datetime import datetime
+from dateutil.parser import parse
 import json
-from django.forms import model_to_dict
+from django.views.decorators.csrf import requires_csrf_token
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import get_list_or_404, render
 import requests
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.http import HttpRequest
 from backend.api.serializers import *
 from apps.users.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from backend.util import get_base_url, get_workson_instance
 
@@ -118,33 +115,79 @@ def university(request, user):
             'data': response.json(),
             'status': response.status_code
         })   
-        
+
+@csrf_exempt
+def address(request, pk):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        print(data.get("address"))
+        base_url = get_base_url(request)
+        try:
+            response = requests.post(base_url+'/backend/api/address/0', json=data.get("address"))
+            print(response)
+            new_address = response.json()
+            new_address_id = new_address.get('id') 
+ 
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': 'Address created successfully',
+                    'data': new_address_id,
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': 'Failed to create address',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
+
+
 @csrf_exempt
 def company(request, pk):
     base_url = get_base_url(request)
-    # if request.method == 'POST':
-        # data = json.loads(request.body.decode('utf-8'))
-        # post = {
-        #     "author": data.get('author'),
-        #     "title":  data.get('title'),
-        #     "body":   data.get('body'),
-        #     "image":  data.get('image')
-        # }
-        # base_url = get_base_url(request)
-        # try:
-        #     response = requests.post(base_url+'/backend/api/postpublic', json=post)
-        #     print("new_post data:", response.json())
-        #     return JsonResponse({
-        #         'message': 'Posts Public Succesfully posting',
-        #         'data': response.json(),
-        #         'status': response.status_code
-        #     })
-        # except:
-        #     return JsonResponse({
-        #         'message': 'Post Public Failed posting',
-        #         'data': response.json(),
-        #         'status': response.status_code
-        #     })
+    if request.method == 'POST':
+
+        data = json.loads(request.body.decode('utf-8'))
+        company    = data.get("data")
+        address = data.get("address")
+        company["address"] = address
+        print("Company: ", company)
+
+        base_url = get_base_url(request)
+        try:
+            response = requests.post(base_url+'/backend/api/companies/0', json=company)
+            print(response)
+            new_company = response.json()
+
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': 'Company created successfully',
+                    'data': new_company.get('company_id'),
+                    'status': response.status_code
+                })
+            else:
+                instance = get_object_or_404(Address, pk=address)
+                instance.delete()
+                return JsonResponse({
+                    'message': 'Failed to create Company',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            instance = get_object_or_404(Address, pk=address)
+            instance.delete()
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
     if request.method == 'GET':
         response = requests.get(base_url+'/backend/api/companies/'+str(pk))
         print(response.json())
@@ -186,37 +229,59 @@ def workrequests(request, id):
 # FOR POST/GET ACTIONS BASED ON WORK_ID 
 # for users
 @csrf_exempt
-def id_workrequests(request, user):
+def id_workrequests(request, user, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
+        data = json.loads(request.body.decode('utf-8'))   
         try:
             response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
             if response.status_code == 200:
                 result = response.json()
                 status = result.get("status")
                 work = None
+                print("USER: ", data.get("user"))
                 if( status == 'A'):
                     print("WORK ON INSTANCE EXISTS")
                     workOn = get_workson_instance(data.get('user'))
+                    print("workOn: ", workOn)
                     work = {"company": workOn.data["company"], "work_id": workOn.data["id"]}
                 return JsonResponse({
                     'message': 'Work Request POST succesfully',
+                    'work': work,
                     'data': response.json(),
-                    "work": work,
                     'status': response.status_code
-                })  
+                })
             else:
-                response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            print("Work Request Failed: ", e)
-        return None
-
+                instance = get_object_or_404(Address, pk=address)
+                instance.delete()
+                return JsonResponse({
+                    'message': 'Failed to POST Work Request',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
     elif request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/workrequests/'+str(user))
-        print(response.json())
+        response = requests.get(base_url+'/backend/api/workrequests/'+str(user)+'/'+str(company))
+        work_inst = response.json()
+        print(work_inst)
+        work = None
+        if( work_inst.get('status') == 'A'):
+            print("WORK ON INSTANCE EXISTS")
+            workOn = get_workson_instance(user)
+            print('WORK: ',workOn)
+            work = {
+                "company": workOn.get("company"), 
+                "work_id": workOn.get("id"), 
+                "is_admin": workOn.get("is_admin"), 
+            }
         return JsonResponse({
             'message': 'Work Requests Fetched succesfully',
+            'work': work,
             'data': response.json(),
             'status': response.status_code
         })   
@@ -318,20 +383,22 @@ def friend_requests(request):
         return None
          
 
-@csrf_exempt
+@requires_csrf_token
 def post_public(request, user):
     base_url = get_base_url(request)
     if request.method == 'POST':
+        print("IN POST PUBLIC")
         author = int(request.POST.get('author'))
         try:
             author_instance = Users.objects.get(user=author)
-            print(author_instance)
+            print("DATA: ", json.loads(request.body.decode('utf-8')))
             new_inst = PostsPublic.objects.create(
                 title=request.POST.get('title'),
                 body=request.POST.get('body'),
                 author=author_instance,
                 image=request.FILES.get('image')
             )
+            print("NEW INST", new_inst)
             new_inst.save()
             response = requests.get(base_url+'/backend/api/post_public/'+str(new_inst.post_id))
 

@@ -80,7 +80,7 @@ const Post = ({post, url}) => {
                     { post?.image && <div className="container"><div className="image-wrapper">
                         <img src={post.image} alt=""/></div></div>
                     }
-                    <p>{post.body}</p>
+                    {post.body}
                 </Card.Text>
             </Card.Body>
             <Card.Footer className="text-muted">

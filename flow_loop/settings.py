@@ -28,14 +28,16 @@ SECRET_KEY = 'django-insecure-70=f55_m5pjsx&8u)q6!wi5d2c0bz$uf1(%l&x-21=$yvrm@4!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    getenv("APP_HOST", "127.0.0.1")
-]
+# ALLOWED_HOSTS = [
+#     getenv("APP_HOST", "127.0.0.1")
+# ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'frontend.apps.FrontendConfig',
     'backend',
     'backend.api',
@@ -81,8 +83,8 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 # CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000", 
-#     "http://localhost:5500", 
+    # "http://localhost:3000", 
+    # "http://localhost:5500", 
 # ]
 
 CSRF_COOKIE_SECURE = True
@@ -107,8 +109,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'flow_loop.wsgi.application'
-
+WSGI_APPLICATION = "flow_loop.wsgi.application"
+ASGI_APPLICATION = "flow_loop.asgi.application"
+# ASGI_APPLICATION = "flow_loop.asgi.application" #routing.py will handle the ASGI
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer",
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 8000)],
+        },
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -123,22 +134,24 @@ DATABASES = {
     #     'PORT': '51923'
     # }
     #updated 160224
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'railway',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'AG1afe1g3g62gF33dcE*bF5-BBBgf24B',
+    #     'HOST': 'monorail.proxy.rlwy.net',
+    #     'PORT': '40958'
+    # }
+
+    ## LOCAL HOST
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'AG1afe1g3g62gF33dcE*bF5-BBBgf24B',
-        'HOST': 'monorail.proxy.rlwy.net',
-        'PORT': '40958'
-    }
-#     'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'FlowLoop',
-#        'USER': 'postgres',
-#        'PASSWORD': '1r83RCXa%eL#A',
-#        'HOST': 'localhost',
-#        'PORT': '5432',
-#    }
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'FlowLoop',
+       'USER': 'postgres',
+       'PASSWORD': '1r83RCXa%eL#A',
+       'HOST': 'localhost',
+       'PORT': '5432',
+   }
 }
 
 

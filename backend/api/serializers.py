@@ -1,12 +1,24 @@
+import datetime
 from rest_framework import serializers
 from apps.companies.models import Companies, WorkRequests, WorksOn
+from apps.models import Address
 from apps.posts.models import PostsPrivate, PostsPrivateComments, PostsPrivateLikes, PostsPublic, PostsPublicComments, PostsPublicLikes
 from apps.users.models import *
+from rest_framework import serializers, fields
 
 class UsersCredentialSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsersCredentials
         fields = ('user_id','email','password')
+
+    def validate(self, data):
+        email = data.get('email')
+        errors = {}
+        if UsersCredentials.objects.filter(email=email).exists():
+            errors['email'] = "Email already exists."
+        if errors:
+            raise serializers.ValidationError(errors)
+        return data
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,7 +30,7 @@ class UsersSerializer(serializers.ModelSerializer):
         if phone and Users.objects.exclude(pk=instance.pk).filter(phone=phone).exists():
             raise serializers.ValidationError("Phone number already exists")
         return super().update(instance, validated_data)
-
+    
 class CompaniesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Companies
@@ -28,20 +40,48 @@ class CompaniesSerializer(serializers.ModelSerializer):
             'slug',
             'description',
             'image',
-            'establishment_date',
+            # 'establishment_date',
             'creation_date',
-            'address_id',
+            'address',
             'phone'
         )
+    def validate(self, data):
+        company_name = data.get('company_name')
+        phone = data.get('phone')
+
+        errors = {}
+
+        if Companies.objects.filter(company_name=company_name).exists():
+            errors['company_name'] = "Company name already exists."
+        if Companies.objects.filter(phone=phone).exists():
+            errors['phone'] = "Phone already exists."
+        if errors:
+            raise serializers.ValidationError(errors)
+        return data
+    
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = (
+            'id',
+            'country',
+            'city',
+            'street'
+        )
+
 
 class WorkRequestsSerializer(serializers.ModelSerializer):
     user_info = serializers.SerializerMethodField()
+    company_info = serializers.SerializerMethodField()
     class Meta:
         model = WorkRequests
         fields = (
             'id',
             'user',
             'user_info',
+            'company_info',
             'company',
             'status'
         )
@@ -55,6 +95,14 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
             'name':  str(obj.user.firstname) + ' ' + str(obj.user.lastname),
             'slug':  str(obj.user.slug),
             'image': str(user_image)
+        }
+    
+    def get_company_info(self,obj):
+        return {
+            'id':    str(obj.company.company_id),
+            'name':  str(obj.company.company_name),
+            'slug':  str(obj.company.slug),
+            'image': str(obj.company.image)
         }
 
 class WorksOnSerializer(serializers.ModelSerializer):

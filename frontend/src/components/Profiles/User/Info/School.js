@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
 import {Card, Row,Col} from 'react-bootstrap';
-import { getUniversity, getEducation, postEducation } from '../UserUtils'
+import { postEducation } from '../UserUtils'
 import Form from 'react-bootstrap/Form';
 
 import DatePicker from 'react-datepicker';
@@ -93,40 +93,3 @@ const School = ({education, admin}) => {
 }
 
 export default School;
-
-
-
-
-{/* <Form className='form' onSubmit={handleSave}>
-            <Card className="text-center">  
-                <Card.Header>User Education</Card.Header>
-                <Card.Body>
-                    <Form.Group as={Col} className="mb-3" controlId="name">
-                        <Form.Label>School Name</Form.Label>
-                        <Form.Control name="name" type="text"  disabled={!editMode}
-                            placeholder="Enter your School Name" 
-                            value={education?.name} onChange={handleInputChange} required  
-                        />
-                    </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="graduation">
-                        <Form.Label>Graduation</Form.Label>
-                        <Form.Control name="graduation" type="text"  disabled={!editMode}
-                            placeholder="Enter your school graduation" 
-                            value={education?.graduation} onChange={handleInputChange}  
-                        />
-                    </Form.Group>
-                </Card.Body>
-                <Card.Footer className="text-muted">
-                    {
-                        editMode ? (
-                            <Button variant="primary" type="submit" disabled ={!editMode}>
-                                Save
-                            </Button>   
-                        ) : (
-                            admin && <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
-                        )
-                    }
-
-                </Card.Footer>
-            </Card>
-        </Form> */}

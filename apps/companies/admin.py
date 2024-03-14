@@ -5,8 +5,8 @@ from apps.companies.models import *
 class CompaniesAdmin(admin.ModelAdmin):
     def employees(self,obj):
         return WorksOn.objects.filter(employee__company=obj.company_id).count()
-    list_display = ('company_name', 'description','address','phone','establishment_date','employees')
-    list_display_links = ('company_name', 'description','address','phone','establishment_date','employees')
+    list_display = ('company_name', 'description','address','phone','employees')
+    list_display_links = ('company_name', 'description','address','phone','employees')
     list_filter = ('company_name', 'address__country') 
     list_sorting = ('company_name',)
     ordering = ('company_name',)

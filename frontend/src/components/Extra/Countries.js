@@ -3,13 +3,12 @@ import axios from 'axios';
 
 
 export const getCountries = (countries, setCountries) => {
-    axios('https://restcountries.com/v3.1/all')
+    axios('https://countriesnow.space/api/v0.1/countries')
     .then( response => {
-        const data = response.data;
-        const countryNames = data.map(country => country.name.common);
-        if (!response.ok) {
-            throw new Error('Error fetching data from the server');
-        }else setCountries(countryNames.sort());
+        // const countryNames = data.map(country => country.name.common);
+        if (!response.error) {
+            setCountries(response.data.data.sort());
+        }else throw new Error('Error fetching data from the server');
     })
     .catch(error => console.log(error));
 }

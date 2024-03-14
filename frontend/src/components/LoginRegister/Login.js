@@ -77,7 +77,7 @@ const Login = ({login}) => {
                                 value={formData.email} onChange={handleInputChange} required
                             />
                                 {errors.email } 
-                                <span class="text-danger">{error.email}</span>
+                                <span className="text-danger">{error.email}</span>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
@@ -86,7 +86,7 @@ const Login = ({login}) => {
                                 value={formData.password} onChange={handleInputChange} required
                             />
                                 {errors.password } 
-                                <span class="text-danger">{error.password}</span>
+                                <span className="text-danger">{error.password}</span>
                         </Form.Group>
                     </Card.Body>
                     <Card.Footer className="text-muted">

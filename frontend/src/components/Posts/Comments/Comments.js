@@ -33,7 +33,9 @@ const Comments = ({post,url}) => {
                             </Col>
                             <Col>
                                 <div className="user-details">
-                                    <h5>{comment.user.name}</h5>
+                                    <Link to={`/user/${comment.user.slug}`}>
+                                        <h5>{comment.user.name}</h5>
+                                    </Link>
                                 </div>
                                 <div className="date">
                                     <h6>{new Date(comment.date).toISOString().split('T')[0]}{new Date(comment.date).toISOString().split('T')[1].split('.')[0]}</h6>

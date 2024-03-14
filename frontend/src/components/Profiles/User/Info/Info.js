@@ -131,13 +131,33 @@ const Info = ({user, _user, updateUser, admin}) => {
                             ) 
                         }
                     </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="country">
+
+                    {/* <Form.Group as={Col} className="mb-3" controlId="country">
                         <Form.Label>Country</Form.Label>
                         <Form.Control as="select"  disabled={!editMode} name="country" value={data.country} onChange={handleInputChange} required>
                             <option value="">Select a country</option>
                             {countries.map(country => (<option key={country} value={country}>{country}</option>))}
                         </Form.Control>
+                    </Form.Group> */}
+
+                    <Form.Group as={Col} className="mb-3" controlId="contact">
+                        <Form.Label>Country</Form.Label>
+                        {countries ? (
+                            <Form.Control as="select" default={data.country} disabled={!editMode} name="country" value={data.country} onChange={handleInputChange} required>
+                                {countries.map((country, index) => (
+                                    <option key={index} value={country.country}>
+                                        {country.country}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        ) : (
+                            <Form.Control name="country" type="text" disabled={!editMode}
+                                placeholder="Enter Country"
+                                value={data.country} onChange={handleInputChange} required
+                            />
+                        )}
                     </Form.Group>
+
                     <Form.Group as={Col} className="mb-3" controlId="phone">
                         <Form.Label>Phone</Form.Label>
                         <Form.Control name="phone" type="text"  disabled={!editMode}

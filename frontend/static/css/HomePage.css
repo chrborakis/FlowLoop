@@ -1,8 +1,15 @@
 .homepage{
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  /* flex-direction: column; */
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+
+.box{
+  padding: 2%;
+  flex: 1; /* Each box takes up equal space */
+  border: 1px solid #000; /* Just for visualization */
+  text-align: center;
 }
 
 .space{

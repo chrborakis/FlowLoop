@@ -48,12 +48,15 @@ const NewPost = ({ user, url, newPost}) => {
             "body": formData.description,
             ...(formData.image && { "image": formData.image }),
         }
-
+        console.url += '/0'
+        co
         axios.post(url += '/0', data,{
+            withCredentials: true,
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
             'Content-Type': 'multipart/form-data'
-        }
-        }).then(  res => {
+        }})
+        .then(  res => {
+            console.log(res)
             {console.log("New Post res.data: ", res.data)
             newPost(res.data);
             setIsContentVisible(false)}

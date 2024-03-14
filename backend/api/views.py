@@ -35,10 +35,12 @@ class UsersView(APIView):
         return Response(output)
     
     def post( self, request):
+        print("IN USERS API")
         serializer = UsersSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UserView(APIView):
     def get(self, request, pk):
@@ -57,10 +59,26 @@ class UsersCredentialView(APIView):
         return Response(output)
     
     def post( self, request):
-        serializers = UsersCredentialSerializer(data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(data=serializers.data, status=status.HTTP_200_OK)
+        serializer = UsersCredentialSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class AddressView(APIView):
+    def get(self, request, id):
+        try:
+            instance = get_object_or_404(Address, id=id)
+            serializers = AddressSerializer(instance)
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Address instance not found.'}, status=404)    
+    def post( self, request, id):
+        serializer = AddressSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class EducationView(APIView):
     def get(self, request, user):
@@ -72,9 +90,10 @@ class EducationView(APIView):
             return Response({'error': 'Education instance not found.'}, status=404)    
     def post( self, request):
         serializer = EducationSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UniversityView(APIView):
     def get(self, request, user):
@@ -87,9 +106,10 @@ class UniversityView(APIView):
     
     def post( self, request):
         serializer = UniversitySerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
         
 class CompaniesView(APIView):
@@ -101,7 +121,6 @@ class CompaniesView(APIView):
                 "slug": output.slug,
                 "description": output.description,
                 "image": str(output.image.url) if output.image else '',
-                "establishment_date": output.establishment_date,
                 "creation_date": output.creation_date,
                 "address": str(output.address),
                 "phone": str(output.phone)
@@ -112,25 +131,26 @@ class CompaniesView(APIView):
             return Response({"error": "UnicodeDecodeError occurred while processing data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post( self, request):
-        serializers = CompaniesSerializer(data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        print("DATA IN API: ", request.data)
+        serializer = CompaniesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
 class CompanyView(APIView):    
     def get( self, request, pk):
         instance = get_object_or_404(Companies, slug=pk)
         serializers = CompaniesSerializer(instance)
         # print(serializers.data)
         return Response(serializers.data)
-
-    def post( self, request, company):
-        serializer = PostsPrivateSerializer( data = request.data)
-        if serializer.is_valid(raise_exception=True):
+    def post( self, request, pk):
+        print("DATA IN API: ", request.data)
+        serializer = CompaniesSerializer(data=request.data)
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class WorkRequestsView(APIView):
     def get( self, request, company):
@@ -141,9 +161,10 @@ class WorkRequestsView(APIView):
     def post( self, request):
         print(request.data)
         serializer = WorkRequestsSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetWorkRequestView(APIView):
     def get( self, request, user):
@@ -154,10 +175,16 @@ class GetWorkRequestView(APIView):
     def post( self, request, user):
         print("DATA IN API -> ", request.data)
         serializer = WorkRequestsSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UserCompanyRequestView(APIView):
+    def get( self, request, user, company):
+        instance = get_object_or_404(WorkRequests, user=user, company=company)
+        serializers = WorkRequestsSerializer(instance)
+        return Response(serializers.data)
 
 class WorksOnView(APIView):
     def get( self, request):
@@ -178,10 +205,11 @@ class WorksOnView(APIView):
         return Response(output)
     
     def post( self, request):
-        serializers = WorksOnSerializer(data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = WorksOnSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class FriendRequestList(APIView):
     def get( self, request, id):
@@ -193,9 +221,10 @@ class FriendRequestList(APIView):
             return Response({'error': 'FriendRequests instances not found.'}, status=404)    
     def post( self, request):
         serializer = FriendsRequestsSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class FriendRequest(APIView):
     def get( self, request):
@@ -212,9 +241,10 @@ class FriendRequest(APIView):
     def post( self, request):
         print("IN API" ,request.data)
         serializer = FriendsRequestsSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)  
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class AllFriendsRequestsView(APIView):
     def get( self, request):
@@ -233,9 +263,10 @@ class FriendsView(APIView):
     def post( self, request, user):
         print("DATA IN API -> ", request.data)
         serializer = FriendsSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AllFriendsView(APIView):
     def get( self, request):
@@ -266,10 +297,11 @@ class PostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request, company):
-        serializers = PostsPrivateSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)       
+        serializer = PostsPrivateSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class IdPostsPublicView(APIView):
     def get( self, request, user):
@@ -292,10 +324,11 @@ class AllPostsPrivateView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        serializers = PostsPrivateSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPrivateSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 # CALL ON EVERY NEW POST TO UPDATE THE ARRAY OF POSTS
 class PostPublicView(APIView):
@@ -318,10 +351,11 @@ class PostsPrivateView(APIView):
         return Response(serializers.data)
 
     def post( self, request, company):
-        serializers = PostsPrivateSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPrivateSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class IdPostsPrivateView(APIView):
     def get( self, request, id):
@@ -330,10 +364,11 @@ class IdPostsPrivateView(APIView):
         return Response(serializers.data)
 
     def post( self, request, company):
-        serializers = PostsPrivateSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPrivateSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         
 class AllPublicCommentView(APIView):
@@ -349,10 +384,11 @@ class AllPublicCommentView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PostsPublicCommentsSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPublicCommentsSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class AllPrivateCommentView(APIView):
     def get( self,request):
@@ -367,10 +403,11 @@ class AllPrivateCommentView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PostsPrivateCommentsSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPrivateCommentsSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PublicCommentView(APIView):
     def get( self, request, post):
@@ -380,10 +417,11 @@ class PublicCommentView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PostsPublicCommentsSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPublicCommentsSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class PrivateCommentView(APIView):
     def get( self, request, post):
@@ -393,10 +431,11 @@ class PrivateCommentView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PostsPrivateCommentsSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPrivateCommentsSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AllPublicLikesView(APIView):
     def get( self, request):
@@ -411,12 +450,11 @@ class AllPublicLikesView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PublicLikesSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
-        else:
-            print(serializers.errors)
+        serializer = PublicLikesSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AllPrivateLikesView(APIView):
     def get( self, request):
@@ -431,12 +469,11 @@ class AllPrivateLikesView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PrivateLikesSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
-        else:
-            print(serializers.errors)
+        serializer = PrivateLikesSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PublicLikesView(APIView):
     def get( self, request, post):
@@ -446,11 +483,11 @@ class PublicLikesView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PostsPublicLikesSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
-        
+        serializer = PostsPublicLikesSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PrivateLikesView(APIView):
     def get( self, request, post):
@@ -460,7 +497,8 @@ class PrivateLikesView(APIView):
     
     def post( self, request):
         print("data : ", request.data)
-        serializers = PostsPrivateLikesSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data)
+        serializer = PostsPrivateLikesSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

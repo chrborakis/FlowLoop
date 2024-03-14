@@ -11,7 +11,7 @@ import Info from './Info';
 const CompanyProfile = () => {
     // const { addRequest } = useReq();   
 
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { slug } = useParams();
     const [ data, setData] = useState();
 
@@ -21,10 +21,18 @@ const CompanyProfile = () => {
     useEffect( () => {getCompany(setData, slug)}, [slug]);
 
     useEffect(() => {
-        if(data) get_request( user, user?.id, data?.company_id, setRequested);
-    }, [slug, data, requested]);
+        console.log(slug, requested, data)
+        if(data) get_request( user, user?.id, data?.company_id, setRequested)
+    }, [ data, slug, requested]);
 
-    const sendRequest = () => sendWorkRequest( user.id, data?.company_id, setRequested);
+    const sendRequest = () => {
+        const user_data = {
+            "user": user.id,
+            "company": data?.company_id,
+            "status": "P"
+        }
+        sendWorkRequest( user_data, setRequested)
+    };
 
     return (
         <div>
@@ -46,7 +54,7 @@ const CompanyProfile = () => {
                     </div>
                     <div className="right-side">
                     {user?.company?.id == data?.company_id ? (
-                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={requested==='A'}/>
+                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={true}/>
                     ) : (<>
                         {/* If user is not member of company! */}
                         <p>You should grant access to view content!</p>

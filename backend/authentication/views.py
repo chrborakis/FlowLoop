@@ -92,11 +92,10 @@ def register_view(request):
         base_url = get_base_url(request)
         try:
             response_cred = requests.post(base_url+'/backend/api/userscredential', json=user_credentials)
-            print("userscredential status: ", response_cred.status_code)
-            user_cred_data = response_cred.json()
-            print("userscredential Response data:", user_cred_data)
-
             if response_cred.status_code == 200:
+                user_cred_data = response_cred.json()
+                print("userscredential Response data:", user_cred_data)
+
                 user = {
                     "user":    user_cred_data['user_id'],
                     "firstname":  data.get('formData').get('firstname'),
@@ -106,29 +105,41 @@ def register_view(request):
                     "country":    data.get('formData').get('country'),
                     "phone":      data.get('formData').get('phone'),
                 }
-                response_user = requests.post(base_url+'/backend/api/users', json=user)
-                
-                print("users status: ", response_user.status_code)
-                user_data = response_user.json()
-                print("Response data:", user_data)
 
-                user1 = {
-                    'id': user_data['user'],
-                    'name':  f"{user_data['firstname']} {user_data['lastname']}",
-                    'slug':  user_data['slug'],
-                    'image': user_data['image'],
-                    'company': None,
-                    'work_id': None
-                }
+                try:
+                    response_user = requests.post(base_url+'/backend/api/users', json=user)
+                    user_data = response_user.json()
+                    print("Response data:", user_data)
 
-                return JsonResponse({
-                    'message': 'Register Successful',
-                    # 'user': user_cred_data,
-                    'user': json.dumps(user1),
-                    'authenticated': True
-                })
-                
+                    user1 = {
+                        'id': user_data['user'],
+                        'name':  f"{user_data['firstname']} {user_data['lastname']}",
+                        'slug':  user_data['slug'],'image': user_data['image'],
+                        'company': None,'work_id': None
+                    }
+
+                    return JsonResponse({
+                        'message': 'Register Successful',
+                        'user': json.dumps(user1),
+                        'authenticated': True,
+                        'status': response_user.status_code
+                    })
+
+                except Exception as e:
+                    # If user creation fails, delete the corresponding user credentials
+                    print("ERROR USER")
+                    instance = UsersCredentials.objects.get(pk=str(user_cred_data['user_id'])) 
+                    instance.delete()
+                    # requests.delete(base_url+'/backend/api/userscredential' + str(user_cred_data['user_id']))
+                    return JsonResponse({
+                        'message': "User Register failed!",
+                        'error': response_user.json(),
+                        'authenticated': False,
+                        'status': response_user.status_code
+                    })
+            
+            else:   # If user credent fails
+                print(" User Cref Fails: ",response_cred.json())
+                return JsonResponse({'error': response_cred.json()})
         except:
             return JsonResponse({'message': 'Error creating user credentials'})
-
-        return JsonResponse({'message': 'Valid credentials'})

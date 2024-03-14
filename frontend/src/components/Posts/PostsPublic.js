@@ -36,12 +36,12 @@ const PostsPublic = ({user, url, slug, displayNew}) => {
         <InfiniteScroll
             dataLength={posts?.length}
             next={loadMore}
-            hasMore={hasNextPage} loader={<div class="loader-container"><CircleLoader color="#36d7b7" /></div>}
+            hasMore={hasNextPage} loader={<div className="loader-container"><CircleLoader color="#36d7b7" /></div>}
             endMessage={<p style={{ textAlign: 'center' }}><b>Yay! You have seen it all</b></p>}
             // refreshFunction={this.refresh}
             // pullDownToRefresh pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={ <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>}
-            releaseToRefreshContent={<h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>}
+            pullDownToRefreshContent={<div style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</div>}
+        releaseToRefreshContent={<div style={{ textAlign: 'center' }}>&#8593; Release to refresh</div>}
         >
             {posts.map( post => 
                 post && <Post key={post.post_id} post={post} url={url}/>

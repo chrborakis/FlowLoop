@@ -41,9 +41,7 @@ export const send_request = async( user1, request, setRequested, status) => {
 export const getEducation = async( user, setEducation) => {
     axios.get(`/backend/education/${user}`)
     .then(  res => {
-        if(res.data.status !== 404){
-            setEducation(res.data.data)
-        }
+        if(res.data.status !== 404){setEducation(res.data.data)}
     })
     .catch( err => console.log(err))
 }
@@ -51,10 +49,8 @@ export const getEducation = async( user, setEducation) => {
 export const postEducation = async( data, setEdit) => {
     axios.post("/backend/education/0", data)
     .then(  res => {
-        if(res.data.status === 200){
-            setEdit(false)
-        }
-    })
+        if(res.data.status === 200)
+        setEdit(false)})
     .catch( err => console.log(err))
 }
 
@@ -72,11 +68,6 @@ export const getUniversity = async( user, setUniversity) => {
 export const postUniversity = async( user, data, setEdit) => {
     console.log(data)
     axios.post(`/backend/university/${user}`, data)
-    .then(  res => {
-        console.log(res)
-        if(res.status === 200){
-            setEdit(false)
-        }
-    })
+    .then(  res => {if(res.status === 200)setEdit(false)})
     .catch( err => console.log(err))
 }

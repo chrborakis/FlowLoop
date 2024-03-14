@@ -15,8 +15,7 @@ class Companies(models.Model):
     address = models.OneToOneField(Address, on_delete=models.CASCADE, unique=True)
     phone = PhoneNumberField(unique=True,blank=False, null=False)
     image = models.ImageField(upload_to="company_image", blank=True, null=True)
-    establishment_date = models.DateField(blank=False, null=False)
-    creation_date = models.DateField(default=now, editable=False, blank=True, null=True)
+    creation_date = models.DateField(default=now().date(), editable=False, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.company_name)

@@ -37,10 +37,6 @@ const University = ({user, university, admin}) => {
         setData([...data, newUniversity]);
     }
 
-    // const startsWithInteger = (variable) => {
-    //     return /^\d/.test(variable);
-    // };
-
     const handleRemoveUniversity = (universityId) => {
         const updatedData = data.filter(uni => uni.id !== universityId);
         // const updatedData = data.map(uni => {
@@ -71,9 +67,9 @@ const University = ({user, university, admin}) => {
         // const date = new Date(selectedDate).toISOString().split('T')[0];
 
         const updatedData = data.map(item => {
-            const updatedItem = { ...item }; // Create a copy of the original object
-            updatedItem.graduation = new Date(updatedItem.graduation).toISOString().split('T')[0]; // Update the graduation date
-            return updatedItem; // Return the updated object
+            const updatedItem = { ...item }; 
+            updatedItem.graduation = new Date(updatedItem.graduation).toISOString().split('T')[0];
+            return updatedItem; 
         });
 
         postUniversity( user, updatedData, setEdit)

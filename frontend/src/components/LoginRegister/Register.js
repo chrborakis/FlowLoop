@@ -41,6 +41,7 @@ const Register = ({login}) => {
 
     const handleRegister = (e) => {
         e.preventDefault()
+        setErrors(null)
         formData.gender = gender;
         console.log(formData);
 
@@ -54,10 +55,8 @@ const Register = ({login}) => {
 
         if( Object.keys(newErrors).length>0){
             setErrors(newErrors);
-            console.log("ERROR")
             return;
         }else{
-            console.log("OK")
             register();
         }
     }
@@ -69,6 +68,8 @@ const Register = ({login}) => {
         axios.post('backend/authentication/register', { formData }
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
         ).then(res => {
+            console.log(res.data.error)
+            setErrors(res.data.error)
             if(res.data.authenticated){
                 console.log(JSON.parse(res.data.user))
                 onLogin(JSON.parse(res.data.user));
@@ -84,49 +85,48 @@ const Register = ({login}) => {
                     <Card.Header>Login</Card.Header>
                     <Card.Body>
                         <Row>
-                            <Form.Group as={Col} className="mb-3" controlId="formBasicEmail">
+                            <Form.Group as={Col} className="mb-3" controlId="firstname">
                                 <Form.Label>First Name</Form.Label>
                                 <Form.Control name="firstname" type="text" 
                                     placeholder="Enter your First Name" 
                                     value={formData.firstname} onChange={handleInputChange} required  
                                 />
-                                    {errors.firstname && <span className="text-danger">{errors.firstname}</span>}
+                                    {errors?.firstname && <span className="text-danger">{errors?.firstname}</span>}
                             </Form.Group>
-                            <Form.Group as={Col} className="mb-3" controlId="formBasicEmail">
+                            <Form.Group as={Col} className="mb-3" controlId="lastname">
                                 <Form.Label>Last Name</Form.Label>
                                 <Form.Control name="lastname" type="text" 
                                     placeholder="Enter your Last Name" 
                                     value={formData.lastname} onChange={handleInputChange}  required  
                                 />
-                                    {errors.lastname && <span className="text-danger">{errors.lastname}</span>}
+                                    {errors?.lastname && <span className="text-danger">{errors?.lastname}</span>}
                             </Form.Group>
                         </Row>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Group className="mb-3" controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control name="email" type="email" 
                                 placeholder="Enter your Email" 
                                 value={formData.email} onChange={handleInputChange} required  
                             />
-                                {errors.email }
-                                {/*  && <span className="text-danger">{errors.email}</span>} */}
+                                {errors?.email  && <span className="text-danger">{errors?.email}</span>} 
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                        <Form.Group className="mb-3" controlId="password">
                             <Form.Label>Password</Form.Label>
                             <Form.Control name="password" type="password" 
                                 placeholder="Enter your Password" 
                                 value={formData.password} onChange={handleInputChange} required  
                             />
-                                {errors.password && <span className="text-danger">{errors.password}</span>}
+                                {errors?.password && <span className="text-danger">{errors?.password}</span>}
                         </Form.Group>
                         <Row>
-                            <Form.Group as={Col} controlId="formBasicDropdown">
+                            <Form.Group as={Col} controlId="dropdown">
                                 <Form.Label>Dropdown</Form.Label>
                                 <DropdownButton id="dropdown-basic-button" title={gender || 'Select your gender'}
                                     onSelect={handleDropdownSelect}>   
                                     <Dropdown.Item eventKey="M">Male</Dropdown.Item>
                                     <Dropdown.Item eventKey="F">Female</Dropdown.Item>
                                 </DropdownButton>
-                                    {errors.gender && <span className="text-danger">{errors.gender}</span>}
+                                    {errors?.gender && <span className="text-danger">{errors?.gender}</span>}
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="occupation">
                                 <Form.Label>Occupation</Form.Label>
@@ -134,25 +134,36 @@ const Register = ({login}) => {
                                     placeholder="Enter your Occupation" 
                                     value={formData.occupation} onChange={handleInputChange} required  
                                 />
-                                    {errors.occupation && <span className="text-danger">{errors.occupation}</span>}
+                                    {errors?.occupation && <span className="text-danger">{errors?.occupation}</span>}
                             </Form.Group>
                         </Row>
                         <Row>
-                            <Form.Group as={Col} className="mb-3" controlId="contact">
+                            <Form.Group as={Col} className="mb-3" controlId="country">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Control as="select" name="country" value={formData.country} onChange={handleInputChange} required>
-                                    <option value="">Select a country</option>
-                                    {countries.map(country => (<option key={country} value={country}>{country}</option>))}
-                                </Form.Control>
-                                    {errors.country && <span className="text-danger">{errors.country}</span>}
-                                </Form.Group>
-                                <Form.Group as={Col} className="mb-3" controlId="contact">
+                                {countries ? (
+                                    <Form.Control as="select" name="country" value={formData.country} onChange={handleInputChange} required>
+                                            {countries.map((country, index) => (
+                                                <option key={index} value={country.country}>
+                                                    {country.country}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    ) : (
+                                        <Form.Control name="country" type="text"
+                                            placeholder="Enter Country"
+                                            value={formData.country} onChange={handleInputChange} required
+                                        />
+                                    )}
+                                    {errors?.country && <span className="text-danger">{errors?.country}</span>}
+                            </Form.Group>
+
+                            <Form.Group as={Col} className="mb-3" controlId="phone">
                                 <Form.Label>Phone</Form.Label>
                                 <Form.Control name="phone" type="text" 
                                     placeholder="Enter your Phone" 
                                     value={formData.phone} onChange={handleInputChange} required  
                                 />
-                                    {errors.phone && <span className="text-danger">{errors.phone}</span>}
+                                    {errors?.phone && <span className="text-danger">{errors?.phone}</span>}
                             </Form.Group>
                         </Row>
                     </Card.Body>
