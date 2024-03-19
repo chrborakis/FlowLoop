@@ -22,7 +22,11 @@ const UserProfile = () => {
     const [ work, setWork] = useState();
     const [requested, setRequested] = useState(false);
 
-    useEffect( () => {getUser(setData, setWork, slug)}, [slug]);
+    useEffect( () => {
+        setData(null)
+        getUser(setData, setWork, slug)
+        setRequested(false)
+    }, [slug]);
 
     useEffect(() => {
         if(data && user.id!=data.user)

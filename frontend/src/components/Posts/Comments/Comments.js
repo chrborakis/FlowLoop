@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 
 import '../../../../static/css/Posts/Comment.css';
 
+import { scrollTop } from "../../Extra/LinkOnTop";
+
 const Comments = ({post,url}) => {
     // post: post_id
     // url: ../backend/postpubliccomments OR backend/postpubliccomments
@@ -33,7 +35,7 @@ const Comments = ({post,url}) => {
                             </Col>
                             <Col>
                                 <div className="user-details">
-                                    <Link to={`/user/${comment.user.slug}`}>
+                                    <Link to={`/user/${comment.user.slug}`} onClick={scrollTop}>
                                         <h5>{comment.user.name}</h5>
                                     </Link>
                                 </div>

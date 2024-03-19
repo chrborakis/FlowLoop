@@ -4,6 +4,7 @@ import Likes from "./Likes/Likes";
 import { Link } from "react-router-dom";
 import {Card, Row,Col} from 'react-bootstrap';
 import '../../../static/css/Posts/Post.css';
+import {scrollTop} from '../Extra/LinkOnTop';
 
 const Post = ({post, url}) => {
     return(
@@ -58,12 +59,12 @@ const Post = ({post, url}) => {
                 <Col>
                     <div className="user-details">
                         { post.user?.company_name && <div className="company">
-                            <Link to={`/company/${post.user?.company_slug}`}>
+                            <Link to={`/company/${post.user?.company_slug}`} onClick={scrollTop}>
                                 <h3>{post.user?.company_name}</h3>
                             </Link>
                         </div>}
                         <div className="user">
-                            <Link to={`/user/${post.user?.user_slug}`}>
+                            <Link to={`/user/${post.user?.user_slug}`} onClick={scrollTop}>
                                 <h4>{post.user?.user_name}</h4>
                             </Link>
                         </div>

@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 export const getUser = async( setData, setWork, slug) => {
     axios.get(`/backend/user/${slug}`)
     .then(  res => {
+        console.log("USERDATA: ", res.data)
         setData(res.data.data)
         setWork(res.data.workon)
     })

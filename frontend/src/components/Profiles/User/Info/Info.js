@@ -43,7 +43,6 @@ const Info = ({user, _user, updateUser, admin}) => {
         axios.post(`../backend/user/${user.slug}`, { data }
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
         then( res => {
-            console.log(res.data)
             if(res.data?.status === 200) {
                 if(_user.slug != res.data.data.slug){
                     const {firstname, lastname, slug} = res.data.data
@@ -131,15 +130,6 @@ const Info = ({user, _user, updateUser, admin}) => {
                             ) 
                         }
                     </Form.Group>
-
-                    {/* <Form.Group as={Col} className="mb-3" controlId="country">
-                        <Form.Label>Country</Form.Label>
-                        <Form.Control as="select"  disabled={!editMode} name="country" value={data.country} onChange={handleInputChange} required>
-                            <option value="">Select a country</option>
-                            {countries.map(country => (<option key={country} value={country}>{country}</option>))}
-                        </Form.Control>
-                    </Form.Group> */}
-
                     <Form.Group as={Col} className="mb-3" controlId="contact">
                         <Form.Label>Country</Form.Label>
                         {countries ? (

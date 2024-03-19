@@ -49,7 +49,6 @@ const NewPost = ({ user, url, newPost}) => {
             ...(formData.image && { "image": formData.image }),
         }
         console.url += '/0'
-        co
         axios.post(url += '/0', data,{
             withCredentials: true,
             headers: {'X-CSRFToken': Cookies.get('csrftoken'),
