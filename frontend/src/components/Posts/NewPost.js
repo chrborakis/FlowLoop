@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Button } from 'react-bootstrap'; 
 import '../../../static/css/Profile/Forms.css';
 
+import { postPost } from './PostUtils';
 
 const NewPost = ({ user, url, newPost}) => {
     const [isContentVisible, setIsContentVisible] = useState(false);
@@ -19,26 +20,13 @@ const NewPost = ({ user, url, newPost}) => {
         setFormData({...formData,[name]: value,});
     };
 
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => { setFormData({
-    //             ...formData,
-    //             image: reader.result,
-    //         });};
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
-
     const handleImageChange = (event) => {
         const imageFile = event.target.files[0];
         setFormData({
             ...formData,
             image: imageFile
         });
-      };
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -48,18 +36,7 @@ const NewPost = ({ user, url, newPost}) => {
             "body": formData.description,
             ...(formData.image && { "image": formData.image }),
         }
-        console.url += '/0'
-        axios.post(url += '/0', data,{
-            withCredentials: true,
-            headers: {'X-CSRFToken': Cookies.get('csrftoken'),
-            'Content-Type': 'multipart/form-data'
-        }})
-        .then(  res => {
-            console.log(res)
-            {console.log("New Post res.data: ", res.data)
-            newPost(res.data);
-            setIsContentVisible(false)}
-        }).catch( err => console.log(err))
+        postPost( url, data, newPost, setIsContentVisible)
     };
 
     return(<>

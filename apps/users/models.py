@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.forms import ValidationError
 from django.utils.text import slugify
@@ -20,6 +21,9 @@ class UsersCredentials(models.Model):
         return f'{self.email}'
 
 
+def get_upload_path_user(instance, filename):
+    return os.path.join('profile/user', str(instance.slug), filename)
+
 class Users(models.Model):
     user = models.OneToOneField(UsersCredentials, on_delete=models.CASCADE, primary_key=True, blank=False,null=False)
     firstname = models.CharField(max_length=32,blank=False, null=False)
@@ -31,7 +35,7 @@ class Users(models.Model):
         choices=[("M", "Male"),("F", "Female")],
         blank=False, null=False
     )
-    image = models.ImageField(default='user_image/dummy-user.png', upload_to="user_image", blank=True, null=True)
+    image = models.ImageField(upload_to=get_upload_path_user, blank=True, null=True)
     phone = PhoneNumberField(unique=True, blank=False, null=False)
     about = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=64, blank=False,null=False)

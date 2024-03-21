@@ -30,6 +30,7 @@ urlpatterns = [
     path("postpublic/<slug:user>", PostsPublicView.as_view()),
     path("postpublic/<int:user>",     IdPostsPublicView.as_view()),
     path("post_public/<int:post>",     PostPublicView.as_view()),
+    
     path("postprivate",      AllPostsPrivateView.as_view()),
     path("postprivate/<slug:company>", PostsPrivateView.as_view()),
     path("postprivate/<int:id>", IdPostsPrivateView.as_view()),

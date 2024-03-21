@@ -40,7 +40,11 @@ export const getCompany = async( setData, slug) => {
 export const newCompany = async( user_id, data, address, setError, hide) => {
     try {
         const res = await axios.post('/backend/company/0', {data, address}, 
-            {headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
+            {headers: {
+                'X-CSRFToken': Cookies.get('csrftoken'),
+                'Content-Type': 'multipart/form-data'
+            }
+        }
         );
         console.log(res.data);
         if(res.data.status === 400) {
@@ -82,6 +86,8 @@ export const newCompany = async( user_id, data, address, setError, hide) => {
 //     })
 // }
 
+
+// CREATE ADDRESS
 export const createCompany = async( user_id, data, address, setError, hide) => {
     try {
         const res = await axios.post('/backend/address/0', { address}, 

@@ -4,6 +4,7 @@ import Post from "./Post";
 import NewPost from "./NewPost";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircleLoader } from 'react-spinners';
+import { getPosts } from "./PostUtils";
 
 const PostsPublic = ({user, url, slug, displayNew}) => {
     // url: ../backend/postpublic OR backend/postpublic
@@ -14,7 +15,8 @@ const PostsPublic = ({user, url, slug, displayNew}) => {
     const [hasNextPage, setHasNextPage] = useState(true);
 
     useEffect( () => {
-        GetPosts({ onFetch: setPosts, url: url+slug, setLoading:setLoading, setHasNextPage:setHasNextPage, currentPage:currentPage});
+        // GetPosts({ onFetch: setPosts, url: url+slug, setLoading:setLoading, setHasNextPage:setHasNextPage, currentPage:currentPage});
+        getPosts(setPosts, url+slug, setLoading, setHasNextPage, currentPage)
     }, [slug, currentPage]);
 
     useEffect( () => {  

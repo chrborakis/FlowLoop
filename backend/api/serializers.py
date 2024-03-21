@@ -40,7 +40,7 @@ class CompaniesSerializer(serializers.ModelSerializer):
             'slug',
             'description',
             'image',
-            # 'establishment_date',
+            'establishment_date',
             'creation_date',
             'address',
             'phone'

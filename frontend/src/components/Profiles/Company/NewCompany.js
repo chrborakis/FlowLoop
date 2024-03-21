@@ -10,6 +10,12 @@ const NewCompany = (props) => {
     const { user, updateUser } = useAuth()
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
+
+    const today = new Date()
+    const minDate = new Date(today.getFullYear() - 50, today.getMonth(), today.getDate());
+
+    const [selectedDate, setSelectedDate] = useState();
+    const handleDateChange = (date) => setSelectedDate(new Date(date));
     
     const [address, setAddress] = useState({
         country: "",
@@ -20,13 +26,7 @@ const NewCompany = (props) => {
         company_name: '',  description: '', phone: '',    
     });
 
-    const handleImageChange = (event) => {
-        const imageFile = event.target.files[0];
-        setFormData({
-            ...formData,
-            image: imageFile
-        });
-      };
+    
 
     const [errors, setError] = useState()
 
@@ -57,17 +57,25 @@ const NewCompany = (props) => {
         setAddress({...address,[name]: value,});
     };
 
+    const handleImageChange = (event) => {
+        const imageFile = event.target.files[0];
+        setFormData({
+            ...formData,
+            image: imageFile
+        });
+      };
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError(null);
-        const data = { ...formData}
+        const date = new Date(selectedDate).toISOString().split('T')[0];
+        const data = { ...formData, date}
 
         console.log(data)
         console.log(address)
         
         createCompany( user.id, data, address, setError, props.onHide)
         .then(res => {
-            console.log("IN NEWC",res.data)
             console.log(res.data)
             updateUser({
                     ...user, 
@@ -102,6 +110,16 @@ const NewCompany = (props) => {
                         />
                             {errors?.company_name && <span className="text-danger">{errors?.company_name}</span>}
                     </Form.Group>
+                    <Form.Group as={Col} className="mb-3" controlId="Started">
+                    <Form.Label>Started</Form.Label>
+                        <DatePicker  required
+                            selected={selectedDate} onChange={handleDateChange}
+                            dateFormat="yyyy-MM-dd"
+                            minDate={minDate} maxDate={today}
+                            isClearable ={true}
+                            showYearDropdown={true} scrollableYearDropdown={true}
+                        />
+                        </Form.Group>
                 </Row>
                 <Row>
                     <Form.Group as={Col} className="mb-3" controlId="description">
@@ -113,7 +131,7 @@ const NewCompany = (props) => {
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group className='mb-3' controlId='image'>
+                    <Form.Group className='mb-3' controlId='formImage'>
                         <Form.Label>Image</Form.Label>
                         <Form.Control type="file" accept="image/*"
                             onChange={handleImageChange} 

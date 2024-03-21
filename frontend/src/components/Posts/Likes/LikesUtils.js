@@ -16,6 +16,6 @@ export const postLike = async( url, post, like, setLiked) => {
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),
         'Content-Type': 'application/json'}
     })
-        .then(  res => setLiked((prevValue) => !prevValue))
-        .catch( err => console.log(err.data))
+    .then(  res => setLiked((prevValue) => !prevValue))
+    .catch( err => console.log(err.data))
 };

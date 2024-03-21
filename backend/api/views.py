@@ -283,12 +283,12 @@ class AllPostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print(request.data)
-        serializers = PostsPublicSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            saved_instance = serializers.save()
-            serialized_data = PostsPublicSerializer(saved_instance).data
-            return JsonResponse(data=serialized_data, status=201)
+        print("AllDATA IN API", request.data)
+        serializer = PostsPublicSerializer( data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class PostsPublicView(APIView):    
     def get( self, request, user):
@@ -296,9 +296,10 @@ class PostsPublicView(APIView):
         serializers = PostsPublicSerializer(instances, many=True)        
         return Response(serializers.data)
 
-    def post( self, request, company):
-        serializer = PostsPrivateSerializer( data = request.data)
-        if serializer.is_valid():
+    def post( self, request):
+        print("1DATA IN API", request.data)
+        serializer = PostsPublicSerializer( data = request.data)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -310,12 +311,12 @@ class IdPostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print(request.data)
-        serializers = PostsPublicSerializer( data = request.data)
-        if serializers.is_valid(raise_exception=True):
-            saved_instance = serializers.save()
-            serialized_data = PostsPublicSerializer(saved_instance).data
-            return JsonResponse(data=serialized_data, status=201)
+        print("2DATA IN API", request.data)
+        serializer = PostsPublicSerializer( data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AllPostsPrivateView(APIView):
     def get( self, request):

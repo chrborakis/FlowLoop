@@ -2,11 +2,13 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
+import os
 
 from apps.users.models import Users
 from apps.models import Address
 
-
+def get_upload_path_company(instance, filename):
+    return os.path.join('profile/company', str(instance.company_name), filename)
 class Companies(models.Model):
     company_id = models.AutoField(primary_key=True)
     company_name = models.CharField(unique=True,blank=False, null=False)
@@ -14,7 +16,8 @@ class Companies(models.Model):
     description = models.TextField(blank=True, null=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE, unique=True)
     phone = PhoneNumberField(unique=True,blank=False, null=False)
-    image = models.ImageField(upload_to="company_image", blank=True, null=True)
+    image = models.ImageField(upload_to=get_upload_path_company, blank=True, null=True)
+    establishment_date = models.DateField(blank=False, null=False)
     creation_date = models.DateField(default=now().date(), editable=False, blank=True, null=True)
 
     def save(self, *args, **kwargs):

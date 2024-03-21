@@ -153,16 +153,30 @@ def address(request, pk):
 def company(request, pk):
     base_url = get_base_url(request)
     if request.method == 'POST':
-
-        data = json.loads(request.body.decode('utf-8'))
-        company    = data.get("data")
-        address = data.get("address")
-        company["address"] = address
-        print("Company: ", company)
+        data = {
+            'company_name':       request.POST.get('data[company_name]'),
+            'establishment_date': request.POST.get('data[date]'),
+            'description':        request.POST.get('data[description]'),
+            # 'image':              request.FILES.get('data[image]').name,
+            'phone':              request.POST.get('data[phone]'),
+            'address' :           int(request.POST.get('address'))
+        }
+        print("Company: ", data)
 
         base_url = get_base_url(request)
         try:
-            response = requests.post(base_url+'/backend/api/companies/0', json=company)
+            new_inst = Companies.objects.create(
+                company_name =       data['company_name'],
+                establishment_date = data['establishment_date'],
+                description =        data['description'],
+                phone =              data['phone'],
+                address =            Address.objects.get(pk=data['address']),
+                image =              request.FILES.get('data[image]')
+            )
+            print("NEW INST", new_inst)
+            new_inst.save()
+            response = requests.get(base_url+'/backend/api/companies/'+str(new_inst.slug))
+            # response = requests.post(base_url+'/backend/api/companies/0', json=data)
             print(response)
             new_company = response.json()
 
@@ -173,7 +187,7 @@ def company(request, pk):
                     'status': response.status_code
                 })
             else:
-                instance = get_object_or_404(Address, pk=address)
+                instance = get_object_or_404(Address, pk=data['address'])
                 instance.delete()
                 return JsonResponse({
                     'message': 'Failed to create Company',
@@ -181,7 +195,7 @@ def company(request, pk):
                     'status': response.status_code
                 })
         except Exception as e:
-            instance = get_object_or_404(Address, pk=address)
+            instance = get_object_or_404(Address, pk=data['address'])
             instance.delete()
             return JsonResponse({
                 'message': str(e),
@@ -383,15 +397,14 @@ def friend_requests(request):
         return None
          
 
-@requires_csrf_token
+@csrf_exempt
 def post_public(request, user):
-    base_url = get_base_url(request)
+    base_url = get_base_url(request)    
     if request.method == 'POST':
-        print("IN POST PUBLIC")
         author = int(request.POST.get('author'))
         try:
             author_instance = Users.objects.get(user=author)
-            print("DATA: ", json.loads(request.body.decode('utf-8')))
+            # print("DATA: ", json.loads(request.body.decode('utf-8')))
             new_inst = PostsPublic.objects.create(
                 title=request.POST.get('title'),
                 body=request.POST.get('body'),

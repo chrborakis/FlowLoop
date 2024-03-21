@@ -20,3 +20,5 @@ const Info = ({data}) => {
 }
 
 export default Info;
+
+
