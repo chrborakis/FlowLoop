@@ -10,6 +10,7 @@ const FriendRequests = ({ refresh}) => {
     const reply = (req_id, status) => {
         console.log("REQ_ID", req_id)
         replyRequest( user?.id, req_id, status, setRequests)
+        window.location.reload();
         console.log(requests)
     }
 
@@ -24,7 +25,7 @@ const FriendRequests = ({ refresh}) => {
                 requests.length > 0 && requests.map( (req, idx) => 
                     <div key={req.user1} className="request">
                         <div className="left">
-                            <img src={req.user1_info.image ? req.user1_info.image : "/files/user_image/dummy-user.png"} width={50}/>
+                            <img src={`/files/${req.user1_info.image}`} width={50}/>
                             {req.user1_info.name}
                         </div>
                         <div className="right">

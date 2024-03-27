@@ -7,6 +7,8 @@ import { RequestContext, useReq } from '../../../store/RequestContext';
 
 import PostsPrivate from '../../Posts/PostsPrivate';
 import Info from './Info';
+import { Container, Row, Col, Card } from "react-bootstrap"; 
+import "bootstrap/dist/css/bootstrap.min.css"; 
 
 const CompanyProfile = () => {
     // const { addRequest } = useReq();   
@@ -36,7 +38,6 @@ const CompanyProfile = () => {
 
     return (
         <div>
-        <h1>Company {slug} Profile</h1>
         { data ? (
             <> 
                 <div className='preview'>
@@ -48,12 +49,13 @@ const CompanyProfile = () => {
                     </div>
                 </div>
 
-                <div className="page">
-                    <div className="left-side">
-                        {data && <Info data={data} />}
-                    </div>
-                    <div className="right-side">
-                    {user?.company?.id == data?.company_id ? (
+                <Container fluid className="mt-5"> 
+                    <Row className="justify-content-center"> 
+                        <Col xs={12} md={6} lg={4} className="page-box order-lg-1 order-md-1 order-1">
+                            {data && <Info data={data} />}
+                        </Col> 
+                        <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
+                        {user?.company?.id == data?.company_id ? (
                         <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={true}/>
                     ) : (<>
                         {/* If user is not member of company! */}
@@ -68,8 +70,32 @@ const CompanyProfile = () => {
                         </button>
                     </>)
                     }
+                        </Col> 
+                    </Row> 
+                </Container> 
+
+                {/* <div className="page">
+                    <div className="left-side">
+                        {data && <Info data={data} />}
                     </div>
-                </div>
+                    <div className="right-side">
+                    {user?.company?.id == data?.company_id ? (
+                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={true}/>
+                    ) : (<>
+                        {/* If user is not member of company! */}
+                        {/* <p>You should grant access to view content!</p> */}
+                        {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
+
+                        {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}> */}
+                        {/* { */}
+                            {/* requested === 'P' ? 'Already requested!' :  */}
+                                {/* requested === 'A' ? 'Delete' : 'Send request' */}
+                        {/* } */}
+                        {/* </button> */}
+                    {/* </>) */}
+                    {/* } */}
+                    {/* </div> */}
+                {/* </div> */} 
             </>
         ) : (<></>
         )}

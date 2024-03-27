@@ -6,7 +6,6 @@ import Info from './Info/Info';
 import { useAuth } from '../../../store/AuthContext';
 
 import '../../../../static/css/Profile/Profile.css'
-import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -14,6 +13,9 @@ import Tabs from 'react-bootstrap/Tabs';
 import { get_request } from './UserUtils';
 import Education from './Info/Education';
 import FriendButton from './FriendButton';
+
+import { Container, Row, Col, Card } from "react-bootstrap"; 
+import "bootstrap/dist/css/bootstrap.min.css"; 
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();
@@ -40,7 +42,6 @@ const UserProfile = () => {
                 <> 
                     <div className='preview'>
                         <div className="image">
-                            {console.log}
                             <img src={data?.image} width={150}/>
                         </div>
                         <div className="name">
@@ -54,7 +55,7 @@ const UserProfile = () => {
                         </div>
                     </div>
 
-                    <div className="page">
+                    {/* <div className="page">
                         <div className="left-side">
                             <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
                                 <Tab eventKey="basic-info" title="User Info">
@@ -71,7 +72,34 @@ const UserProfile = () => {
                             }
                             <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                         </div>
-                    </div>
+                    </div> */}
+                    {/* <div className='page'> */}
+                    <Container fluid className="mt-5"> 
+                        <Row className="justify-content-center"> 
+                        {/* <div className='left'> */}
+                            <Col xs={12} md={6} lg={4} className="page-box order-lg-1 order-md-1 order-1">
+                                <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
+                                    <Tab eventKey="basic-info" title="User Info">
+                                        <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
+                                    </Tab>
+                                    <Tab eventKey="education" title="Education">
+                                        <Education user={data.user} admin={user.id===data?.user}/>
+                                    </Tab>
+                                </Tabs>
+                            </Col> 
+                            {/* </div> */}
+                            {/* <div className='right'> */}
+                            <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
+                                {
+                                    user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested}/>
+                                }
+                                <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
+                            </Col> 
+                            {/* </div> */}
+                        </Row> 
+                    </Container> 
+                    {/* </div> */}
+
                 </>
             ) : (
                 <></>

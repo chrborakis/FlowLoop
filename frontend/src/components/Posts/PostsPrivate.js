@@ -7,6 +7,8 @@ import { CircleLoader } from 'react-spinners';
 
 import { getPosts } from "./PostUtils";
 
+import "../../../static/css/Posts/Post.css"
+
 const PostsPrivate = ({user, url, slug, displayNew}) => {
     // url: ../backend/postprivate OR backend/postprivate
 
@@ -37,6 +39,7 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
     return (<>
         { displayNew && <NewPost user={user} url={url} newPost={setNewPost}/>}
 
+        <div className="center-posts">
         <InfiniteScroll
             dataLength={posts?.length}
             next={loadMore}
@@ -55,6 +58,7 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
             <p>No Posts Found!</p>
         )}
         </InfiniteScroll>
+        </div>
     </>);
 };
 
