@@ -79,6 +79,23 @@ class AddressView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, id):
+        print("DATA IN API: ", request.data)
+        try:
+            address_inst = Address.objects.get(pk=id)
+        except Address.DoesNotExist:
+            return Response({"error": "Address not found"}, status=status.HTTP_404_NOT_FOUND)    
+        try:
+            serializer = AddressSerializer(address_inst, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                print("Address updated successfully")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
 class EducationView(APIView):
     def get(self, request, user):
@@ -113,7 +130,7 @@ class UniversityView(APIView):
     
         
 class CompaniesView(APIView):
-    def get( self, request):
+    def get(self, request):
         try:
             output = [{
                 "company_id": output.company_id,
@@ -130,27 +147,55 @@ class CompaniesView(APIView):
         except UnicodeDecodeError:
             return Response({"error": "UnicodeDecodeError occurred while processing data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def post( self, request):
+    def post(self, request):
         print("DATA IN API: ", request.data)
         serializer = CompaniesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+
         
 class CompanyView(APIView):    
-    def get( self, request, pk):
-        instance = get_object_or_404(Companies, slug=pk)
+    def get( self, request, company):
+        instance = get_object_or_404(Companies, slug=company)
         serializers = CompaniesSerializer(instance)
         # print(serializers.data)
         return Response(serializers.data)
-    def post( self, request, pk):
+    def post( self, request, company):
         print("DATA IN API: ", request.data)
-        serializer = CompaniesSerializer(data=request.data)
+        serializer = CompaniesSerializer(slug=company)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, company):
+        print("DATA IN API: ", request.data)
+        try:
+            company_instance = Companies.objects.get(slug=company)
+        except Companies.DoesNotExist:
+            return Response({"error": "Company not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        updated_fields = {}
+        for field_name, value in request.data.items():
+            if hasattr(company_instance, field_name) and getattr(company_instance, field_name) != value:
+                updated_fields[field_name] = value
+        for field_name, value in updated_fields.items():
+            setattr(company_instance, field_name, value)
+    
+        try:
+            serializer = CompaniesSerializer(company_instance, data=updated_fields, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                print("Company updated successfully")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
 
 class WorkRequestsView(APIView):
     def get( self, request, company):

@@ -130,10 +130,10 @@ const Info = ({user, _user, updateUser, admin}) => {
                             ) 
                         }
                     </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="contact">
+                    <Form.Group as={Col} className="mb-3" controlId="country">
                         <Form.Label>Country</Form.Label>
                         {countries ? (
-                            <Form.Control as="select" default={data.country} disabled={!editMode} name="country" value={data.country} onChange={handleInputChange} required>
+                            <Form.Control as="select" default={data.country} value={data.country} disabled={!editMode} name="country" onChange={handleInputChange} required>
                                 {countries.map((country, index) => (
                                     <option key={index} value={country.country}>
                                         {country.country}

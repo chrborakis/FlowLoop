@@ -54,25 +54,7 @@ const UserProfile = () => {
                             }
                         </div>
                     </div>
-
-                    {/* <div className="page">
-                        <div className="left-side">
-                            <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
-                                <Tab eventKey="basic-info" title="User Info">
-                                    <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
-                                </Tab>
-                                <Tab eventKey="education" title="Education">
-                                    <Education user={data.user} admin={user.id===data?.user}/>
-                                </Tab>
-                            </Tabs>
-                        </div>
-                        <div className="right-side">
-                            {
-                                user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested}/>
-                            }
-                            <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
-                        </div>
-                    </div> */}
+     
                     {/* <div className='page'> */}
                     <Container fluid className="mt-5"> 
                         <Row className="justify-content-center"> 

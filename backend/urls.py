@@ -15,7 +15,7 @@ urlpatterns = [
     path('authentication/', include('backend.authentication.urls')),
 
     path("user/<slug:slug>",    UserProfile.as_view()),
-    path("company/<slug:pk>",   views.company),
+    path("company/<slug:company>",   views.company),
     path("address/<int:pk>",    views.address),
 
     path("education/<int:user>",  views.education),

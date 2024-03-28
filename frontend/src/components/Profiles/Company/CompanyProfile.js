@@ -1,26 +1,34 @@
 import React, { useContext, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import { getCompany, get_request, sendWorkRequest } from './CompanyUtils';
+import { getCompany, get_request, sendWorkRequest, getAddress } from './CompanyUtils';
 
 import { useAuth }    from '../../../store/AuthContext';
 import { RequestContext, useReq } from '../../../store/RequestContext';
-
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 import PostsPrivate from '../../Posts/PostsPrivate';
 import Info from './Info';
-import { Container, Row, Col, Card } from "react-bootstrap"; 
+import {Card, Row,Col, Container} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css"; 
-
+import EditIcon from '@mui/icons-material/Edit';
+import Address from './Address';
 const CompanyProfile = () => {
     // const { addRequest } = useReq();   
-
     const { user, updateUser } = useAuth();
     const { slug } = useParams();
+
     const [ data, setData] = useState();
+    const [ address, setAddress] = useState();
 
     const [requested, setRequested] = useState(false);
     const isCompanyNameUnavailable = user?.company?.name === undefined || user?.company?.name === null;
 
     useEffect( () => {getCompany(setData, slug)}, [slug]);
+    console.log("DATA", data)
+    useEffect( () => {
+        if(data?.company_id) 
+            getAddress(data?.company_id, setAddress)
+    },[data?.company_id,slug])
 
     useEffect(() => {
         console.log(slug, requested, data)
@@ -52,7 +60,14 @@ const CompanyProfile = () => {
                 <Container fluid className="mt-5"> 
                     <Row className="justify-content-center"> 
                         <Col xs={12} md={6} lg={4} className="page-box order-lg-1 order-md-1 order-1">
-                            {data && <Info data={data} />}
+                            <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
+                                <Tab eventKey="basic-info" title="Company Info">
+                                    { data    && <Info company={data} admin={data.company_name===user.company.name && user.is_admin}/>}
+                                </Tab>
+                                <Tab eventKey="address" title="Address">
+                                    { address && <Address address={address} admin={data.company_name===user.company.name && user.is_admin}/>}
+                                </Tab>
+                            </Tabs>
                         </Col> 
                         <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
                         {user?.company?.id == data?.company_id ? (
@@ -73,29 +88,6 @@ const CompanyProfile = () => {
                         </Col> 
                     </Row> 
                 </Container> 
-
-                {/* <div className="page">
-                    <div className="left-side">
-                        {data && <Info data={data} />}
-                    </div>
-                    <div className="right-side">
-                    {user?.company?.id == data?.company_id ? (
-                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={true}/>
-                    ) : (<>
-                        {/* If user is not member of company! */}
-                        {/* <p>You should grant access to view content!</p> */}
-                        {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
-
-                        {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}> */}
-                        {/* { */}
-                            {/* requested === 'P' ? 'Already requested!' :  */}
-                                {/* requested === 'A' ? 'Delete' : 'Send request' */}
-                        {/* } */}
-                        {/* </button> */}
-                    {/* </>) */}
-                    {/* } */}
-                    {/* </div> */}
-                {/* </div> */} 
             </>
         ) : (<></>
         )}

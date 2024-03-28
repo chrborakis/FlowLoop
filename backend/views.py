@@ -147,10 +147,18 @@ def address(request, pk):
                 'data': response.json(),
                 'status': response.status_code
             })
+    elif request.method == 'GET':
+        response = requests.get(base_url+'/backend/api/address/'+str(pk))
+        print(response.json())
+        return JsonResponse({
+            'message': 'Address Fetched succesfully',
+            'data': response.json(),
+            'status': response.status_code
+    })
 
 
 @csrf_exempt
-def company(request, pk):
+def company(request, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
         data = {
@@ -203,7 +211,7 @@ def company(request, pk):
                 'status': response.status_code
             })
     if request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/companies/'+str(pk))
+        response = requests.get(base_url+'/backend/api/companies/'+str(company))
         print(response.json())
         return JsonResponse({
             'message': 'Company Fetched succesfully',

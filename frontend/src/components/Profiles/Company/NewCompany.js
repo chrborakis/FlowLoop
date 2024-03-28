@@ -119,7 +119,7 @@ const NewCompany = (props) => {
                             isClearable ={true}
                             showYearDropdown={true} scrollableYearDropdown={true}
                         />
-                        </Form.Group>
+                    </Form.Group>
                 </Row>
                 <Row>
                     <Form.Group as={Col} className="mb-3" controlId="description">
