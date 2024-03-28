@@ -7,9 +7,9 @@ import { RequestProvider }      from "../store/RequestContext";
 
 import "../../static/css/index.css"
 import Appbar from './AppBar/Appbar'
-import axios from 'axios';
 
 import LoginRegister from "./LoginRegister/LoginRegister";
+import NavBar from "./AppBar/NavBar";
 
 const App = () => {
     const { user } = useAuth();   
@@ -18,7 +18,8 @@ const App = () => {
         <Router basename="/">
             <div className="body">
                 { user ? (
-                    <Appbar user={user} messages={0} notifications={0}/>
+                    <NavBar user={user} messages={0} notifications={0}/>
+                    // <Appbar user={user} messages={0} notifications={0}/>
                 ) : (
                     <div>
                         <h1>FlowLoop</h1>

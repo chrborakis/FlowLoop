@@ -29,10 +29,10 @@ import CompanyProfile from '../Profiles/Company/CompanyProfile';
 import BarItems from '../AppBar/BarItems';
 import WorkRequests from '../Requests/WorkRequests';
 
+import FriendRequests from '../Requests/FriendRequests';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
-import FriendRequests from '../Requests/FriendRequests';
 
 const Search = styled('div')(({ theme }) => ({ 
     position: 'relative', 
