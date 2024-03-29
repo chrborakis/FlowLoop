@@ -23,15 +23,15 @@ import '../../../static/css/NavBar.css'
 
 function NavBar({user}) {
     const { logout } = useAuth();
-    const history = useHistory();
-
+    // const history = useHistory();
+    
     // const notifications_label = `show ${notifications} new notifications`
     // const messages_label = `show ${messages} new messages`
-
+    
     const logOut = () => {
         logout()
-        history.push('/')
-        window.location.reload();
+        // history.push('/')
+        // window.location.reload();
     }
 
     const [refreshWorkRequests, setRefreshWorkRequests] = useState(false);
@@ -85,14 +85,20 @@ function NavBar({user}) {
                             <Nav.Link href="#action2">Link</Nav.Link>
                             <Nav.Link href="#action2">LogOut</Nav.Link> */}
                             <Link to={`/user/${user.slug}`}>
-                                {user.name}
+                                <div>
+                                    <img src={`/files/${user.image}`} width={75}/>
+                                    {user.name}
+                                </div>
                             </Link>
                             {user?.company?.slug && 
                                 <Link to={`/company/${user?.company?.slug}`}>
-                                    {user?.company?.name}
+                                    <div>
+                                        <img src={`/files/${user?.company?.image}`} width={75}/>
+                                        {user?.company?.name}
+                                    </div>
                                 </Link>
                             }
-                            <Link onClick={logOut}>Log Out</Link>
+                            <Link to={`/`} onClick={logOut}>Log Out</Link>
                         </Nav>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>

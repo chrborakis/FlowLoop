@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import { getCompany, get_request, sendWorkRequest, getAddress } from './CompanyUtils';
+import { getCompany, get_request, sendWorkRequest, getAddress, getStaff } from './CompanyUtils';
 
 import { useAuth }    from '../../../store/AuthContext';
 import { RequestContext, useReq } from '../../../store/RequestContext';
@@ -8,10 +8,13 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import PostsPrivate from '../../Posts/PostsPrivate';
 import Info from './Info';
-import {Card, Row,Col, Container} from 'react-bootstrap';
-import "bootstrap/dist/css/bootstrap.min.css"; 
-import EditIcon from '@mui/icons-material/Edit';
 import Address from './Address';
+import Staff from './Staff';
+
+import {Card, Row,Col, Container,Button} from 'react-bootstrap';
+import EditIcon from '@mui/icons-material/Edit';
+import "bootstrap/dist/css/bootstrap.min.css"; 
+
 const CompanyProfile = () => {
     // const { addRequest } = useReq();   
     const { user, updateUser } = useAuth();
@@ -19,15 +22,18 @@ const CompanyProfile = () => {
 
     const [ data, setData] = useState();
     const [ address, setAddress] = useState();
+    const [ staff, setStaff] = useState([]);
 
     const [requested, setRequested] = useState(false);
     const isCompanyNameUnavailable = user?.company?.name === undefined || user?.company?.name === null;
 
     useEffect( () => {getCompany(setData, slug)}, [slug]);
-    console.log("DATA", data)
+    
     useEffect( () => {
-        if(data?.company_id) 
+        if(data?.company_id) {
             getAddress(data?.company_id, setAddress)
+            getStaff(  data?.company_id, setStaff)
+        }
     },[data?.company_id,slug])
 
     useEffect(() => {
@@ -66,6 +72,9 @@ const CompanyProfile = () => {
                                 </Tab>
                                 <Tab eventKey="address" title="Address">
                                     { address && <Address address={address} admin={data.company_name===user.company.name && user.is_admin}/>}
+                                </Tab>
+                                <Tab eventKey="staff" title="Staff">
+                                    { staff && <Staff staff={staff}/>}
                                 </Tab>
                             </Tabs>
                         </Col> 

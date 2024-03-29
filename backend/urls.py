@@ -12,13 +12,14 @@ urlpatterns = [
     # path('ws/test/', TextRoomConsumer.as_asgi()),
     # path('ws/',             include(websocket_urlpatterns)),
     path('authentication/', include('backend.authentication.urls')),
+    path("user/<slug:slug>",    UserProfile.as_view()),
 
     path("search_users/<str:name>", views.search_users),
     path("search_companies/<str:name>", views.search_companies),
 
-    path("user/<slug:slug>",    UserProfile.as_view()),
     path("company/<slug:company>",   views.company),
-    path("address/<int:pk>",    views.address),
+    path("address/<int:pk>",      views.address),
+    path("staff/<int:company>",        views.staff),
 
     path("education/<int:user>",  views.education),
     path("university/<int:user>", views.university),

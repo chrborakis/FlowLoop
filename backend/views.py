@@ -91,6 +91,29 @@ def search_companies(request,name):
         else:
             return JsonResponse({'error':'Search query is missing'}, status=status.HTTP_400_BAD_REQUEST)
 
+def staff(request, company):
+    print("company: ", company)
+    if request.method == 'GET':
+        if company:
+            base_url = get_base_url(request)
+            try:
+                response = requests.get(base_url+'/backend/api/workson/'+str(company))
+                print(response)    
+                if response.status_code == 200:
+                    return JsonResponse({
+                        'message': str(company)+' Employees fetched successfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to fethch Employees '+str(company),
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 @csrf_exempt
 def education(request, user):
     base_url = get_base_url(request)

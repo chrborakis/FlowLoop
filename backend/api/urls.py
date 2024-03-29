@@ -19,6 +19,7 @@ urlpatterns = [
     path("workrequests/<int:user>",     GetWorkRequestView.as_view()),
     path("workrequests/<int:user>/<int:company>",     UserCompanyRequestView.as_view()),
     path("workson",          WorksOnView.as_view()),
+    path("workson/<int:company>",    Employees.as_view()),
 
     path("friend_requests/",   FriendRequest.as_view()),
     path("friend_requests/<int:id>",   FriendRequestList.as_view()),

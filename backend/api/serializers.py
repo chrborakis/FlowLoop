@@ -106,6 +106,7 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
         }
 
 class WorksOnSerializer(serializers.ModelSerializer):
+    employee = serializers.SerializerMethodField()
     company = serializers.SerializerMethodField()
     class Meta:
         model = WorksOn
@@ -113,8 +114,17 @@ class WorksOnSerializer(serializers.ModelSerializer):
             'id',
             'employee_id',
             'is_admin',
-            'company'
+            'company',
+            'employee'
         )
+
+    def get_employee(self, obj):
+        return{
+            'id':    str(obj.employee.user.user_id),
+            'name':  str(obj.employee.user.firstname) + ' ' + str(obj.employee.user.lastname),
+            'slug':  str(obj.employee.user.slug),
+            'image': str(obj.employee.user.image)
+        }
 
     def get_company(self,obj):
         company = obj.employee.company
@@ -122,7 +132,8 @@ class WorksOnSerializer(serializers.ModelSerializer):
             return {
                 'id': str(company.company_id),
                 'name': str(company),
-                'slug': str(company.slug)
+                'slug': str(company.slug),
+                'image': str(company.image)
             }
         else:
             return None

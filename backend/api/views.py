@@ -256,6 +256,15 @@ class WorksOnView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+class Employees(APIView):
+    def get( self, request, company):
+        try:
+            instances = get_list_or_404(WorksOn.objects.filter( employee__company=company))
+            serializers = WorksOnSerializer(instances, many=True)        
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Employees not found.'}, status=404)    
+
 class FriendRequestList(APIView):
     def get( self, request, id):
         try:

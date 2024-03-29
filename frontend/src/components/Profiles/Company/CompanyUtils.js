@@ -10,6 +10,15 @@ export const getAddress = async( company, setAddress) => {
     .catch( err => console.log(err))
 }
 
+export const getStaff = async( company, setStaff) => {
+    axios.get(`/backend/staff/${company}`)
+    .then(  res => {
+        console.log(res.data)
+        if(res.data.status === 200)setStaff(res.data.data)
+    })
+    .catch( err => console.log("ERROR", err))
+}
+
 export const updateAddress = async( company, address, setEdit, setError) => {
     axios.put(`../backend/api/address/${company}`, address
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} })
