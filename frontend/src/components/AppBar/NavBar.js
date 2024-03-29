@@ -1,4 +1,4 @@
-import {Button,Container,Form,Nav,Navbar,NavDropdown,Offcanvas,Row,Col} from 'react-bootstrap';
+import {Button,Container,Form,Nav,Navbar,NavDropdown,Offcanvas,Row,Col,Dropdown } from 'react-bootstrap';
 import React, { useEffect, useState }  from 'react';
 
 import IconButton from '@mui/material/IconButton';
@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import UserProfile from '../Profiles/User/UserProfile'
 import HomePage from '../HomePage';
+import SearchBar from './SearchBar';
 import CompanyProfile from '../Profiles/Company/CompanyProfile';
 
 import Tabs from 'react-bootstrap/Tabs';
@@ -18,6 +19,7 @@ import Tab from 'react-bootstrap/Tab';
 
 import WorkRequests from '../Requests/WorkRequests';
 import FriendRequests from '../Requests/FriendRequests';
+import '../../../static/css/NavBar.css'
 
 function NavBar({user}) {
     const { logout } = useAuth();
@@ -32,31 +34,18 @@ function NavBar({user}) {
         window.location.reload();
     }
 
-
     const [refreshWorkRequests, setRefreshWorkRequests] = useState(false);
     const handleWorkRequestsUpdate = () => {
         setRefreshWorkRequests(prevRefresh => !prevRefresh);
     };
 
-    const [searchValue, setSearch] = useState('');
-
-    const handleSearch = (event) => {
-        setSearch(event.target.value);
-    };
-
-    useEffect( () => {
-            console.log(searchValue)
-    },[searchValue])
-
+    
     return (<>
       {[false].map((expand) => (
         <Navbar key={expand} expand={expand} className="bg-body-tertiary mb-3">
             <Container fluid>
-                <Navbar.Brand href="#">FlowLoop {expand}</Navbar.Brand>
-                <Form className="d-flex">
-                    <Form.Control  type="search"  placeholder="Search"  className="me-2"  aria-label="Search" value={searchValue} onChange={handleSearch} required  />
-                    <Button variant="outline-success">Search</Button>
-                </Form>
+                <Navbar.Brand href="/">FlowLoop</Navbar.Brand>
+                <SearchBar />
                 <NavDropdown title={
                         <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
                             <AddBusinessIcon />
