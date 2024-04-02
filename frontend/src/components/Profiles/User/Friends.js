@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Badge from 'react-bootstrap/Badge';
 
 const Friends = ({friends}) => {
-    console.log(friends)
     return(<>
         <Card className="text-center mx-auto d-block">  
             <Card.Header>Friends</Card.Header>
@@ -13,7 +12,7 @@ const Friends = ({friends}) => {
             <ListGroup variant="flush">
                 {friends?.map((result, index) => (
                     index % 2 === 0 && (
-                        <ListGroup.Item key={result?.id}>
+                        <ListGroup.Item key={`${result?.id}-${index}`}>
                             <div className="d-flex justify-content-between">
                                 <Link to={`/user/${result.friend_info.slug}`}>
                                     <img src={`/files/${result.friend_info.image}`} width={60}/>

@@ -14,7 +14,7 @@ const Staff = ({staff}) => {
             <ListGroup variant="flush">
                 {staff?.map((result, index) => (
                     index % 2 === 0 && (
-                        <ListGroup.Item key={result?.id}>
+                        <ListGroup.Item key={`${result?.id}-${index}`}>
                             <div className="d-flex justify-content-between">
                                 <Link to={`/user/${result.employee.slug}`}>
                                     <Badge bg={result.is_admin ? "primary" : "secondary"} title={result.is_admin ? "Admin" : ""}>
