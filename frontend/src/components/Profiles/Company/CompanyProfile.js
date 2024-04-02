@@ -22,6 +22,7 @@ const CompanyProfile = () => {
 
     const [ data, setData] = useState();
     const [ address, setAddress] = useState();
+
     const [ staff, setStaff] = useState([]);
 
     const [requested, setRequested] = useState(false);

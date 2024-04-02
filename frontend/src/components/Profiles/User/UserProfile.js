@@ -54,7 +54,9 @@ const UserProfile = () => {
                             }
                         </div>
                     </div>
-     
+                    <Row className="justify-content-center"> <Col xs="auto">
+                        {user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested}/>}
+                    </Col></Row> 
                     {/* <div className='page'> */}
                     <Container fluid className="mt-5"> 
                         <Row className="justify-content-center"> 
@@ -72,9 +74,7 @@ const UserProfile = () => {
                             {/* </div> */}
                             {/* <div className='right'> */}
                             <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
-                                {
-                                    user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested}/>
-                                }
+                                
                                 <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                             </Col> 
                             {/* </div> */}

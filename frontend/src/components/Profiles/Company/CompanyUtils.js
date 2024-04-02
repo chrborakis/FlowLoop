@@ -14,7 +14,10 @@ export const getStaff = async( company, setStaff) => {
     axios.get(`/backend/staff/${company}`)
     .then(  res => {
         console.log(res.data)
-        if(res.data.status === 200)setStaff(res.data.data)
+        if(res.data.status === 200){
+            const sortedData = [...res.data.data].sort((a, b) => (a.is_admin === b.is_admin) ? 0 : a.is_admin ? -1 : 1);
+            setStaff(sortedData)
+        }
     })
     .catch( err => console.log("ERROR", err))
 }

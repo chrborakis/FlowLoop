@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {Button,Container,Form,Nav,Navbar,NavDropdown,Offcanvas,Row,Col,Dropdown,Card,ListGroup } from 'react-bootstrap';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import StarsIcon from '@mui/icons-material/Stars';
+import Badge from 'react-bootstrap/Badge';
 
 const Staff = ({staff}) => {
     console.log(staff)
-
     return(<>
         <Card className="text-center mx-auto d-block">  
-            <Card.Header>Company Address</Card.Header>
+            <Card.Header>Company Staff</Card.Header>
             <Card.Body>        
             {staff?.length > 0 ? (
             <ListGroup variant="flush">
@@ -16,17 +17,17 @@ const Staff = ({staff}) => {
                         <ListGroup.Item key={result?.id}>
                             <div className="d-flex justify-content-between">
                                 <Link to={`/user/${result.employee.slug}`}>
-                                    <div>
+                                    <Badge bg={result.is_admin ? "primary" : "secondary"} title={result.is_admin ? "Admin" : ""}>
                                         <img src={`/files/${result.employee.image}`} width={60}/>
                                         {result.employee.name}
-                                    </div>
+                                    </Badge>
                                 </Link>
-                                {staff[index + 1] && ( // Check if next item exists
+                                {staff[index + 1] && ( 
                                     <Link to={`/user/${staff[index + 1].employee.slug}`}>
-                                        <div>
+                                        <Badge bg={staff[index + 1].is_admin ? "primary" : "secondary"} title={staff[index + 1].is_admin ? "Admin" : ""}>
                                             <img src={`/files/${staff[index + 1].employee.image}`} width={60}/>
                                             {staff[index + 1].employee.name}
-                                        </div>
+                                        </Badge>
                                     </Link>
                                 )}
                             </div>
