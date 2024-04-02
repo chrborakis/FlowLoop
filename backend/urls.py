@@ -13,6 +13,7 @@ urlpatterns = [
     # path('ws/',             include(websocket_urlpatterns)),
     path('authentication/', include('backend.authentication.urls')),
     path("user/<slug:slug>",    UserProfile.as_view()),
+    path("friends/<str:user>",   views.friends),
 
     path("search_users/<str:name>", views.search_users),
     path("search_companies/<str:name>", views.search_companies),

@@ -74,7 +74,7 @@ const CompanyProfile = () => {
                                 <Tab eventKey="address" title="Address">
                                     { address && <Address address={address} admin={data.company_name===user.company.name && user.is_admin}/>}
                                 </Tab>
-                                <Tab eventKey="staff" title="Staff">
+                                <Tab eventKey="staff" title={`Staff (${staff.length})`}>
                                     { staff && <Staff staff={staff}/>}
                                 </Tab>
                             </Tabs>

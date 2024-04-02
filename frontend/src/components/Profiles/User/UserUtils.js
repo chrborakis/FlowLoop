@@ -12,6 +12,16 @@ export const getUser = async( setData, setWork, slug) => {
     .catch( err => console.log(err))
 };
 
+export const getFriends = async( user, setFriends) => {
+    axios.get(`/backend/friends/${user}`)
+    .then(  res => {
+        if(res.data.status === 200){
+            setFriends(res.data.data)
+        }
+    })
+    .catch( err => console.log("ERROR", err))
+}
+
 export const get_request = async ( user1, request, setRequested) => {
     console.log(user1, request)
     axios.get('/backend/friend_requests/', {params: { user1, request}}

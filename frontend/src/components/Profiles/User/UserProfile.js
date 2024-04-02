@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import { getUser } from './UserUtils';
+import { getUser,getFriends,get_request } from './UserUtils';
 import PostsPublic from '../../Posts/PostsPublic';
 import Info from './Info/Info';
 import { useAuth } from '../../../store/AuthContext';
@@ -10,9 +10,9 @@ import { Link } from 'react-router-dom';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-import { get_request } from './UserUtils';
 import Education from './Info/Education';
 import FriendButton from './FriendButton';
+import Friends from './Friends';
 
 import { Container, Row, Col, Card } from "react-bootstrap"; 
 import "bootstrap/dist/css/bootstrap.min.css"; 
@@ -23,10 +23,12 @@ const UserProfile = () => {
     const [ data, setData] = useState();
     const [ work, setWork] = useState();
     const [requested, setRequested] = useState(false);
+    const [friends, setFriends] = useState([])
 
     useEffect( () => {
         setData(null)
         getUser(setData, setWork, slug)
+        getFriends(user?.id,setFriends)
         setRequested(false)
     }, [slug]);
 
@@ -68,6 +70,9 @@ const UserProfile = () => {
                                     </Tab>
                                     <Tab eventKey="education" title="Education">
                                         <Education user={data.user} admin={user.id===data?.user}/>
+                                    </Tab>
+                                    <Tab eventKey="friends" title={`Friends (${friends.length})`}>
+                                        { friends && <Friends friends={friends}/>}
                                     </Tab>
                                 </Tabs>
                             </Col> 

@@ -321,6 +321,12 @@ class FriendsView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class FriendsList(APIView):
+    def get( self, request, user):
+        instances = get_list_or_404(Friends, person=user)
+        serializers = FriendsSerializer(instances, many=True)        
+        return Response(serializers.data)
 
 class AllFriendsView(APIView):
     def get( self, request):

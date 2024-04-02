@@ -50,6 +50,29 @@ class UserProfile(APIView):
             return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+def friends(request, user):
+    print("user: ", user)
+    if request.method == 'GET':
+        if user:
+            base_url = get_base_url(request)
+            try:
+                response = requests.get(base_url+'/backend/api/friends/'+str(user))
+                print(response)    
+                if response.status_code == 200:
+                    return JsonResponse({
+                        'message': str(user)+' Friends fetched successfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to fethch Friends '+str(user),
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 def search_users(request, name):
     if request.method == 'GET':
