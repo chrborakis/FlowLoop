@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import Cookies from 'js-cookie';
 
 export const getUser = async( setData, setWork, slug) => {
-    axios.get(`/backend/user/${slug}`)
+    axios.get(`/backend/users/user/${slug}`)
     .then(  res => {
         console.log("USERDATA: ", res.data)
         setData(res.data.data)
@@ -13,7 +13,7 @@ export const getUser = async( setData, setWork, slug) => {
 };
 
 export const getFriends = async( user, setFriends) => {
-    axios.get(`/backend/friends/${user}`)
+    axios.get(`/backend/users/friends/${user}`)
     .then(  res => {
         if(res.data.status === 200){
             setFriends(res.data.data)
@@ -24,9 +24,9 @@ export const getFriends = async( user, setFriends) => {
 
 export const get_request = async ( user1, request, setRequested) => {
     console.log(user1, request)
-    axios.get('/backend/friend_requests/', {params: { user1, request}}
+    axios.get('/backend/users/friend_requests/', {params: { user1, request}}
     ).then(  res => {
-        console.log(res.data.data)
+        console.log(res.data)
         setRequested(res.data.data.status)
     })
     .catch( err => console.log(err))
@@ -34,7 +34,7 @@ export const get_request = async ( user1, request, setRequested) => {
 
 export const send_request = async( user1, request, setRequested, status) => {
     console.log("Friend request...", user1, request, status)
-    axios.post('/backend/friend_requests/', { user1, request, status}
+    axios.post('/backend/users/friend_requests/', { user1, request, status}
     ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
     ).then(  res => {
         // if(res.data.status !== 200)
@@ -50,7 +50,7 @@ export const send_request = async( user1, request, setRequested, status) => {
 
 
 export const getEducation = async( user, setEducation) => {
-    axios.get(`/backend/education/${user}`)
+    axios.get(`/backend/users/education/${user}`)
     .then(  res => {
         if(res.data.status !== 404){setEducation(res.data.data)}
     })
@@ -58,7 +58,7 @@ export const getEducation = async( user, setEducation) => {
 }
 
 export const postEducation = async( data, setEdit) => {
-    axios.post("/backend/education/0", data)
+    axios.post("/backend/users/education/0", data)
     .then(  res => {
         if(res.data.status === 200)
         setEdit(false)})
@@ -66,7 +66,7 @@ export const postEducation = async( data, setEdit) => {
 }
 
 export const getUniversity = async( user, setUniversity) => {
-    axios.get(`/backend/university/${user}`)
+    axios.get(`/backend/users/university/${user}`)
     .then(  res => {
         if(res.data.status !== 404){
             console.log(res.data)
@@ -78,7 +78,7 @@ export const getUniversity = async( user, setUniversity) => {
 
 export const postUniversity = async( user, data, setEdit) => {
     console.log(data)
-    axios.post(`/backend/university/${user}`, data)
+    axios.post(`/backend/users/university/${user}`, data)
     .then(  res => {if(res.status === 200)setEdit(false)})
     .catch( err => console.log(err))
 }

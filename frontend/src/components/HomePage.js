@@ -29,11 +29,11 @@ const HomePage = ({user}) => {
             <div className="box">
                 <Tabs defaultActiveKey="public" id="justify-tab-example" className="mb-3" justify>
                     <Tab eventKey="public" title="Public">
-                        <PostsPublic user={user} url='backend/postpublic' slug='/0' displayNew={true}/>
+                        <PostsPublic user={user} url='backend/posts/postpublic' slug='/0' displayNew={true}/>
                     </Tab>
                     {user?.company?.name && 
                         <Tab eventKey="private" title={user?.company?.name}>
-                            <PostsPrivate user={user} url='backend/postprivate' slug={user.company.slug} displayNew={true}/>
+                            <PostsPrivate user={user} url='backend/posts/postprivate' slug={user.company.slug} displayNew={true}/>
                         </Tab>
                     }
                 </Tabs>

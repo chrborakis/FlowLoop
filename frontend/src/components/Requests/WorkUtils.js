@@ -10,7 +10,7 @@ export const getRequests = async( setRequests, company) => {
 
 export const replyRequest = async( user, status, setRequests) => {
     console.log("User: ", user, " Status: ", status)
-    await axios.post(`/backend/workrequests/${user}`, {status}, {
+    await axios.post(`/backend/companies/workrequests/${user}`, {status}, {
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),
         'Content-Type': 'application/json'}
     })
@@ -22,7 +22,7 @@ export const replyRequest = async( user, status, setRequests) => {
 }
 
 export const checkRequest = async( user, updateUser) => {
-    axios.get(`/backend/user/${user?.slug}`)
+    axios.get(`/backend/users/user/${user?.slug}`)
     .then(  res => {
         if(res.data?.workon)
             updateUser({

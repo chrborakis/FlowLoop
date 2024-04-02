@@ -123,11 +123,11 @@ export default function PrimarySearchAppBar({user, messages, notifications}) {
             id={menuId} keepMounted
             transformOrigin={{ vertical: 'top', horizontal: 'right',}}
             open={isMenuOpen} onClose={handleMenuClose}>
-            <Link to={`/user/${user.slug}`}>
+            <Link to={`/users/user/${user.slug}`}>
                 <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             </Link>
             {user?.company?.slug && 
-                <Link to={`/company/${user?.company?.slug}`}>
+                <Link to={`/companies/company/${user?.company?.slug}`}>
                     <MenuItem onClick={handleMenuClose}>{user?.company?.name}</MenuItem>
                 </Link>
             }

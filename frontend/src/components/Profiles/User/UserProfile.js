@@ -28,7 +28,7 @@ const UserProfile = () => {
     useEffect( () => {
         setData(null)
         getUser(setData, setWork, slug)
-        getFriends(user?.id,setFriends)
+        getFriends( slug, setFriends)
         setRequested(false)
     }, [slug]);
 
@@ -79,8 +79,7 @@ const UserProfile = () => {
                             {/* </div> */}
                             {/* <div className='right'> */}
                             <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
-                                
-                                <PostsPublic user={user} url='../backend/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
+                                <PostsPublic user={user} url='../backend/posts/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                             </Col> 
                             {/* </div> */}
                         </Row> 

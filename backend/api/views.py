@@ -324,7 +324,7 @@ class FriendsView(APIView):
     
 class FriendsList(APIView):
     def get( self, request, user):
-        instances = get_list_or_404(Friends, person=user)
+        instances = get_list_or_404(Friends, person__slug=user)
         serializers = FriendsSerializer(instances, many=True)        
         return Response(serializers.data)
 

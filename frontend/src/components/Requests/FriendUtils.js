@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import Cookies from 'js-cookie';
 
 export const getRequests = async( setRequests, user) => {
-    await axios.get(`/backend/friend_requests/${user}`)
+    await axios.get(`/backend/users/friend_requests/${user}`)
     .then( res => {
         console.log(res.data.data)
         setRequests(res.data.data)})
@@ -12,7 +12,7 @@ export const getRequests = async( setRequests, user) => {
 
 export const replyRequest = async( user, req_id, status, setRequests) => {
     console.log("User: ", user, "Req: ", req_id, "Status: ", status)
-    await axios.post(`/backend/friend_requests/${user}`, 
+    await axios.post(`/backend/users/friend_requests/${user}`, 
     {req_id, status}, 
     {
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),

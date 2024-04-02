@@ -81,7 +81,7 @@ const CompanyProfile = () => {
                         </Col> 
                         <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
                         {user?.company?.id == data?.company_id ? (
-                        <PostsPrivate user={user} url='../backend/postprivate' slug={slug} displayNew={true}/>
+                        <PostsPrivate user={user} url='../backend/posts/postprivate' slug={slug} displayNew={true}/>
                     ) : (<>
                         {/* If user is not member of company! */}
                         <p>You should grant access to view content!</p>

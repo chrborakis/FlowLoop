@@ -26,7 +26,7 @@ urlpatterns = [
     path("allfriend_requests", AllFriendsRequestsView.as_view()),
 
     path("friends",          FriendsView.as_view()),
-    path("friends/<str:user>", FriendsList.as_view()),
+    path("friends/<slug:user>", FriendsList.as_view()),
     path("all_friends",      AllFriendsView.as_view()),
 
     path("postpublic",       AllPostsPublicView.as_view()),

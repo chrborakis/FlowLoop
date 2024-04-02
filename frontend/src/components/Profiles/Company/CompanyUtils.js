@@ -3,7 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const getAddress = async( company, setAddress) => {
-    axios.get(`/backend/address/${company}`)
+    axios.get(`/backend/companies/address/${company}`)
     .then(  res => {
         console.log(res.data.data)
         setAddress(res.data.data)})
@@ -11,7 +11,7 @@ export const getAddress = async( company, setAddress) => {
 }
 
 export const getStaff = async( company, setStaff) => {
-    axios.get(`/backend/staff/${company}`)
+    axios.get(`/backend/companies/staff/${company}`)
     .then(  res => {
         console.log(res.data)
         if(res.data.status === 200){
@@ -36,7 +36,7 @@ export const updateAddress = async( company, address, setEdit, setError) => {
 }
 
 export const getCompany = async( setData, slug) => {
-    axios.get(`/backend/company/${slug}`)
+    axios.get(`/backend/companies/company/${slug}`)
     .then(  res => setData(res.data.data))
     .catch( err => console.log(err))
 };

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import glob
 from pathlib import Path
 from os import getenv
 
@@ -33,15 +34,11 @@ DEBUG = True
 # ]
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'channels',
     'frontend.apps.FrontendConfig',
-    'backend',
-    'backend.api',
-    'backend.authentication',
+
     'apps',
     'apps.users',
     'apps.companies',
@@ -49,6 +46,14 @@ INSTALLED_APPS = [
     'apps.chats',
     'apps.groups',
     'apps.projects',
+
+    'backend',
+    # 'backend.api',
+    # 'backend.authentication',
+    # 'backend.users',
+    # 'backend.companies',
+    # 'backend.posts',
+
     'rest_framework',
     'corsheaders',
     "phonenumber_field",
@@ -60,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
