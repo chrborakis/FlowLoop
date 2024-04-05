@@ -8,10 +8,12 @@ from . import views
 from backend.views import *
 
 urlpatterns = [
-    path('api/',    include('backend.api.urls')),
-    path('users/',  include('backend.users.urls')),
-    path('companies/',  include('backend.companies.urls')),
-    path('posts/',  include('backend.posts.urls')),
+    path('api/',       include('backend.api.urls')),
+    path('users/',     include('backend.users.urls')),
+    path('companies/', include('backend.companies.urls')),
+    path('posts/',     include('backend.posts.urls')), 
+    path('projects/',  include('backend.projects.urls')),
+
     # path('ws/test/', TextRoomConsumer.as_asgi()),
     # path('ws/',             include(websocket_urlpatterns)),
     path('authentication/', include('backend.authentication.urls')),

@@ -1,0 +1,25 @@
+.center-projects{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button {
+    width: 100%; /* Ensure the button fills the column width */
+    display: flex;
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    position: relative; /* For absolute positioning of icon */
+}
+
+.icon {
+    width: 50%; /* Set icon width to 50% of the button */
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}

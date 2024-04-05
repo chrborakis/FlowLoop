@@ -5,9 +5,9 @@ import '../../../static/css/Posts/PostForm.css'
 import Form from 'react-bootstrap/Form';
 
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import { Container, Row, Col, Button } from 'react-bootstrap'; 
+import { Container, Row, Col, Button, Card } from 'react-bootstrap'; 
 import '../../../static/css/Profile/Forms.css';
-
+import '../../../static/css/index.css'
 import { postPost } from './PostUtils';
 
 const NewPost = ({ user, url, newPost}) => {
@@ -47,31 +47,33 @@ const NewPost = ({ user, url, newPost}) => {
         </div>
             
         { isContentVisible && (
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className='mb-3' controlId='formTitle'>
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control name="title" type="text" required
-                        placeholder="Post Title" 
-                        value={formData.title} onChange={handleInputChange} 
-                    />
-                </Form.Group>
-                <Form.Group className='mb-3' controlId='formDescription'>
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control name="description" as="textarea" required
-                        placeholder="Post Description" 
-                        value={formData.description} onChange={handleInputChange} 
-                    />
-                </Form.Group>
-                <Form.Group className='mb-3' controlId='formImage'>
-                    <Form.Label>Image</Form.Label>
-                    <Form.Control type="file" accept="image/*"
-                        onChange={handleImageChange} 
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Form>
+            <Card>
+                <Form className='post-form' onSubmit={handleSubmit}>
+                    <Form.Group className='mb-3' controlId='formTitle'>
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control name="title" type="text" required
+                            placeholder="Post Title" 
+                            value={formData.title} onChange={handleInputChange} 
+                        />
+                    </Form.Group>
+                    <Form.Group className='mb-3' controlId='formDescription'>
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control name="description" as="textarea" required
+                            placeholder="Post Description" 
+                            value={formData.description} onChange={handleInputChange} 
+                        />
+                    </Form.Group>
+                    <Form.Group className='mb-3' controlId='formImage'>
+                        <Form.Label>Image</Form.Label>
+                        <Form.Control type="file" accept="image/*"
+                            onChange={handleImageChange} 
+                        />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Form>
+            </Card>
         )}
         
     </>)

@@ -26,7 +26,7 @@ export const get_request = async ( user1, request, setRequested) => {
     console.log(user1, request)
     axios.get('/backend/users/friend_requests/', {params: { user1, request}}
     ).then(  res => {
-        console.log(res.data)
+        console.log(res.data.data)
         setRequested(res.data.data.status)
     })
     .catch( err => console.log(err))

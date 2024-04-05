@@ -27,7 +27,7 @@ class Projects(models.Model):
 
 
 def get_upload_path(instance, filename):
-    return os.path.join('projects', str(instance.project.company), str(instance.project.project_id), filename)
+    return os.path.join('projects', str(instance.project.company), str(instance.division), str(instance.project.project_id), filename)
 
 class ProjectDivision(models.Model):
     division= models.AutoField(primary_key=True)

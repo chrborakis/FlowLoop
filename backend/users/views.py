@@ -218,15 +218,21 @@ def friend_requests(request):
             request_param = request.GET.get('request')
             data = { 'user1':user1, 'request':request_param}
             response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+            response_data = response.json()
             if response.status_code == 404:
                 data = { 'user1':request_param, 'request':user1}
                 response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+                response_data = response.json()
+                response_data["status"] = "reply"
             print("RESPONSE -> ",response.json())
             return JsonResponse({
                 'message': 'Friend Request Fetched succesfully',
-                'data': response.json(),
+                'data': response_data,
                 'status': response.status_code
             })  
-        except requests.exceptions.RequestException as e:
-            print("Friend Request Failed: ", e)
-        return None
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })

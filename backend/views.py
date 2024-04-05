@@ -1,19 +1,10 @@
-from datetime import datetime
 from dateutil.parser import parse
-import json
 from django.db.models import F
-from django.views.decorators.csrf import requires_csrf_token
-from django.http import Http404, HttpResponse, JsonResponse
-import requests
-from rest_framework.views import APIView
+from django.http import Http404, JsonResponse
 from backend.api.serializers import *
 from apps.users.models import *
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
-from django.core.paginator import Paginator
-from backend.util import get_base_url, get_workson_instance
 from django.shortcuts import get_list_or_404
 
 def search_users(request, name):
@@ -55,8 +46,3 @@ def search_companies(request,name):
             
         else:
             return JsonResponse({'error':'Search query is missing'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-         
-
-

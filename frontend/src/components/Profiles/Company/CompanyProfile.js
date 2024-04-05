@@ -7,13 +7,16 @@ import { RequestContext, useReq } from '../../../store/RequestContext';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import PostsPrivate from '../../Posts/PostsPrivate';
-import Info from './Info';
-import Address from './Address';
-import Staff from './Staff';
+import Info from './Info/Info';
+import Address from './Info/Address';
+import Staff from './Info/Staff';
+import ProjectsList from './Projects/ProjectsList';
 
 import {Card, Row,Col, Container,Button} from 'react-bootstrap';
 import EditIcon from '@mui/icons-material/Edit';
 import "bootstrap/dist/css/bootstrap.min.css"; 
+
+// import '../../../../static/css/Profile/Profile.css';
 
 const CompanyProfile = () => {
     // const { addRequest } = useReq();   
@@ -66,7 +69,7 @@ const CompanyProfile = () => {
 
                 <Container fluid className="mt-5"> 
                     <Row className="justify-content-center"> 
-                        <Col xs={12} md={6} lg={4} className="page-box order-lg-1 order-md-1 order-1">
+                        <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
                             <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
                                 <Tab eventKey="basic-info" title="Company Info">
                                     { data    && <Info company={data} admin={data.company_name===user.company.name && user.is_admin}/>}
@@ -79,20 +82,27 @@ const CompanyProfile = () => {
                                 </Tab>
                             </Tabs>
                         </Col> 
-                        <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
+                        <Col lg={8} className="right-div page-box order-lg-2 order-md-2 order-2">
                         {user?.company?.id == data?.company_id ? (
-                        <PostsPrivate user={user} url='../backend/posts/postprivate' slug={slug} displayNew={true}/>
-                    ) : (<>
+                            <Tabs defaultActiveKey="posts" id="companies" className="mb-3" justify>
+                            <Tab eventKey="posts" title="Posts">
+                                <PostsPrivate user={user} url='../backend/posts/postprivate' slug={slug} displayNew={true}/>
+                            </Tab>
+                            <Tab eventKey="projects" title="Projects">
+                                <ProjectsList company={data?.company_id}/>
+                            </Tab>
+                            </Tabs>
+                        ) : (<>
                         {/* If user is not member of company! */}
                         <p>You should grant access to view content!</p>
                         {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
 
-                        <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
+                        <Button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
                         {
                             requested === 'P' ? 'Already requested!' : 
                                 requested === 'A' ? 'Delete' : 'Send request'
                         }
-                        </button>
+                        </Button>
                     </>)
                     }
                         </Col> 

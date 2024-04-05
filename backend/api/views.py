@@ -563,3 +563,79 @@ class PrivateLikesView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ProjectsView(APIView):
+    def get( self, request, company):
+        instances = get_list_or_404(Projects.objects.filter( company=company))
+        serializers = ProjectsSerializer(instances, many=True)        
+        return Response(serializers.data)
+
+    def post( self, request):
+        serializer = ProjectsSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ProjectAdminsView(APIView):
+    def get( self, request, company):
+        instances = get_list_or_404(Projects)
+        serializers = ProjectAdminSerializer(instances, many=True)        
+        return Response(serializers.data)
+
+    def post( self, request):
+        serializer = ProjectAdminSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+        ProjectDivisionView
+class ProjectDivisionView(APIView):
+    def get( self, request, id):
+        instances = get_list_or_404(ProjectDivision, project=id)
+        serializers = ProjectDivisionSerializer(instances, many=True)        
+        return Response(serializers.data)
+
+    def post( self, request):
+        serializer = ProjectDivisionSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, id):
+        print("[PATCH DIV] File: ", request.FILES.get('file'))
+
+        try:
+            div_inst = ProjectDivision.objects.get(pk=id)
+        except ProjectDivision.DoesNotExist:
+            return Response({"error": "ProjectDivision not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+        try:
+            serializer = ProjectDivisionSerializer(div_inst, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                print("ProjectDivision File updated successfully")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
+        
+class ProjectAssignView(APIView):
+    def get( self, request, division):
+        instances = get_list_or_404(ProjectAssign, division=division)
+        serializers = ProjectAssignSerializer(instances, many=True)        
+        return Response(serializers.data)
+
+    def post( self, request):
+        serializer = ProjectAssignSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+               

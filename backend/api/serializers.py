@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.companies.models import Companies, WorkRequests, WorksOn
 from apps.models import Address
 from apps.posts.models import PostsPrivate, PostsPrivateComments, PostsPrivateLikes, PostsPublic, PostsPublicComments, PostsPublicLikes
+from apps.projects.models import ProjectDivision,ProjectAdmin, Projects, ProjectAssign
 from apps.users.models import *
 from rest_framework import serializers, fields
 
@@ -325,8 +326,6 @@ class PublicLikesSerializer(serializers.ModelSerializer):
             "like"
         )
 
-
-
 class PrivateLikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostsPrivateLikes
@@ -335,7 +334,6 @@ class PrivateLikesSerializer(serializers.ModelSerializer):
             "post",
             "like"
         )
-
 
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -357,3 +355,92 @@ class UniversitySerializer(serializers.ModelSerializer):
             "graduation",
             "degree"
         )
+class ProjectAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAdmin
+        fields = (
+            "id",
+            "project",
+            "admin",
+        ) 
+
+class ProjectsSerializer(serializers.ModelSerializer):
+    admin = serializers.SerializerMethodField()    
+    class Meta:
+        model = Projects
+        fields = (
+            "project_id",
+            "company",
+            "title",
+            "description",
+            "phase",
+            "start_date",
+            "finish_date",
+            "admin"
+        )
+
+    def get_admin(self, obj):
+        try:
+            project_admin = ProjectAdmin.objects.get(project_id=obj.project_id)
+            return {
+                'id'  : str(project_admin.admin.employee.user.user_id),
+                'name': str(project_admin.admin.employee.user),
+                'slug': str(project_admin.admin.employee.user.slug),
+                'image':str(project_admin.admin.employee.user.image),
+            }
+        except ProjectAdmin.DoesNotExist:
+            return None
+      
+
+class ProjectAssignSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    class Meta:
+        model = ProjectAssign
+        fields = (
+            "participant_id",
+            "division",
+            "assign",
+            "user"
+        )
+
+    def get_user( self, obj):
+        user = obj.assign.employee.user
+        return{
+            'id'  : str(user.user_id),
+            'name': str(user),
+            'slug': str(user.slug),
+            'image':str(user.image),
+        }
+
+class ProjectDivisionSerializer(serializers.ModelSerializer):
+    assign = serializers.SerializerMethodField()    
+    class Meta:
+        model = ProjectDivision
+        fields = (
+            "division",
+            "project_id",
+            "title",
+            "description",
+            "file",
+            "assign"
+        )
+
+    def get_assign(self, obj):
+        try:
+            project_assign = ProjectAssign.objects.get(division=obj.division)
+            user = project_assign.assign.employee.user
+            return{
+                'id'  : str(user.user_id),
+                'name': str(user),
+                'slug': str(user.slug),
+                'image':str(user.image),
+                'work_id': str(project_assign.assign.id)
+            }
+        except ProjectAssign.DoesNotExist:
+            return None
+
+
+
+
+
+

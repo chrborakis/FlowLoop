@@ -24,3 +24,14 @@ export const replyRequest = async( user, req_id, status, setRequests) => {
     })
     .catch(err => console.log(err))
 }
+
+export const replyRequestProfile = async( user, request, status, setRequested) => {
+    console.log("User: ", user, "Req: ", request, "Status: ", status)
+    await axios.post(`/backend/users/friend_requests/${user}`, {request, status}, 
+    {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}})
+    .then( res => {
+        console.log(res.data)
+        setRequested(status)
+    })
+    .catch(err => console.log(err))
+}

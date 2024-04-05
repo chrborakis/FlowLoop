@@ -5,7 +5,7 @@ import PostsPublic from '../../Posts/PostsPublic';
 import Info from './Info/Info';
 import { useAuth } from '../../../store/AuthContext';
 
-import '../../../../static/css/Profile/Profile.css'
+// import '../../../../static/css/Profile/Profile.css'
 import { Link } from 'react-router-dom';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -13,9 +13,10 @@ import Tabs from 'react-bootstrap/Tabs';
 import Education from './Info/Education';
 import FriendButton from './FriendButton';
 import Friends from './Friends';
-
+import { replyRequestProfile } from '../../Requests/FriendUtils';
 import { Container, Row, Col, Card } from "react-bootstrap"; 
 import "bootstrap/dist/css/bootstrap.min.css"; 
+
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();
@@ -24,6 +25,11 @@ const UserProfile = () => {
     const [ work, setWork] = useState();
     const [requested, setRequested] = useState(false);
     const [friends, setFriends] = useState([])
+
+    const reply = ( status) => {
+        console.log("Reply Friend Request -> ", user, data?.user, status)
+        replyRequestProfile( user, data?.user, status, requested)
+    }
 
     useEffect( () => {
         setData(null)
@@ -35,7 +41,8 @@ const UserProfile = () => {
     useEffect(() => {
         if(data && user.id!=data.user)
             get_request( user?.id, data?.user, setRequested);
-    }, [slug, data, requested]);
+            getFriends( slug, setFriends)
+    }, [slug, data, requested, replyRequestProfile]);
 
 
     return (
@@ -57,13 +64,13 @@ const UserProfile = () => {
                         </div>
                     </div>
                     <Row className="justify-content-center"> <Col xs="auto">
-                        {user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested}/>}
+                        {user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply}/>}
                     </Col></Row> 
                     {/* <div className='page'> */}
                     <Container fluid className="mt-5"> 
                         <Row className="justify-content-center"> 
                         {/* <div className='left'> */}
-                            <Col xs={12} md={6} lg={4} className="page-box order-lg-1 order-md-1 order-1">
+                            <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
                                 <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
                                     <Tab eventKey="basic-info" title="User Info">
                                         <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
@@ -78,7 +85,7 @@ const UserProfile = () => {
                             </Col> 
                             {/* </div> */}
                             {/* <div className='right'> */}
-                            <Col xs={12} md={6} lg={4} className="page-box order-lg-2 order-md-2 order-2">
+                            <Col lg={8} className="right-divpage-box order-lg-2 order-md-2 order-2">
                                 <PostsPublic user={user} url='../backend/posts/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                             </Col> 
                             {/* </div> */}

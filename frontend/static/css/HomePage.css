@@ -3,12 +3,12 @@
   /* flex-direction: column; */
   /* justify-content: center; */
   /* align-items: center; */
+  background-color: #FFFFFF;
 }
 
 .box{
   padding: 2%;
   flex: 1; /* Each box takes up equal space */
-  border: 1px solid #000; /* Just for visualization */
   text-align: center;
 }
 
@@ -16,15 +16,18 @@
   width: 35%;
   background-color: red;
 }
+
 .card {
-    width: 500px;
+    width: 450px;
     padding: 16px;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 16px;
   }
-
+  .card-content{
+    width: 650px;
+  }
   .card-title {
     font-size: 18px;
     font-weight: bold;

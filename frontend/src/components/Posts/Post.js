@@ -6,55 +6,17 @@ import {Card, Row,Col} from 'react-bootstrap';
 import '../../../static/css/Posts/Post.css';
 import {scrollTop} from '../Extra/LinkOnTop';
 
+import '../../../static/css/index.css'
+       
 const Post = ({post, url}) => {
     return(
-        // <div key={post.post_id} className="card">
-        //     <div className="card-title">
-        //         <div>
-        //             <img src={`/files/${post.user?.user_image}`} width={60}/>
-        //             <div>
-        //                 { post.user?.company_name && 
-        //                     <Link to={`/company/${post.user?.company_slug}`}>
-        //                         <h2>{post.user?.company_name}</h2>
-        //                     </Link>
-        //                 }
-        //                     <Link to={`/user/${post.user?.user_slug}`}>
-        //                         <h3>{post.user?.user_name}</h3>
-        //                     </Link>
-        //             </div>
-        //         </div>
-        //         <p>{post.title}</p>
-        //         <div>
-        //             <h6>{post.publish_date}</h6>
-        //         </div>
-        //         {
-        //             post.image &&
-        //             <div className="container">
-        //                 <div className="image-wrapper">
-        //                 <img src={post.image} alt=""/>
-        //                 </div>
-        //             </div>
-        //         } 
-                
-        //     </div>
-        //     <div className="card-content">
-        //         <p>{post.body}</p>
-        //     </div>
-        //     <div className="comments">
-        //         <hr></hr>
-
-        //         <Likes post={post.post_id} url={`${url}likes/${post.post_id}`}/>
-        //         <hr></hr>
-        //         <Comments post={post.post_id} url={`${url}comments`}/>
-        //     </div>
-        // </div>
-        <Card className="text-center">
+        <Card className="card-content">
             <Card.Header>
             <Row>
                 <Col xs={3}>
-                    <div className="user-image">
-                    <img src={`/files/${post.user?.user_image}`} width={60}/>
-                    </div>
+                    {/* <div className="user-image"> */}
+                        <img src={`/files/${post.user?.user_image}`} width={60}/>
+                    {/* </div> */}
                 </Col>
                 <Col>
                     <div className="user-details">
@@ -73,15 +35,17 @@ const Post = ({post, url}) => {
                 </Row>                       
             </Card.Header>
             <Card.Body>
-                <Card.Title>{post.title}
-                    {/* <h6>{post.publish_date}</h6> */}
-                    <h6>{new Date(post.publish_date).toISOString().split('T')[0]}{new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</h6>
+                <Card.Title>
+                    <p className="post-title">{post.title}</p>
+                    <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
                 </Card.Title>
                 <Card.Text>
                     { post?.image && <div className="container"><div className="image-wrapper">
                         <img src={post.image} alt=""/></div></div>
                     }
-                    {post.body}
+                    <p>
+                        {post.body}
+                    </p>
                 </Card.Text>
             </Card.Body>
             <Card.Footer className="text-muted">
