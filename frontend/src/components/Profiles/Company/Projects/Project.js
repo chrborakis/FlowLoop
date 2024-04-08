@@ -1,20 +1,26 @@
 import React, {useState, useEffect} from "react";
-import { Container, Col, Row, Card, Button} from 'react-bootstrap';
+import { Container, Col, Row, Card, Button, Form} from 'react-bootstrap';
 import Badge from 'react-bootstrap/Badge';
 import {scrollTop} from '../../../Extra/LinkOnTop'
 import { Link } from "react-router-dom";
-import { getDivisions } from "./ProjectUtils";
+import { getDivisions, uploadDivision, removeAssign, addAssign} from "./ProjectUtils";
 import DivisionsList from "./DivisionsList";
 import "../../../../../static/css/projects.css"
 import "../../../../../static/css/HomePage.css"
+import { BsPlusLg } from "react-icons/bs";
+import { useAuth } from '../../../../store/AuthContext';
+import NewDivision from "./NewDivision";
+
 
 const Project = ({project}) => {
+    const { user} = useAuth();
     const [phase, setPhase] = useState({ name: "", state: "" });
     const [divisions,setDivisions] = useState([])
-    
+
     useEffect(()=>{
+        console.log("~~~~~~~~~~~~~~REFETCH DIVS~~~~~~~~~~")
         getDivisions(project.project_id, setDivisions)
-    },[project])
+    },[project, setDivisions])
 
     useEffect(() => {
         switch (project.phase) {
@@ -46,13 +52,13 @@ const Project = ({project}) => {
                         <Badge pill bg={phase.state}>{phase.name}</Badge>
                     </Row>
                 </Card.Title>
-                <Card.Text>
-                    {project.description}
+                <Card.Text>{project.description}
                     <p>{project.start_date} - {project.finish_date}</p>
                 </Card.Text>
             </Card.Body>
             <Card.Footer className="text-muted">
-                <DivisionsList divisions={divisions} setDivisions={setDivisions}/>
+                <NewDivision admin_slug={project?.admin?.slug} user_slug={user.slug} setDivisions={setDivisions} project_id={project.project_id}/>
+                <DivisionsList company={project.company} admin_slug={project?.admin?.slug} divisions={divisions} setDivisions={setDivisions}/>
             </Card.Footer>
         </Card>
     </>)

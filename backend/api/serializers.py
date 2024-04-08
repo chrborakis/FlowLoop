@@ -406,10 +406,12 @@ class ProjectAssignSerializer(serializers.ModelSerializer):
     def get_user( self, obj):
         user = obj.assign.employee.user
         return{
+            "participant_id": str(obj.participant_id),
             'id'  : str(user.user_id),
             'name': str(user),
             'slug': str(user.slug),
             'image':str(user.image),
+            'work_id': str(obj.assign.id)
         }
 
 class ProjectDivisionSerializer(serializers.ModelSerializer):
@@ -418,7 +420,7 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
         model = ProjectDivision
         fields = (
             "division",
-            "project_id",
+            "project",
             "title",
             "description",
             "file",
@@ -430,6 +432,7 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
             project_assign = ProjectAssign.objects.get(division=obj.division)
             user = project_assign.assign.employee.user
             return{
+                'participant_id': str(project_assign.participant_id),
                 'id'  : str(user.user_id),
                 'name': str(user),
                 'slug': str(user.slug),

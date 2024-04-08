@@ -16,6 +16,7 @@ from rest_framework.decorators import action
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.utils.decorators import method_decorator
 
 class UsersView(APIView):
     def get( self, request):
@@ -259,7 +260,7 @@ class WorksOnView(APIView):
 class Employees(APIView):
     def get( self, request, company):
         try:
-            instances = get_list_or_404(WorksOn.objects.filter( employee__company=company))
+            instances = get_list_or_404(WorksOn.objects.filter( employee__company=company).order_by('employee__user__slug'))
             serializers = WorksOnSerializer(instances, many=True)        
             return Response(serializers.data)
         except Http404:
@@ -598,7 +599,8 @@ class ProjectDivisionView(APIView):
         serializers = ProjectDivisionSerializer(instances, many=True)        
         return Response(serializers.data)
 
-    def post( self, request):
+    def post( self, request, id):
+        print("[POST API] DIV: ", request.data)
         serializer = ProjectDivisionSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -625,17 +627,17 @@ class ProjectDivisionView(APIView):
             print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
+@method_decorator(csrf_exempt, name='dispatch')
 class ProjectAssignView(APIView):
     def get( self, request, division):
         instances = get_list_or_404(ProjectAssign, division=division)
         serializers = ProjectAssignSerializer(instances, many=True)        
         return Response(serializers.data)
 
-    def post( self, request):
+    def post( self, request, division):
+        print("ASSIGN IN API: ", request.data)
         serializer = ProjectAssignSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-               

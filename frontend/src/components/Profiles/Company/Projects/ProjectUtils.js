@@ -38,6 +38,19 @@ export const getDivisions = async( company, setDivisions) => {
     .catch( err => console.log(err))
 }
 
+export const addDivision = async( project_id, newDivision, setDivisions) => {
+    console.log("PROEJCT_ID: ", project_id)
+    await axios.post(`../backend/projects/divisions/${project_id}`, newDivision, 
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),}}
+    )
+    .then( res => {
+        if(res.data.status===200){
+            setDivisions(prevDivs=>[res.data.data,...prevDivs])
+        }
+    })
+    .catch( err => console.log(err.response.data))
+}
+
 export const uploadDivision = async( division, setDivisions, file) => {
     await axios.patch(`../backend/api/project_divisions/${division}`, {file},{
         headers: {
@@ -54,5 +67,44 @@ export const uploadDivision = async( division, setDivisions, file) => {
                 });
             });
         }})
+    .catch( err => console.log(err.response.data))
+}
+
+export const fetchStaff = async(company, setWorkers) => {
+    await axios.get(`../backend/companies/staff/${company}`)
+    .then( res => {
+        console.log(res.data)
+        setWorkers(res.data.data)
+    })
+    .catch( err => console.log(err))
+}
+
+export const addAssign = async(division, work_on, setDivisions, onHide) => {
+    await axios.post(`../backend/projects/assign/${division}`, work_on, 
+    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    .then( res => {
+        console.log(res.data.data)
+        setDivisions(prevData =>
+            prevData.map(obj =>
+                obj.division === division ? { ...obj, assign: res.data.data.user } : obj
+            )
+        );
+        onHide();
+    })
+    .catch( err => console.log(err))
+}
+
+export const removeAssign = async(divToDel, participant_id,setDivisions) => {
+    await axios.delete(`../backend/projects/assign/${participant_id}`,
+    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    .then( res => {
+        if(res.data.status === 200){
+            setDivisions(prevData =>
+                prevData.map(obj =>
+                    obj.division === divToDel ? { ...obj, assign: null } : obj
+                )
+            );
+        }
+    })
     .catch( err => console.log(err.response.data))
 }
