@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect} from "react";
-import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from "../../store/AuthContext";
 import { getRequests, replyRequest,checkRequest } from "./WorkUtils"; 
 
-import { useReq } from "../../store/RequestContext";
+import { Link } from "react-router-dom";
+import {scrollTop} from '../Extra/LinkOnTop';
 
 const WorkRequests = ({company, refresh}) => {
     // const { requests_ctx } = useReq();   
@@ -27,8 +27,10 @@ const WorkRequests = ({company, refresh}) => {
                 requests.length > 0 && requests.map( (req, idx) => 
                     <div key={req.id} className="request">
                         <div className="left">
-                            <img src={req.user_info.image ? req.user_info.image : "/files/user_image/dummy-user.png"} width={50}/>
+                            <Link to={`/user/${req?.user1_info?.slug}`} onClick={scrollTop}>
+                            <img src={`/files/${req.user_info.image}`} width={50}/>
                             {req.user_info.name}
+                            </Link>
                         </div>
                         <div className="right">
                             <Button onClick={() => reply( req.id, 'A')} variant="outline-primary">Accept</Button>

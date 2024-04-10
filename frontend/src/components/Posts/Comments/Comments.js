@@ -48,34 +48,6 @@ const Comments = ({post,url}) => {
                             <p>{comment.comment}</p>
                         </div>
                     </div> 
-                //     <Card key={comment.id}>
-                //         <Card.Header>
-                //         <Row>
-                //             <Col xs={1}>
-                //                 <div className="user-image">
-                //                 <img src={`/files/${comment.user.image}`} width={60}/>
-                //                 </div>
-                //             </Col>
-                //             <Col>
-                //                 <div className="user-details">
-                //                     <div className="user">
-                //                         <Link to={`/user/${comment.user?.slug}`}>
-                //                             <h3>{comment.user?.name}</h3>
-                //                         </Link>
-                //                     </div>
-                //                     <div className="date">
-                //                         <h6>{new Date(comment.date).toISOString().split('T')[0]}{new Date(comment.date).toISOString().split('T')[1].split('.')[0]}</h6>
-                //                     </div>
-                //                 </div>
-                //             </Col>
-                //             </Row>                       
-                //         </Card.Header>
-                //     <Card.Body>
-                //         <Card.Text>
-                //             {comment.comment}
-                //         </Card.Text>
-                //     </Card.Body>
-                // </Card>
                 )
                 ): <div>
                 <p>No comments yet!</p>

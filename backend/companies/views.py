@@ -204,24 +204,40 @@ def id_workrequests(request, user, company):
                 'data': response.json(),
                 'status': response.status_code
             })
-    elif request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/workrequests/'+str(user)+'/'+str(company))
-        work_inst = response.json()
-        print(work_inst)
-        work = None
-        if( work_inst.get('status') == 'A'):
-            print("WORK ON INSTANCE EXISTS")
-            workOn = get_workson_instance(user)
-            print('WORK: ',workOn)
-            work = {
-                "company": workOn.get("company"), 
-                "work_id": workOn.get("id"), 
-                "is_admin": workOn.get("is_admin"), 
-            }
-        return JsonResponse({
-            'message': 'Work Requests Fetched succesfully',
-            'work': work,
-            'data': response.json(),
-            'status': response.status_code
-        })   
 
+    elif request.method == 'GET':
+        if user and company:
+            base_url = get_base_url(request)
+            try:
+                print("before api")
+                response = requests.get(base_url+'/backend/api/workrequests/'+str(user)+'/'+str(company))
+                print("after api")
+                if response.status_code == 200:
+                    work_inst = response.json()
+                    print(work_inst)
+                    work = None
+                    if( work_inst.get('status') == 'A'):
+                        print("WORK ON INSTANCE EXISTS")
+                        workOn = get_workson_instance(user)
+                        print('WORK: ',workOn)
+                        work = {
+                            "company": workOn.get("company"), 
+                            "work_id": workOn.get("id"), 
+                            "is_admin": workOn.get("is_admin"), 
+                        }
+
+                    return JsonResponse({
+                        'message': 'Work Requests Fetched succesfully',
+                        'work': work,
+                        'data': response.json(),
+                        'status': response.status_code
+                    })  
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to fetch Work Request ',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+           

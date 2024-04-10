@@ -10,7 +10,7 @@ import { useAuth } from '../../../../../store/AuthContext';
 import { addProject } from "../ProjectUtils";
 
 
-const ProjectForm = ({ company, onSubmit, projectError, setProjectError, setNewProject, setNextForm}) => {
+const ProjectForm = ({ company, onSubmit, projectError, setProjectError, setNewProject, setNextForm, setProject}) => {
     const { user} = useAuth();
     const today = new Date()
     const minDate = new Date(today.getFullYear() - 50, today.getMonth(), today.getDate());
@@ -44,7 +44,7 @@ const ProjectForm = ({ company, onSubmit, projectError, setProjectError, setNewP
             const data = { ...formData, company:company, phase:"I", start_date, finish_date}
             console.log(data)
 
-            addProject( data, onSubmit, setNewProject, user.work_id, setProjectError)
+            addProject( data, onSubmit, setNewProject, user.work_id, setProjectError, setProject)
         }else{
             setProjectError("Start date must be before finish date...")
         }
@@ -105,9 +105,9 @@ const ProjectForm = ({ company, onSubmit, projectError, setProjectError, setNewP
             <Button variant="success" type="submit" onClick={()=>setNextForm(false)}>
                 Create
             </Button>
-            <Button variant="primary" type="submit" onClick={()=>setNextForm(true)}>
+            {/* <Button variant="primary" type="submit" onClick={()=>setNextForm(true)}>
                 Continue <GoArrowRight />
-            </Button>
+            </Button> */}
         </Modal.Footer>
         </Form>
     </>)

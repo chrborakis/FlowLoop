@@ -45,10 +45,7 @@ export const updateCompany = async( company_slug, data, setEdit, setError) => {
     axios.patch(`../backend/api/companies/${company_slug}`, data
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
         then( res => {
-            console.log("RES", res)
-            if(res.status === 200) {
-                setEdit(false);
-            }
+            if(res.status === 200) {setEdit(false);}
         }).
         catch( err => {
             console.log("ERROR", err.response.data)   
@@ -134,10 +131,8 @@ export const createCompany = async( user_id, data, address, setError, hide) => {
 
 export const get_request = async ( user, user_id, company_id, setRequested) => {
     // const { user1, updateUser } = useAuth()
-    axios.get(`/backend/id_workrequests/${user_id}/${company_id}`)
+    axios.get(`/backend/companies/id_workrequests/${user_id}/${company_id}`)
     .then(  res => {
-        console.log(res.data)
-        console.log(user?.company?.id, res.data.data.company, res.data.data.status)
         // if visited page = requested page
         if( company_id!=res.data.data.company) {setRequested('No')}
         if( company_id == res.data.data.company && res.data.data.status==='P'){setRequested('P')}
@@ -162,7 +157,7 @@ export const get_request = async ( user, user_id, company_id, setRequested) => {
 
 export const sendWorkRequest = async ( data, setRequested) => {
     try {
-        const res = await axios.post('/backend/id_workrequests/0/0', data,
+        const res = await axios.post('/backend/companies/id_workrequests/0/0', data,
             {headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
         );
         if(setRequested != null) setRequested(true);

@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { getCompany, get_request, sendWorkRequest, getAddress, getStaff } from './CompanyUtils';
 
 import { useAuth }    from '../../../store/AuthContext';
-import { RequestContext, useReq } from '../../../store/RequestContext';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import PostsPrivate from '../../Posts/PostsPrivate';
@@ -19,7 +18,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // import '../../../../static/css/Profile/Profile.css';
 
 const CompanyProfile = () => {
-    // const { addRequest } = useReq();   
     const { user, updateUser } = useAuth();
     const { slug } = useParams();
 
@@ -29,7 +27,7 @@ const CompanyProfile = () => {
     const [ staff, setStaff] = useState([]);
 
     const [requested, setRequested] = useState(false);
-    const isCompanyNameUnavailable = user?.company?.name === undefined || user?.company?.name === null;
+    const isCompanyNameUnavailable = user?.company?.name === null;
 
     useEffect( () => {getCompany(setData, slug)}, [slug]);
     
@@ -41,7 +39,6 @@ const CompanyProfile = () => {
     },[data?.company_id,slug])
 
     useEffect(() => {
-        console.log(slug, requested, data)
         if(data) get_request( user, user?.id, data?.company_id, setRequested)
     }, [ data, slug, requested]);
 
@@ -72,10 +69,10 @@ const CompanyProfile = () => {
                         <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
                             <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
                                 <Tab eventKey="basic-info" title="Company Info">
-                                    { data    && <Info company={data} admin={data.company_name===user.company.name && user.is_admin}/>}
+                                    { data    && <Info company={data} admin={data.company_name===user?.company?.name && user.is_admin}/>}
                                 </Tab>
                                 <Tab eventKey="address" title="Address">
-                                    { address && <Address address={address} admin={data.company_name===user.company.name && user.is_admin}/>}
+                                    { address && <Address address={address} admin={data.company_name===user?.company?.name && user.is_admin}/>}
                                 </Tab>
                                 <Tab eventKey="staff" title={`Staff (${staff.length})`}>
                                     { staff && <Staff staff={staff}/>}
@@ -97,7 +94,10 @@ const CompanyProfile = () => {
                         <p>You should grant access to view content!</p>
                         {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
 
-                        <Button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
+                        {console.log(isCompanyNameUnavailable,requested)}
+                        <Button disabled={isCompanyNameUnavailable || requested!=='No'} 
+                            onClick={sendRequest} 
+                            title={isCompanyNameUnavailable ? "" : "You can only be employee on one company"}>
                         {
                             requested === 'P' ? 'Already requested!' : 
                                 requested === 'A' ? 'Delete' : 'Send request'

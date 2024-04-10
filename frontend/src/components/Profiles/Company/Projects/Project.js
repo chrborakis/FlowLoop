@@ -95,19 +95,19 @@ const Project = ({project, setProjects}) => {
         }
         console.log(editedProject)
         updateProject(project.project_id, editedProject, setEdit, setProjects)
-        console.log(project)
     }
 
     return(<>
         <Card className="card-content">
             <Card.Header>
                 <Row className="align-items-center">
-                    <Col>
+                    <Col className="d-flex justify-content-start">
                         <Link to={`/user/${project.admin?.slug}`} onClick={scrollTop}>
-                        <img src={`/files/${project.admin?.image}`} width={60}/>
-                        {project.admin?.name}
+                            <img src={`/files/${project.admin?.image}`} width={60}/>
+                            {project.admin?.name}
                         </Link>
                     </Col>
+
                     <Col className="d-flex justify-content-end">
                         {project?.admin?.slug === user.slug && 
                             <Dropdown show={projectOpts} onToggle={toggleDropdown}>
@@ -166,11 +166,9 @@ const Project = ({project, setProjects}) => {
                         {editMode ? (
                             <Range value={value} setValue={setValue}/>
                         ) : (   
-                            <p>{value[0]} - {value[1]}</p>
+                            <>{value[0]} - {value[1]}</>
                         )
                         }
-
-
                     </Card.Text>
                     {editMode ? (
                         <Button variant="primary" type="submit" disabled ={!editMode}>

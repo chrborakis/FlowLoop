@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import Cookies from 'js-cookie';
 
 export const getRequests = async( setRequests, company) => {
-    await axios.get(`/backend/workrequests/${company}`)
+    await axios.get(`/backend/companies/workrequests/${company}`)
     .then( res => setRequests(res.data.data))
     .catch(err => console.log(err))
 }

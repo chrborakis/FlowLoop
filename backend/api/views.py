@@ -573,7 +573,6 @@ class ProjectsView(APIView):
         return Response(serializers.data)
 
     def post( self, request, company):
-        print("DATA IN API PROJECT: ", request.data)
         serializer = ProjectsSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -583,7 +582,6 @@ class ProjectsView(APIView):
 
     def patch(self, request, company):
         id=company
-        print("[PATCH PROJ]: ", request.data)
         try:
             project_inst = Projects.objects.get(pk=id)
         except Projects.DoesNotExist: return Response({"error": "Project "+str(id)+" not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -591,7 +589,6 @@ class ProjectsView(APIView):
             serializer = ProjectsSerializer(project_inst, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                print("Project "+str(id)+" updated successfully")
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -607,7 +604,6 @@ class ProjectAdminsView(APIView):
         return Response(serializers.data)
 
     def post( self, request, id):
-        print("DATA IN API ADMIN: ", request.data)
         serializer = ProjectAdminSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -623,7 +619,6 @@ class ProjectDivisionView(APIView):
         return Response(serializers.data)
 
     def post( self, request, id):
-        print("[POST API] DIV: ", request.data)
         serializer = ProjectDivisionSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -631,8 +626,6 @@ class ProjectDivisionView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request, id):
-        print("[PATCH DIV] File: ", request.FILES.get('file'))
-
         try:
             div_inst = ProjectDivision.objects.get(pk=id)
         except ProjectDivision.DoesNotExist:
@@ -642,12 +635,10 @@ class ProjectDivisionView(APIView):
             serializer = ProjectDivisionSerializer(div_inst, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                print("ProjectDivision File updated successfully")
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
 @method_decorator(csrf_exempt, name='dispatch')
@@ -658,7 +649,6 @@ class ProjectAssignView(APIView):
         return Response(serializers.data)
 
     def post( self, request, division):
-        print("ASSIGN IN API: ", request.data)
         serializer = ProjectAssignSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()

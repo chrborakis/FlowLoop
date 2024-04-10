@@ -17,7 +17,6 @@ const ProjectsList = ({company}) => {
     const [newProjModal, setNewProjModal] = useState(false);
 
     useEffect( () => {
-        console.log(company,currentPage)
         getProjects(company,setProjects, setLoading, setHasNextPage, currentPage)
     }, [company, currentPage]);
 
@@ -29,7 +28,6 @@ const ProjectsList = ({company}) => {
 
     const loadMore = () => {
         if (hasNextPage && !loading) {
-            console.log("hasNextPage:", hasNextPage, " loading:",loading)
             setCurrentPage(prevPage => prevPage + 1);
         }
     };

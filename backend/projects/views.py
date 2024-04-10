@@ -26,7 +26,6 @@ def projects(request, id):
     
     elif request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        print( data)
         base_url = get_base_url(request)
         try:                                   
             response = requests.post(base_url+'/backend/api/projects/'+str(data["company"]), json=data)
@@ -47,7 +46,6 @@ def projects(request, id):
     
     elif request.method == 'PATCH':
         data = json.loads(request.body.decode('utf-8'))
-        print( data)
         base_url = get_base_url(request)
         try:
             response = requests.patch(base_url+'/backend/api/projects/'+str(id), json=data)
@@ -90,7 +88,6 @@ def divisions(request,id):
             base_url = get_base_url(request)
             try:
                 response = requests.get(base_url+'/backend/api/project_divisions/'+str(id))
-                print(response)    
                 if response.status_code == 200:
                     return JsonResponse({
                         'message': str(id)+' divisions fetched successfully',
@@ -107,13 +104,11 @@ def divisions(request,id):
                 return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
            
     elif request.method == 'POST':
-        print("project: ", id)
         data = json.loads(request.body.decode('utf-8'))
         print(data)
         base_url = get_base_url(request)
         try:
             response = requests.post(base_url+'/backend/api/project_divisions/'+str(id), json=data)
-            print(response)
             new_division = response.json() 
             if response.status_code == 200:
                 return JsonResponse({
@@ -134,16 +129,23 @@ def divisions(request,id):
                 'status': response.status_code
             })
         
+    elif request.method == 'DELETE':
+        try:
+            division_id = id
+            item = ProjectDivision.objects.get(division=division_id)
+            item.delete()
+            return JsonResponse({'message': '[DEL]Division '+str(division_id)+' deleted','status': 200})
+        except ProjectAssign.DoesNotExist:return JsonResponse({'message': 'Division '+str(division_id)+' not found','status': 404})
+        except Exception as e: return JsonResponse({'message': str(e),'status': 500})
+        
 @csrf_exempt
 def assign(request, division):
     if request.method == 'POST':
         work_on = json.loads(request.body.decode('utf-8'))
         base_url = get_base_url(request)
         data = {'division': division,'assign':  work_on}
-        print(data)
         try:
             response = requests.post(base_url+'/backend/api/project_assign/'+str(division), json=data)
-            print(response)
             assign = response.json() 
             if response.status_code == 200:
                 return JsonResponse({
@@ -166,7 +168,6 @@ def assign(request, division):
     elif request.method == 'DELETE':
         try:
             participant_id = division
-            print("participant_id",participant_id)
             item = ProjectAssign.objects.get(participant_id=participant_id)
             item.delete()
             return JsonResponse({
@@ -188,11 +189,9 @@ def assign(request, division):
 def admin(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        print(data)
         base_url = get_base_url(request)
         try:
             response = requests.post(base_url+'/backend/api/project_admins/0', json=data)
-            print(response)
             if response.status_code == 200:
                 return JsonResponse({
                     'message': '[POST]New Project admin created successfully',

@@ -27,9 +27,7 @@ const Likes = ({post, url}) => {
                 <p>Likes: {likes.length}</p>
                 {/* Find if liked by current user */}
                 { likes.find(like => like.user.slug === user.slug) ? (
-                    <p>
-                        Liked
-                    </p>
+                    <p>Liked</p>
                 ) : (<></>
                 )}
             </>

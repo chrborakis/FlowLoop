@@ -40,12 +40,12 @@ const Post = ({post, url}) => {
                     <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
                 </Card.Title>
                 <Card.Text>
-                    { post?.image && <div className="container"><div className="image-wrapper">
-                        <img src={post.image} alt=""/></div></div>
+                    { post?.image && <div className="container">
+                        <div className="image-wrapper">
+                        <img src={post.image} alt=""/></div>
+                        </div>
                     }
-                    <p>
-                        {post.body}
-                    </p>
+                    {post.body}
                 </Card.Text>
             </Card.Body>
             <Card.Footer className="text-muted">

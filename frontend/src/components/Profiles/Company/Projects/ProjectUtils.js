@@ -28,6 +28,18 @@ export const deleteProject = async(project_id,setProjects) => {
     .catch( err => console.log(err))
 }
 
+export const deleteDivision = async( division_id, setDivisions) => {
+    await axios.delete(`../backend/projects/divisions/${division_id}`,
+    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    .then( res => {
+        console.log(res.data)
+        if(res.data.status === 200){
+            setDivisions(prevData => prevData.filter(obj => obj.division !== division_id));
+        }
+    })
+    .catch( err => console.log(err))
+}
+
 export const updateProject = async(project_id, data, setEdit, setProjects) => {
     await axios.patch(`../backend/projects/projects/${project_id}`, data,
     {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
@@ -146,7 +158,7 @@ export const setProjectAdmin = async( project_id, work_on, onSubmit, setNewProje
     .catch( err => console.log(err.response.data))
 }
 
-export const addProject = async( data, onSubmit, setNewProject, work_id, setProjectError) => {
+export const addProject = async( data, onSubmit, setNewProject, work_id, setProjectError, setProject) => {
     await axios.post(`../backend/projects/projects/0`, data,
     {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
     .then( res => {
@@ -154,6 +166,7 @@ export const addProject = async( data, onSubmit, setNewProject, work_id, setProj
         if(res.data.status === 200){
             console.log(res.data)
             setProjectAdmin(res.data?.data?.project_id, work_id, onSubmit, setNewProject, res.data.data)
+            setProject(res.data?.data?.project_id)
         }else if(res.data.status===400){
             setProjectError("This title arleady exists")
         }

@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 
 
 const CreateProject = (props) => {
+    const [project, setProject] = useState(null)
     const [nextForm, setNextForm] = useState(false);
     const [projectValid, setProjectValid] = useState(false);
     const [projectError, setProjectError] = useState()
@@ -25,11 +26,13 @@ const CreateProject = (props) => {
         <Modal {...props} size="lg" centered
             aria-labelledby="contained-modal-title-vcenter"   
         >
-            {!projectValid ? (
-                <ProjectForm company={props.company} onSubmit={projectSubmit} projectError={projectError} setProjectError={setProjectError} setNewProject={props.setNewProject} setNextForm={setNextForm}/>
-            ) : (
-                nextForm && <DivisionsForm data={secondFormData} onSubmit={handleSecondFormSubmit} />
-            )}
+            {!projectValid && (
+                <ProjectForm setProject={setProject} company={props.company} onSubmit={projectSubmit} projectError={projectError} setProjectError={setProjectError} setNewProject={props.setNewProject} setNextForm={setNextForm}/>
+            ) 
+            // : (
+            //     nextForm && <DivisionsForm project={project} />
+            // )
+            }
         </Modal>
     );
 };
