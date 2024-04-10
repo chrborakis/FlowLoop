@@ -1,24 +1,73 @@
-import React, {useState, useEffect} from "react";
-import { Container, Col, Row, Card, Button, Form} from 'react-bootstrap';
+import React, {useState, useEffect, useRef} from "react";
+import { Container, Col, Row, Card, Button, Dropdown, Form} from 'react-bootstrap';
 import Badge from 'react-bootstrap/Badge';
 import {scrollTop} from '../../../Extra/LinkOnTop'
 import { Link } from "react-router-dom";
-import { getDivisions, uploadDivision, removeAssign, addAssign} from "./ProjectUtils";
+import { getDivisions, deleteProject, updateProject} from "./ProjectUtils";
 import DivisionsList from "./DivisionsList";
 import "../../../../../static/css/projects.css"
 import "../../../../../static/css/HomePage.css"
 import { BsPlusLg } from "react-icons/bs";
 import { useAuth } from '../../../../store/AuthContext';
 import NewDivision from "./NewDivision";
+import { HiMiniCog6Tooth } from "react-icons/hi2";
+import Range from "./Range";
+import "../../../../../static/css/projects.css"
 
+const Project = ({project, setProjects}) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const toggleExpand = () => setIsExpanded(prevState => !prevState);
 
-const Project = ({project}) => {
     const { user} = useAuth();
     const [phase, setPhase] = useState({ name: "", state: "" });
     const [divisions,setDivisions] = useState([])
 
+    const [projectOpts, setProjectOpts] = useState(false);
+    const toggleDropdown = () => setProjectOpts(!projectOpts);
+
+    const [editMode, setEdit] = useState(false)
+
+    const [data, setData] = useState({ 
+        title:       project?.title,
+        description: project?.description,
+    });
+
+    const dateFormat = new Intl.DateTimeFormat(undefined, {
+        month: 'short',
+        day: 'numeric',
+      });
+
+    const [value, setValue] = useState([
+        project?.start_date,
+        project?.finish_date,
+    ]);
+
+    const options = [
+        { label: 'Initiating', value: 'Initiating', bgColor: 'secondary' },
+        { label: 'Planning', value: 'Planning', bgColor: 'info' },
+        { label: 'Executing', value: 'Executing', bgColor: 'warning' },
+        { label: 'Closed', value: 'Closed', bgColor: 'success' }
+      ];
+
+    const handleSelect = (selectedState) => {
+        const newState = selectedState.outerText
+        const selectedOption = options.find(option => option.label === newState);
+        if (selectedOption) {
+            setPhase({ name: selectedOption.value, state: selectedOption.bgColor});
+        }
+    };
+
+    const handleEdit = (e) => {
+        e.preventDefault();
+        setEdit(prevState => !prevState);
+    }
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setData({...data,[name]: value,});
+    };
+
     useEffect(()=>{
-        console.log("~~~~~~~~~~~~~~REFETCH DIVS~~~~~~~~~~")
         getDivisions(project.project_id, setDivisions)
     },[project, setDivisions])
 
@@ -36,29 +85,114 @@ const Project = ({project}) => {
         }
     }, [project.phase]);
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const editedProject = {
+            ...data,
+            start_date: value[0],
+            finish_date: value[1],
+            phase: phase.name[0]
+        }
+        console.log(editedProject)
+        updateProject(project.project_id, editedProject, setEdit, setProjects)
+        console.log(project)
+    }
+
     return(<>
         <Card className="card-content">
             <Card.Header>
-            <Row>
-                <Link to={`/user/${project.admin?.slug}`} onClick={scrollTop}>
-                    <img src={`/files/${project.admin?.image}`} width={60}/>
-                    {project.admin?.name}
-                </Link>
-            </Row>                       
+                <Row className="align-items-center">
+                    <Col>
+                        <Link to={`/user/${project.admin?.slug}`} onClick={scrollTop}>
+                        <img src={`/files/${project.admin?.image}`} width={60}/>
+                        {project.admin?.name}
+                        </Link>
+                    </Col>
+                    <Col className="d-flex justify-content-end">
+                        {project?.admin?.slug === user.slug && 
+                            <Dropdown show={projectOpts} onToggle={toggleDropdown}>
+                                <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
+                                <Dropdown.Menu style={{  width: 'fit-content',  margin: 'auto',}}>
+                                    <Button variant="outline-info"   onClick={handleEdit}>Edit</Button>
+                                    <Button variant="outline-danger" onClick={() => deleteProject(project.project_id, setProjects)}>Delete</Button>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        }
+                    </Col>
+                </Row>                       
             </Card.Header>
             <Card.Body>
-                <Card.Title>
-                    <Row>{project.title}
-                        <Badge pill bg={phase.state}>{phase.name}</Badge>
-                    </Row>
-                </Card.Title>
-                <Card.Text>{project.description}
-                    <p>{project.start_date} - {project.finish_date}</p>
-                </Card.Text>
+                <Form onSubmit={handleSubmit}>
+                    <Card.Title>
+                        <Row className="align-items-center">
+                            {editMode ? (
+                                <Form.Control name="title" type="text" disabled={!editMode}
+                                    placeholder="Enter a title"
+                                    value={data.title} onChange={handleInputChange} required  
+                                />
+                            ) : (<Col>{data.title}</Col>)}
+                        </Row>
+
+                        <Row className="align-items-center">
+                            {editMode ? (
+                                <Dropdown>
+                                    <Dropdown.Toggle variant={phase.state} id="dropdown-basic">
+                                        {phase.name}
+                                    </Dropdown.Toggle>
+                                
+                                    <Dropdown.Menu>
+                                        {options.map((option, index) => (
+                                            <Dropdown.Item key={index} eventKey={option.value}
+                                                onClick={(ev)=>handleSelect(ev.target)} active={phase.state === option.value}
+                                                style={{ width: '100%' }}>
+                                                <Badge bg={option.bgColor}>{option.label}</Badge>
+                                            </Dropdown.Item>
+                                        ))}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            ) : (<Badge pill bg={phase.state}>{phase.name}</Badge>)}
+                        </Row>
+
+                    </Card.Title>
+                    <Card.Text>
+                        {editMode ? (
+                            <Form.Control name="description" type="text" as="textarea" rows={3}  disabled={!editMode}
+                                placeholder="Enter your Description" 
+                                value={data.description} onChange={handleInputChange} required  
+                            />
+                        ) : (<>{data.description}</>)}
+                        
+
+                        {editMode ? (
+                            <Range value={value} setValue={setValue}/>
+                        ) : (   
+                            <p>{value[0]} - {value[1]}</p>
+                        )
+                        }
+
+
+                    </Card.Text>
+                    {editMode ? (
+                        <Button variant="primary" type="submit" disabled ={!editMode}>
+                            Save
+                        </Button>   
+                    ) : (
+                        <Button variant="outline" onClick={toggleExpand}>
+                            {isExpanded ? <span>&#x25B2;</span> : <span>&#x25BC;</span>}
+                        </Button>
+                    )}
+                </Form>
             </Card.Body>
-            <Card.Footer className="text-muted">
-                <NewDivision admin_slug={project?.admin?.slug} user_slug={user.slug} setDivisions={setDivisions} project_id={project.project_id}/>
-                <DivisionsList company={project.company} admin_slug={project?.admin?.slug} divisions={divisions} setDivisions={setDivisions}/>
+            <Card.Footer className="text-muted" onClick={(event) => {
+                if (event.target === event.currentTarget) toggleExpand();
+            }}>
+                {isExpanded ? (<>
+                    <NewDivision admin_slug={project?.admin?.slug} user_slug={user.slug} setDivisions={setDivisions} project_id={project.project_id}/>
+                    <DivisionsList company={project.company} admin_slug={project?.admin?.slug} divisions={divisions} setDivisions={setDivisions}/>
+                </>) : (<>
+                    {divisions && divisions.length > 0 ? (<>Divisions: {divisions.length}</>) : (<>No divisions</>)}
+                </>)
+                }
             </Card.Footer>
         </Card>
     </>)

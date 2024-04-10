@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Modal,Button, Form,Dropdown } from "react-bootstrap"
-import axios from 'axios';
-import { Link } from "react-router-dom";
-import {scrollTop} from '../../../../Extra/LinkOnTop'
-import Cookies from 'js-cookie';
 import { fetchStaff, addAssign } from "../ProjectUtils";
-
 
 const AdminInvite = (props) => {
     const [workers, setWorkers] = useState([])
@@ -26,13 +21,13 @@ const AdminInvite = (props) => {
             <Form className='form' onSubmit={handleSubmit}>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Select employee..
+                        Assign Division
                     </Modal.Title>
                 </Modal.Header>
             <Modal.Body>
                 <Dropdown>
                     <Dropdown.Toggle variant="success">
-                        {selectedOption.name || 'Select an option'}
+                        {selectedOption.name || 'Select an employee'}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {workers && workers.map((worker, index) => (
@@ -40,7 +35,6 @@ const AdminInvite = (props) => {
                             <>
                                 <img src={`/files/${worker.employee.image}`} width={50}/>
                                 {worker.employee.name}
-                                {console.log(worker)}
                             </>
                         </Dropdown.Item>
                         ))}
@@ -48,7 +42,7 @@ const AdminInvite = (props) => {
                 </Dropdown>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" type="submit">Submit</Button>
+                <Button variant="primary" type="submit">Assign</Button>
             </Modal.Footer>
             </Form>
         </Modal>       

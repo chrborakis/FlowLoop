@@ -8,9 +8,10 @@ from . import views
 from backend.views import *
 
 urlpatterns = [
-    path("projects/<int:company>",  views.projects),
+    path("projects/<int:id>",  views.projects),
 
     # id company - getDivisions || id project - addDivision
     path("divisions/<int:id>", views.divisions),
-    path("assign/<int:division>", views.assign)
+    path("assign/<int:division>", views.assign),
+    path("admin", views.admin)
 ]

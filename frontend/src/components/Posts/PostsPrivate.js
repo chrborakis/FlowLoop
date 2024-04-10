@@ -19,7 +19,6 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
     const [hasNextPage, setHasNextPage] = useState(true);
 
     useEffect( () => {
-        // GetPosts({ onFetch: setPosts, url: `${url}/${slug}`, setLoading: setLoading, setHasNextPage:setHasNextPage, currentPage:currentPage});
         getPosts(setPosts, `${url}/${slug}`, setLoading, setHasNextPage, currentPage)
     }, [slug, currentPage]);
 

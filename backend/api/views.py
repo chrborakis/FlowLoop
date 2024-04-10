@@ -572,24 +572,47 @@ class ProjectsView(APIView):
         serializers = ProjectsSerializer(instances, many=True)        
         return Response(serializers.data)
 
-    def post( self, request):
+    def post( self, request, company):
+        print("DATA IN API PROJECT: ", request.data)
         serializer = ProjectsSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, company):
+        id=company
+        print("[PATCH PROJ]: ", request.data)
+        try:
+            project_inst = Projects.objects.get(pk=id)
+        except Projects.DoesNotExist: return Response({"error": "Project "+str(id)+" not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            serializer = ProjectsSerializer(project_inst, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                print("Project "+str(id)+" updated successfully")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
+
 class ProjectAdminsView(APIView):
-    def get( self, request, company):
+    def get( self, request, id):
         instances = get_list_or_404(Projects)
         serializers = ProjectAdminSerializer(instances, many=True)        
         return Response(serializers.data)
 
-    def post( self, request):
+    def post( self, request, id):
+        print("DATA IN API ADMIN: ", request.data)
         serializer = ProjectAdminSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
         ProjectDivisionView

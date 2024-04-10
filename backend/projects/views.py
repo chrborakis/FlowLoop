@@ -9,29 +9,78 @@ from backend.util import get_base_url
 from rest_framework import status
 
 @csrf_exempt
-def projects(request, company):
+def projects(request, id):
     if request.method == 'GET':
+        company = id
         try:
-            queryset = Projects.objects.filter(company=company)
-            paginator = Paginator(queryset, 5)  #items per scroll down
+            queryset = Projects.objects.filter(company=company).order_by('-project_id')
+            paginator = Paginator(queryset, 10)  #items per scroll down
             page_number = request.GET.get('page')
-            page_number = int(page_number) if page_number else 1
+            page_number = int(request.GET.get('page')) if page_number else 1
             page_obj = paginator.get_page(page_number)
             next_page_number = page_number + 1 if page_obj.has_next() else None
             serializer = ProjectsSerializer(page_obj, many=True)
-            return JsonResponse({
-                'message': 'Projects Fetched succesfully',
-                'data': serializer.data, 
-                'has_next': next_page_number,
-                'status': 200
-            })
+
+            return JsonResponse({ 'message': 'Projects Fetched succesfully', 'data': serializer.data,  'has_next': next_page_number, 'status': 200})
+        except Exception as e: return JsonResponse({'message': 'Projects Fetch Failed','error': str(e),'status': 500})
+    
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        print( data)
+        base_url = get_base_url(request)
+        try:                                   
+            response = requests.post(base_url+'/backend/api/projects/'+str(data["company"]), json=data)
+            if response.status_code == 200:
+                  return JsonResponse({
+                    'message': '[POST] New Project created successfully',
+                    'data': response.json(), 
+                    'status': response.status_code
+                })
+            else: 
+                return JsonResponse({
+                    'message': '[POST] Failed to create New Project',
+                    'data': response.json(),'status': response.status_code
+                })
         except Exception as e:
-            print("ERROR: ", str(e))
+            print( e)
+            return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+    
+    elif request.method == 'PATCH':
+        data = json.loads(request.body.decode('utf-8'))
+        print( data)
+        base_url = get_base_url(request)
+        try:
+            response = requests.patch(base_url+'/backend/api/projects/'+str(id), json=data)
+            print(response)
+           
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[POST]Project '+str(id)+' updated successfully',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': '[POST]Project '+str(id)+' updat failed',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+        except Exception as e:
+            print(e)
             return JsonResponse({
-                'message': 'Projects Fetch Failed',
-                'error': str(e),
-                'status': 500
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
             })
+
+    elif request.method == 'DELETE':
+        try:
+            project_id = id
+            item = Projects.objects.get(project_id=project_id)
+            item.delete()
+            return JsonResponse({'message': '[DEL]Project '+str(project_id)+' deleted','status': 200})
+        except ProjectAssign.DoesNotExist:return JsonResponse({'message': 'Project '+str(project_id)+' not found','status': 404})
+        except Exception as e: return JsonResponse({'message': str(e),'status': 500})
         
 @csrf_exempt
 def divisions(request,id):
@@ -133,4 +182,32 @@ def assign(request, division):
             return JsonResponse({
                 'message': str(e),
                 'status': 500
+            })
+        
+@csrf_exempt
+def admin(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        base_url = get_base_url(request)
+        try:
+            response = requests.post(base_url+'/backend/api/project_admins/0', json=data)
+            print(response)
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[POST]New Project admin created successfully',
+                    'data': response.json() ,
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': '[POST]Failed to create New Project admin',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
             })

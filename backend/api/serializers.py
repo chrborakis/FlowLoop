@@ -356,13 +356,26 @@ class UniversitySerializer(serializers.ModelSerializer):
             "degree"
         )
 class ProjectAdminSerializer(serializers.ModelSerializer):
+    admin_info = serializers.SerializerMethodField()    
     class Meta:
         model = ProjectAdmin
         fields = (
             "id",
             "project",
             "admin",
+            "admin_info"
         ) 
+
+    def get_admin_info(self, obj):
+        try:
+            return {
+                'id'  : str(obj.admin.employee.user.user_id),
+                'name': str(obj.admin.employee.user),
+                'slug': str(obj.admin.employee.user.slug),
+                'image':str(obj.admin.employee.user.image),
+            }
+        except ProjectAdmin.DoesNotExist:
+            return None
 
 class ProjectsSerializer(serializers.ModelSerializer):
     admin = serializers.SerializerMethodField()    

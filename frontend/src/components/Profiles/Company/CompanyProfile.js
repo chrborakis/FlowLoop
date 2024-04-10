@@ -92,7 +92,7 @@ const CompanyProfile = () => {
                                 <ProjectsList company={data?.company_id}/>
                             </Tab>
                             </Tabs>
-                        ) : (<>
+                        ) : (<> 
                         {/* If user is not member of company! */}
                         <p>You should grant access to view content!</p>
                         {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}

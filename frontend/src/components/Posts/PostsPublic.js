@@ -18,7 +18,7 @@ const PostsPublic = ({user, url, slug, displayNew}) => {
     const [hasNextPage, setHasNextPage] = useState(true);
 
     useEffect( () => {
-        // GetPosts({ onFetch: setPosts, url: url+slug, setLoading:setLoading, setHasNextPage:setHasNextPage, currentPage:currentPage});
+        console.log(slug, currentPage)
         getPosts(setPosts, url+slug, setLoading, setHasNextPage, currentPage)
     }, [slug, currentPage]);
 
@@ -31,6 +31,7 @@ const PostsPublic = ({user, url, slug, displayNew}) => {
 
     const loadMore = () => {
         if (hasNextPage && !loading) {
+            console.log("hasNextPage:", hasNextPage, " loading:",loading)
             setCurrentPage(prevPage => prevPage + 1);
         }
     };

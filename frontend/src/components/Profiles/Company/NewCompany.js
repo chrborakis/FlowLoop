@@ -26,8 +26,6 @@ const NewCompany = (props) => {
         company_name: '',  description: '', phone: '',    
     });
 
-    
-
     const [errors, setError] = useState()
 
     useEffect(() => { 

@@ -14,10 +14,7 @@ import { HiMiniCog6Tooth } from "react-icons/hi2";
 
 const Division = ({ company, admin_slug,division,setDivisions}) => {
     const [assignOptsOpen, setAssignOptOpen] = useState(false);
-
-    const toggleDropdown = () => {
-        setAssignOptOpen(!assignOptsOpen);
-      };
+    const toggleDropdown = () => setAssignOptOpen(!assignOptsOpen);
     
     const { user} = useAuth();
     const [ file, setFile] = useState(null);

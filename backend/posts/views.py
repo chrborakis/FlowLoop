@@ -42,7 +42,7 @@ def post_public(request, user):
         if user == '0':
             try:
                 queryset = PostsPublic.objects.all().order_by('-publish_date')
-                paginator = Paginator(queryset, 2)  #  items per scroll down
+                paginator = Paginator(queryset, 4)  #  items per scroll down
                 page_number = request.GET.get('page')
                 page_number = int(page_number) if page_number else 1
                 page_obj = paginator.get_page(page_number)
@@ -65,7 +65,7 @@ def post_public(request, user):
         elif user != '0':
             try:
                 queryset = PostsPublic.objects.filter(author__slug=str(user)).order_by('-publish_date')
-                paginator = Paginator(queryset, 5)  #items per scroll down
+                paginator = Paginator(queryset, 4)  #items per scroll down
                 page_number = request.GET.get('page')
                 page_number = int(page_number) if page_number else 1
                 page_obj = paginator.get_page(page_number)
@@ -115,7 +115,7 @@ def post_private(request, company):
     elif request.method == 'GET':
         try:
             queryset = PostsPrivate.objects.filter(author__employee__company__slug = company).order_by('-publish_date')
-            paginator = Paginator(queryset, 5)  #items per scroll down
+            paginator = Paginator(queryset, 4)  #items per scroll down
             page_number = request.GET.get('page')
             page_number = int(page_number) if page_number else 1
             page_obj = paginator.get_page(page_number)
