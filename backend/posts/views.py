@@ -85,6 +85,14 @@ def post_public(request, user):
                     'error': str(e),
                     'status': 500
                 })
+    elif request.method == 'DELETE':
+        try:
+            post_id = user
+            item = PostsPublic.objects.get(post_id=post_id)
+            item.delete()
+            return JsonResponse({'message': '[DEL]PostPublic '+str(post_id)+' deleted','status': 200})
+        except PostsPublic.DoesNotExist:return JsonResponse({'message': 'PostPublic '+str(post_id)+' not found','status': 404})
+        except Exception as e: return JsonResponse({'message': str(e),'status': 500})
 
 @csrf_exempt
 def post_private(request, company):
@@ -126,7 +134,7 @@ def post_private(request, company):
                 'data': serializer.data, 
                 'has_next': next_page_number,
                 'status': 200
-                })
+            })
                 # response = requests.get(base_url+'/backend/api/postpublic')
         except Exception as e:
             print(str(e))
@@ -135,13 +143,14 @@ def post_private(request, company):
                 'error': str(e),
                 'status': 500
             })
-        # response = requests.get(base_url+'/backend/api/postprivate/'+str(company))
-        # print(response.json())
-        # return JsonResponse({
-        #     'message': 'Posts Public Fetched succesfully',
-        #     'data': response.json(),
-        #     'status': response.status_code
-        # })
+    elif request.method == 'DELETE':
+        try:
+            post_id = company
+            item = PostsPrivate.objects.get(post_id=post_id)
+            item.delete()
+            return JsonResponse({'message': '[DEL]PostPrivate '+str(post_id)+' deleted','status': 200})
+        except PostsPrivate.DoesNotExist:return JsonResponse({'message': 'PostPrivate '+str(post_id)+' not found','status': 404})
+        except Exception as e: return JsonResponse({'message': str(e),'status': 500})
 
 @csrf_exempt
 def public_comments(request, post):

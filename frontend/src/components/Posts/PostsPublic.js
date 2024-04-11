@@ -49,7 +49,7 @@ const PostsPublic = ({user, url, slug, displayNew}) => {
             releaseToRefreshContent={<div style={{ textAlign: 'center' }}>&#8593; Release to refresh</div>}
             >
                 {posts.map( post => 
-                    post && <Post key={post.post_id} post={post} url={url}/>
+                    post && <Post key={post.post_id} post={post} url={url} setPosts={setPosts}/>
                 )}
             </InfiniteScroll>
         </div>

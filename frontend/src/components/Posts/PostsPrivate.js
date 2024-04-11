@@ -51,7 +51,7 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
         >
             {posts?.length > 0 ? (
             posts.map( post => 
-                post && <Post key={post.post_id} post={post} url={url}/>
+                post && <Post key={post.post_id} post={post} url={url} setPosts={setPosts}/>
             )
         ) : (
             <p>No Posts Found!</p>

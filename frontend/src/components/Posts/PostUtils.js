@@ -17,6 +17,19 @@ export const getPosts = async(setPosts, url, setLoading, setHasNextPage, current
     .finally( err => setLoading(false))
 }
 
+
+export const deletePost = async( url, post, setPosts) => {
+    await axios.delete(`${url}/${post}/`,
+    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    .then( res => {
+        console.log(res.data)
+        if(res.data.status === 200){
+            setPosts(prevData => prevData.filter(obj => obj.post_id !== post));
+        }
+    })
+    .catch( err => console.log(err))
+}
+
 export const postPost = async( url, data, newPost, setIsContentVisible) => {
     console.log("New Post: ", data)
     const new_url = url + '/0/'
