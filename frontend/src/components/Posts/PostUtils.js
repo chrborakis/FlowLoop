@@ -30,6 +30,19 @@ export const deletePost = async( url, post, setPosts) => {
     .catch( err => console.log(err))
 }
 
+export const editPost = async( url, post, setPosts, setEditMode) => {
+    await axios.patch(`${url}/${post.post_id}/`, post, 
+    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    .then( res => {
+        console.log(res.data.data)
+        if(res.data.status === 200){
+            setEditMode(false)    
+            // setPosts(prevData =>prevData.map(post => (post.post_id === post.post_id ? { ...post, value: res.data.data } : post)));        
+        }
+    })
+    .catch( err => console.log(err))
+}
+
 export const postPost = async( url, data, newPost, setIsContentVisible) => {
     console.log("New Post: ", data)
     const new_url = url + '/0/'

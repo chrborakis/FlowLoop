@@ -171,7 +171,7 @@ const Project = ({project, setProjects}) => {
                         }
                     </Card.Text>
                     {editMode ? (
-                        <Button variant="primary" type="submit" disabled ={!editMode}>
+                        <Button variant="success" type="submit" disabled ={!editMode}>
                             Save
                         </Button>   
                     ) : (

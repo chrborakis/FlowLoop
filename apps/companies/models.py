@@ -8,7 +8,7 @@ from apps.users.models import Users
 from apps.models import Address
 
 def get_upload_path_company(instance, filename):
-    return os.path.join('profile/company', str(instance.company_name), filename)
+    return os.path.join('profile/company', str(instance.slug), filename)
 class Companies(models.Model):
     company_id = models.AutoField(primary_key=True)
     company_name = models.CharField(unique=True,blank=False, null=False)

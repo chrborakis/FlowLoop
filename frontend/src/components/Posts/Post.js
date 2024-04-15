@@ -2,7 +2,7 @@ import React, {useState, useRef} from "react";
 import Comments from "./Comments/Comments";
 import Likes from "./Likes/Likes";
 import { Link } from "react-router-dom";
-import {Card, Row,Col, Dropdown, Button, Toast} from 'react-bootstrap';
+import {Card, Row,Col, Dropdown, Button, Form} from 'react-bootstrap';
 import '../../../static/css/Posts/Post.css';
 import {scrollTop} from '../Extra/LinkOnTop';
 import { HiMiniCog6Tooth } from "react-icons/hi2";
@@ -10,7 +10,7 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import '../../../static/css/index.css'
 import { useAuth } from "../../store/AuthContext";
-import { deletePost } from "./PostUtils";
+import { deletePost, editPost } from "./PostUtils";
 import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
 import 'primereact/resources/primereact.min.css';
@@ -18,19 +18,31 @@ import 'primereact/resources/primereact.min.css';
 const Post = ({post, url, setPosts}) => {
     const { user} = useAuth();
     const [visible,setVisible] = useState(false)
+    const [editMode, setEditMode] = useState(false)
+    const [data, setData] = useState({"post_id": post.post_id,"author":post.author,"title":post.title,"body":post.body,"image":post.image})
     
     const accept = () => {
         deletePost( url, post.post_id, setPosts)
         setVisible(false);
     };
-    
-      const reject = () => {
-        setVisible(false);
-      };
-    
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setData({...data,[name]: value,});
+    };
+    const reject = () => setVisible(false);    
+
+    const handleEdit = () => {
+        setEditMode((prev)=>!prev)
+    }
 
     const [postOpts, setPostOpts] = useState(false);
     const toggleDropdown = () => setPostOpts(!postOpts);
+
+    const saveEdited = (e) => {
+        e.preventDefault()
+        console.log(data)
+        editPost( url, data, setPosts, setEditMode)
+    }
 
     return(
         <Card className="card-content">
@@ -64,7 +76,7 @@ const Post = ({post, url, setPosts}) => {
                         <Dropdown show={postOpts} onToggle={toggleDropdown}>
                             <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Button variant="outline-info"   onClick={()=>null}>Edit</Button>
+                                <Button variant="outline-info"   onClick={handleEdit}>Edit</Button>
                                 <Button variant="outline-danger" icon="pi pi-check"
                         label="Confirm" onClick={() => setVisible(true)}>Delete</Button>
                             </Dropdown.Menu>
@@ -76,21 +88,45 @@ const Post = ({post, url, setPosts}) => {
                     />
                 </Col>
             </Row>                      
-
             </Card.Header>
             <Card.Body>
-                <Card.Title>
-                    <p className="post-title">{post.title}</p>
-                </Card.Title>
-                <Card.Text>
-                    {post.body}
-                    { post?.image && <div className="container">
-                        <div className="image-wrapper">
-                        <img src={post.image} alt=""/></div>
-                        </div>
-                    }
-                    <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
-                </Card.Text>
+                <Form onSubmit={saveEdited}>
+                    <Card.Title>
+                        <Row className="align-items-center">
+                            {editMode ? (
+                                <Form.Control name="title" type="text" disabled={!editMode}
+                                    placeholder="Enter a title"
+                                    value={data.title} onChange={handleInputChange} required  
+                                />
+                            ) : (<Col>{data.title}</Col>)}
+                        </Row>
+                    </Card.Title>
+                    <Card.Text>
+                        {editMode ? (
+                            <Form.Control name="body" type="text" as="textarea" rows={3}  disabled={!editMode}
+                                placeholder="Enter your Description" 
+                                value={data.body} onChange={handleInputChange} required  
+                            />
+                        ) : (<>{data.body}</>)}
+
+                        { post?.image && <div className="container">
+                            <div className="image-wrapper">
+                                <img src={data.image} alt=""/></div>
+                            </div>
+                        }
+                        <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
+                    </Card.Text>
+                    {editMode && (
+                        <Col className="justify-content-between">
+                        <Button variant="outline-danger" type="button" onClick={handleEdit}disabled ={!editMode}>
+                            Cancel
+                        </Button> 
+                        <Button variant="success" type="submit" disabled ={!editMode}>
+                            Save
+                        </Button>   
+                        </Col>
+                    )}
+                </Form>
             </Card.Body>
             <Card.Footer className="text-muted">
             <div className="comments">

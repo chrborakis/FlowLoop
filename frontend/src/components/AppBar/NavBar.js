@@ -80,20 +80,21 @@ function NavBar({user}) {
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                        <Nav className="justify-content-end flex-grow-1 pe-3">
+                        {console.log(user)}
                             {/* <Nav.Link href="#action1">Home</Nav.Link>
                             <Nav.Link href="#action2">Link</Nav.Link>
                             <Nav.Link href="#action2">LogOut</Nav.Link> */}
+                        <Nav className="justify-content-start flex-grow-1 pe-3">
                             <Link to={`/user/${user.slug}`}>
                                 <div>
-                                    <img src={`/files/${user.image}`} width={75}/>
+                                    <img src={`/files/profile/user/${user.slug}/${user.image}`} width={80}/>
                                     {user.name}
                                 </div>
                             </Link>
                             {user?.company?.slug && 
                                 <Link to={`/company/${user?.company?.slug}`}>
                                     <div>
-                                        <img src={`/files/${user?.company?.image}`} width={75}/>
+                                        <img src={`/files/profile/company/${user?.company?.slug}/${user?.company?.image}`} width={80}/>
                                         {user?.company?.name}
                                     </div>
                                 </Link>

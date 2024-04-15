@@ -442,6 +442,23 @@ class PostPublicView(APIView):
         instance = get_object_or_404(PostsPublic, post_id=post)
         serializers = PostsPublicSerializer(instance)
         return Response(serializers.data)
+    def patch( self, request, post):
+        try:
+            post_inst = PostsPublic.objects.get(pk=post)
+        except PostsPublic.DoesNotExist: return Response({"error": "PostPublic "+str(post)+" not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            serializer = PostsPublicSerializer(post_inst, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
     
 # CALL ON EVERY NEW POST TO UPDATE THE ARRAY OF POSTS
 class PostPrivateView(APIView):
