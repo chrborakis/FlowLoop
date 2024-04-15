@@ -1,4 +1,6 @@
 import json
+from urllib.parse import urljoin
+from django.conf import settings
 from django.http import Http404, JsonResponse
 import requests
 from rest_framework.views import APIView
@@ -9,6 +11,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
 from backend.util import get_base_url, get_workson_instance
+from PIL import Image
+from io import BytesIO
 
 @action(detail=True, methods=['post'])
 class UserProfile(APIView):
@@ -45,7 +49,32 @@ class UserProfile(APIView):
             return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def patch( self,request,slug):
+        new_image =request.FILES.get('image')
+        if new_image is None:
+            return JsonResponse({'error': 'No image provided'}, status=400)
         
+        image = Image.open(new_image)
+
+        resized_image = image.resize((150, 150))
+
+        output_io = BytesIO()
+        resized_image.save(output_io, format='JPEG') 
+
+        try:
+            user = Users.objects.get(user_id=slug)
+            user.image.save(new_image.name, output_io, save=False)
+            user.save()
+            updated_image_url = urljoin(settings.MEDIA_URL, user.image.url)
+            return JsonResponse({'message': 'Image updated successfully', 'data': updated_image_url}, status=200)
+
+        except Exception as e:
+            print(e)
+            return JsonResponse({'message': 'Image updated successfully', 
+                'error': str(e),
+                'status':200}
+            )
+    
 def friends(request, user):
     print("user: ", user)
     if request.method == 'GET':

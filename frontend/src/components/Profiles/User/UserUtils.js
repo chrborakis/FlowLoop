@@ -12,6 +12,43 @@ export const getUser = async( setData, setWork, slug) => {
     .catch( err => console.log(err))
 };
 
+export const updateUser = async( company_slug, data, setEdit, setError) => {
+    axios.patch(`../backend/api/companies/${company_slug}`, data
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
+        then( res => {
+            if(res.status === 200) {
+                setEdit(false);
+                const companyToSlug = (str) => str.trim().toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+                const new_slug = companyToSlug(data.company_name)
+                console.log(new_slug)
+                if(company_slug != new_slug){
+                    const { user, updateUser } = useAuth();
+                    updateUser({...user,company: {name: data.company_name,slug: companyToSlug}});
+                    history.pushState(null, null, `/company/${new_slug}`);
+                }
+            }
+        }).
+        catch( err => {
+            console.log(err)
+            if(err.response.data.phone[0]) setError(prevState => ({...prevState,phone: err.response.data.phone}))
+        }) 
+}
+
+export const changeImage = async( url, id, image, setImage) => {
+    // url: users || companies
+    const data = {'image':image}
+    
+    axios.patch(`../backend/api/${url}/${id}`, data,
+    {headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        "Content-Type": "multipart/form-data"
+    }})
+    .then(  res => {    
+        if(res.status===200)setImage(res.data.image)
+    })
+    .catch( err => console.log(err.response.data))
+};
+
 export const getFriends = async( user, setFriends) => {
     axios.get(`/backend/users/friends/${user}`)
     .then(  res => {
@@ -77,7 +114,6 @@ export const getUniversity = async( user, setUniversity) => {
 }
 
 export const postUniversity = async( user, data, setEdit) => {
-    console.log(data)
     axios.post(`/backend/users/university/${user}`, data)
     .then(  res => {if(res.status === 200)setEdit(false)})
     .catch( err => console.log(err))

@@ -4,11 +4,17 @@ import {Form,Card,Col} from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { updateCompany } from '../CompanyUtils';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+
+import { useAuth } from '../../../../store/AuthContext';
 
 const Info = ({company, admin}) => {
     const [editMode, setEdit] = useState(false);
+    const { user, updateUser } = useAuth();
 
     const [data, setData] = useState({ 
+        company_name: company.company_name,
         description: company.description,
         phone:       company.phone,
     });
@@ -32,12 +38,31 @@ const Info = ({company, admin}) => {
         setError({phone:""})
         
         const _data = {...data, 
+            company_name: data.company_name,
             description: data.description,
             phone: data.phone.startsWith('+') ? data.phone : '+' + data.phone,
             establishment_date: new Date(selectedDate).toISOString().split('T')[0]
         }
         console.log("DATA",_data)
-        updateCompany( company.slug, _data, setEdit, setError)        
+
+        axios.patch(`../backend/api/companies/${company.slug}`, _data
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
+        then( res => {
+            if(res.status === 200) {
+                setEdit(false);
+                const companyToSlug = (str) => str.trim().toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+                const new_slug = companyToSlug(data.company_name)
+                console.log(new_slug)
+                if(company.slug != new_slug){
+                    history.pushState(null, null, `/company/${new_slug}`);
+                    updateUser({...user,company: {...user.company,name: data.company_name,slug: new_slug}});
+                }
+            }
+        }).
+        catch( err => {
+            console.log(err)
+            if(err.response.data.phone[0]) setError(prevState => ({...prevState,phone: err.response.data.phone}))
+        }) 
     }
 
     return(<>   
@@ -45,10 +70,19 @@ const Info = ({company, admin}) => {
             <Card className="text-center">  
                 <Card.Header>Company Information</Card.Header>
                 <Card.Body>
+                    {editMode &&
+                        <Form.Group as={Col} className="mb-3" controlId="name">
+                            <Form.Label>Company Name</Form.Label>
+                            <Form.Control name="company_name" type="text" 
+                                placeholder="Enter Company Name" 
+                                value={data.company_name} onChange={handleInputChange} required  
+                            />
+                        </Form.Group>
+                    }
                     <Form.Group as={Col} className="mb-3" controlId="about">
                         <Form.Label>About</Form.Label>
                         <Form.Control name="description" type="text" as="textarea" rows={3}  disabled={!editMode}
-                            placeholder="Enter your Description" 
+                            placeholder="Enter company Description" 
                             value={data.description} onChange={handleInputChange} required  
                         />
                     </Form.Group>

@@ -12,9 +12,8 @@ import Staff from './Info/Staff';
 import ProjectsList from './Projects/ProjectsList';
 
 import {Card, Row,Col, Container,Button} from 'react-bootstrap';
-import EditIcon from '@mui/icons-material/Edit';
 import "bootstrap/dist/css/bootstrap.min.css"; 
-
+import ProfileImage from '../ProfileImage';
 // import '../../../../static/css/Profile/Profile.css';
 
 const CompanyProfile = () => {
@@ -23,17 +22,23 @@ const CompanyProfile = () => {
 
     const [ data, setData] = useState();
     const [ address, setAddress] = useState();
-
     const [ staff, setStaff] = useState([]);
+    const [ image, setImage] = useState(data?.image);
 
     const [requested, setRequested] = useState(false);
     const isCompanyNameUnavailable = user?.company?.name === null;
 
-    useEffect( () => {getCompany(setData, slug)}, [slug]);
-    
+    useEffect( () => {
+        getCompany(setData, slug)
+    }, [slug]);
+
+    useEffect(()=>{
+        setImage(data?.image);
+    }, [data?.image])
+
     useEffect( () => {
         if(data?.company_id) {
-            getAddress(data?.company_id, setAddress)
+            getAddress(data?.address, setAddress)
             getStaff(  data?.company_id, setStaff)
         }
     },[data?.company_id,slug])
@@ -50,29 +55,28 @@ const CompanyProfile = () => {
         }
         sendWorkRequest( user_data, setRequested)
     };
-
     return (
         <div>
         { data ? (
             <> 
-                <div className='preview'>
-                    <div className="image">
-                        <img src={data?.image ? data?.image : "/files/company_image/dummy.png"} width={150}/>
-                    </div>
-                    <div className="name">
-                        <h3>{data.company_name}</h3>
-                    </div>
-                </div>
+                <Row className="justify-content-center align-items-center">
+                    <Col className="d-flex justify-content-start align-items-center">
+                        <ProfileImage url={'companies'} id={data?.company_id} image={image} setImage={setImage}/>
+                        <Col xs={9} className="d-flex align-items-center">
+                            {data.company_name}
+                        </Col>
+                    </Col>
+                </Row>
 
                 <Container fluid className="mt-5"> 
                     <Row className="justify-content-center"> 
                         <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
                             <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
                                 <Tab eventKey="basic-info" title="Company Info">
-                                    { data    && <Info company={data} admin={data.company_name===user?.company?.name && user.is_admin}/>}
+                                    { data    && <Info company={data} admin={data?.company_id===user?.company?.id && user.is_admin}/>}
                                 </Tab>
                                 <Tab eventKey="address" title="Address">
-                                    { address && <Address address={address} admin={data.company_name===user?.company?.name && user.is_admin}/>}
+                                    { address && <Address address={address} admin={data.company_id===user?.company?.id && user.is_admin}/>}
                                 </Tab>
                                 <Tab eventKey="staff" title={`Staff (${staff.length})`}>
                                     { staff && <Staff staff={staff}/>}

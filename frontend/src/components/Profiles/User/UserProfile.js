@@ -17,7 +17,7 @@ import { replyRequestProfile } from '../../Requests/FriendUtils';
 import { Container, Row, Col, Card ,Form} from "react-bootstrap"; 
 import "bootstrap/dist/css/bootstrap.min.css"; 
 
-import UserImage from './UserImage';
+import ProfileImage from '../ProfileImage';
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();
@@ -34,17 +34,17 @@ const UserProfile = () => {
         replyRequestProfile( user, data?.user, status, requested)
     }
     
+    const [ image, setImage] = useState(data?.image);
     useEffect( () => {
         setData(null)
         getUser(setData, setWork, slug)
         getFriends( slug, setFriends)
         setRequested(false)
     }, [slug]);
-    
-    const [ image, setImage] = useState(data?.image);
+
     useEffect(()=>{
         setImage(data?.image);
-    }, [data?.image, image])
+    }, [data?.image])
 
     useEffect(() => {
         if(data && user.id!=data.user)
@@ -58,7 +58,7 @@ const UserProfile = () => {
                 <> 
                     <Row className="d-flex justify-content-center">
                         <Col className="d-flex justify-content-start">
-                            <UserImage image={image} setImage={setImage}/>
+                            <ProfileImage url={'users'} id={user.id} image={image} setImage={setImage}/>
                             <Col xs={9}>
                                 <Row>
                                     <Col xs={12}className="d-flex justify-content-start">

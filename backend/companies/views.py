@@ -1,3 +1,4 @@
+import cgi
 import json
 from django.http import JsonResponse
 import requests
@@ -7,6 +8,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from backend.util import get_base_url, get_workson_instance
+from PIL import Image
+from io import BytesIO
+from urllib.parse import urljoin
+from django.conf import settings
 
 # Create your views here.
 def staff(request, company):
@@ -65,13 +70,25 @@ def address(request, pk):
                 'status': response.status_code
             })
     elif request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/address/'+str(pk))
-        print(response.json())
-        return JsonResponse({
-            'message': 'Address Fetched succesfully',
-            'data': response.json(),
-            'status': response.status_code
-    })
+        base_url = get_base_url(request)
+        try:
+            response = requests.get(base_url+'/backend/api/address/'+str(pk))
+            print(response.json())
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': str(pk)+' Address Fetched succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': 'Failed to fethch Address '+str(pk),
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @csrf_exempt
@@ -127,7 +144,7 @@ def company(request, company):
                 'data': response.json(),
                 'status': response.status_code
             })
-    if request.method == 'GET':
+    elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/companies/'+str(company))
         print(response.json())
         return JsonResponse({
@@ -135,6 +152,40 @@ def company(request, company):
             'data': response.json(),
             'status': response.status_code
         })
+    
+    elif request.method == 'PUT':
+        print(request.FILES)
+        
+        print(request.FILES.get('data'))
+        print(request.FILES.get('image'))
+        print(request.FILES.get('data[image]'))
+
+        return JsonResponse({})
+        # data = request.FILES.get('data[image]')
+        # if 'image' in data:
+        #     new_image = data['image']
+        #     print("image",new_image)
+        # else:
+        #     print("No file uploaded.")
+        # new_image = None
+        # image = Image.open(new_image)
+        # resized_image = image.resize((150, 150))
+        # output_io = BytesIO()
+        # resized_image.save(output_io, format='JPEG') 
+
+        # try:
+        #     company = Companies.objects.get(company_id=company)
+        #     company.image.save(new_image.name, output_io, save=False)
+        #     company.save()
+        #     updated_image_url = urljoin(settings.MEDIA_URL, company.image.url)
+        #     return JsonResponse({'message': 'Image updated successfully', 'data': updated_image_url}, status=200)
+
+        # except Exception as e:
+        #     print(e)
+        #     return JsonResponse({'message': 'Image updated successfully', 
+        #         'error': str(e),
+        #         'status':200}
+        #     )
 
 
 # THIS IS FOR HEADER REQUEST MODAL QUERY BY COMPANY_ID 
@@ -176,14 +227,20 @@ def id_workrequests(request, user, company):
             response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
             if response.status_code == 200:
                 result = response.json()
+                if(data.get('is_admin')):
+                    set_admin(result.get("id"))
                 status = result.get("status")
+
                 work = None
-                print("USER: ", data.get("user"))
                 if( status == 'A'):
-                    print("WORK ON INSTANCE EXISTS")
                     workOn = get_workson_instance(data.get('user'))
-                    print("workOn: ", workOn)
-                    work = {"company": workOn.data["company"], "work_id": workOn.data["id"]}
+                    print('POST WORK ON', workOn)
+                    work = {
+                        "company": workOn.get("company"), 
+                        "work_id": workOn.get("id"), 
+                        "is_admin": workOn.get("is_admin"), 
+                    }
+               
                 return JsonResponse({
                     'message': 'Work Request POST succesfully',
                     'work': work,
@@ -209,12 +266,10 @@ def id_workrequests(request, user, company):
         if user and company:
             base_url = get_base_url(request)
             try:
-                print("before api")
                 response = requests.get(base_url+'/backend/api/workrequests/'+str(user)+'/'+str(company))
-                print("after api")
                 if response.status_code == 200:
                     work_inst = response.json()
-                    print(work_inst)
+                    print("work_inst: ", work_inst)
                     work = None
                     if( work_inst.get('status') == 'A'):
                         print("WORK ON INSTANCE EXISTS")
@@ -240,4 +295,15 @@ def id_workrequests(request, user, company):
                     })
             except Exception as e:
                 return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
-           
+        
+def set_admin( id):
+    try:
+        print("WORKS_ON SET ADMIN:", id)
+        work_on = get_object_or_404(WorksOn, employee=id)
+        work_on.is_admin = True  
+        work_on.save()
+        print("ADMIN:::: ", work_on)
+        return JsonResponse({'message': str(id)+' Updated to Admin'}, {'data':work_on},status=200)
+    except Exception as e:
+        return JsonResponse({'error':str(e)}, status=400)
+    

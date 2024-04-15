@@ -75,7 +75,7 @@ export const getDivisions = async( company, setDivisions) => {
     .catch( err => console.log(err))
 }
 
-export const addDivision = async( project_id, newDivision, setDivisions) => {
+export const addDivision = async( project_id, newDivision, setDivisions, setNewDivision) => {
     console.log("PROEJCT_ID: ", project_id)
     await axios.post(`../backend/projects/divisions/${project_id}`, newDivision, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),}}
@@ -83,6 +83,7 @@ export const addDivision = async( project_id, newDivision, setDivisions) => {
     .then( res => {
         if(res.data.status===200){
             setDivisions(prevDivs=>[res.data.data,...prevDivs])
+            setNewDivision({project: project_id, title:'', description:'', file: null})
         }
     })
     .catch( err => console.log(err.response.data))

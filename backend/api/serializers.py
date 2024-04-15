@@ -92,7 +92,7 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
         if user_image is None:
             user_image = "user_image/dummy-user.png "
         return {
-            'id':    str(obj.user.user_id),
+            'id':    obj.user.user_id,
             'name':  str(obj.user.firstname) + ' ' + str(obj.user.lastname),
             'slug':  str(obj.user.slug),
             'image': str(user_image)
@@ -100,7 +100,7 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
     
     def get_company_info(self,obj):
         return {
-            'id':    str(obj.company.company_id),
+            'id':    obj.company.company_id,
             'name':  str(obj.company.company_name),
             'slug':  str(obj.company.slug),
             'image': str(obj.company.image)
@@ -121,7 +121,7 @@ class WorksOnSerializer(serializers.ModelSerializer):
 
     def get_employee(self, obj):
         return{
-            'id':    str(obj.employee.user.user_id),
+            'id':    obj.employee.user.user_id,
             'name':  str(obj.employee.user.firstname) + ' ' + str(obj.employee.user.lastname),
             'slug':  str(obj.employee.user.slug),
             'image': str(obj.employee.user.image)
@@ -131,7 +131,7 @@ class WorksOnSerializer(serializers.ModelSerializer):
         company = obj.employee.company
         if company:
             return {
-                'id': str(company.company_id),
+                'id': company.company_id,
                 'name': str(company),
                 'slug': str(company.slug),
                 'image': str(company.image)
@@ -209,7 +209,7 @@ class PostsPublicSerializer(serializers.ModelSerializer):
 
     def get_user(self,obj):
         return {
-            'user_id':    str(obj.author.user_id),
+            'user_id':    obj.author.user_id,
             'user_name':  str(obj.author),
             'user_slug':  str(obj.author.slug),
             'user_image': str(obj.author.image)
@@ -232,7 +232,7 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
 
     def get_user(self,obj):
         return {
-            'company_id':   str(obj.author.employee.company.company_id),
+            'company_id':   obj.author.employee.company.company_id,
             'company_name': str(obj.author.employee.company),
             'company_slug': str(obj.author.employee.company.slug),
             'user_id':      str(obj.author.employee.user_id),
@@ -252,7 +252,7 @@ class PostsPublicLikesSerializer(serializers.ModelSerializer):
         )
     def get_user( self, obj):
         return{
-            'id':    str(obj.like.user_id),
+            'id':    obj.like.user_id,
             'name':  str(obj.like),
             'slug':  str(obj.like.slug),
             'image': str(obj.like.image)
@@ -270,7 +270,7 @@ class PostsPrivateLikesSerializer(serializers.ModelSerializer):
 
     def get_user(self,obj):
         return {
-            'id':    str(obj.like.employee.user.user_id),
+            'id':    obj.like.employee.user.user_id,
             'name':  str(obj.like.employee.user),
             'slug':  str(obj.like.employee.user.slug),
             'image': str(obj.like.employee.user.image),
@@ -290,7 +290,7 @@ class PostsPublicCommentsSerializer(serializers.ModelSerializer):
         )
     def get_user( self, obj):
         return{
-            'id':    str(obj.commentor.user_id),
+            'id':    obj.commentor.user_id,
             'name':  str(obj.commentor),
             'slug':  str(obj.commentor.slug),
             'image': str(obj.commentor.image)
@@ -311,7 +311,7 @@ class PostsPrivateCommentsSerializer(serializers.ModelSerializer):
 
     def get_user( self, obj):
         return{
-            'id':   str(obj.commentor.employee.user.user_id),
+            'id':   obj.commentor.employee.user.user_id,
             'name': str(obj.commentor.employee.user),
             'slug':  str(obj.commentor.employee.user.slug),
             'image': str(obj.commentor.employee.user.image)
@@ -369,7 +369,7 @@ class ProjectAdminSerializer(serializers.ModelSerializer):
     def get_admin_info(self, obj):
         try:
             return {
-                'id'  : str(obj.admin.employee.user.user_id),
+                'id'  : obj.admin.employee.user.user_id,
                 'name': str(obj.admin.employee.user),
                 'slug': str(obj.admin.employee.user.slug),
                 'image':str(obj.admin.employee.user.image),
@@ -396,7 +396,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
         try:
             project_admin = ProjectAdmin.objects.get(project_id=obj.project_id)
             return {
-                'id'  : str(project_admin.admin.employee.user.user_id),
+                'id'  : project_admin.admin.employee.user.user_id,
                 'name': str(project_admin.admin.employee.user),
                 'slug': str(project_admin.admin.employee.user.slug),
                 'image':str(project_admin.admin.employee.user.image),
@@ -419,12 +419,12 @@ class ProjectAssignSerializer(serializers.ModelSerializer):
     def get_user( self, obj):
         user = obj.assign.employee.user
         return{
-            "participant_id": str(obj.participant_id),
-            'id'  : str(user.user_id),
+            "participant_id": obj.participant_id,
+            'id'  : user.user_id,
             'name': str(user),
             'slug': str(user.slug),
             'image':str(user.image),
-            'work_id': str(obj.assign.id)
+            'work_id': obj.assign.id
         }
 
 class ProjectDivisionSerializer(serializers.ModelSerializer):
@@ -445,12 +445,12 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
             project_assign = ProjectAssign.objects.get(division=obj.division)
             user = project_assign.assign.employee.user
             return{
-                'participant_id': str(project_assign.participant_id),
-                'id'  : str(user.user_id),
+                'participant_id': project_assign.participant_id,
+                'id'  : user.user_id,
                 'name': str(user),
                 'slug': str(user.slug),
                 'image':str(user.image),
-                'work_id': str(project_assign.assign.id)
+                'work_id': project_assign.assign.id
             }
         except ProjectAssign.DoesNotExist:
             return None

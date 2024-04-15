@@ -20,7 +20,7 @@ const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
     const submitNewDiv = ( event) => {
         event.preventDefault()
         console.log("New Division -> ", newDivision)
-        addDivision( project_id, newDivision, setDivisions)
+        addDivision( project_id, newDivision, setDivisions, setNewDivision)
     }
 
     return(<>

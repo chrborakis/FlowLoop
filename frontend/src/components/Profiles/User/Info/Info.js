@@ -12,7 +12,9 @@ import Cookies from 'js-cookie';
 const Info = ({user, _user, updateUser, admin}) => {
     const [countries, setCountries] = useState([]);
     useEffect(() => { getCountries(countries, setCountries)}, []);
+
     const [gender, setGender] = useState(user.gender);
+    
     const [error, setError] = useState({
         phone: "",
     })
@@ -27,6 +29,11 @@ const Info = ({user, _user, updateUser, admin}) => {
         about: user.about,
         country: user.country,
     });
+
+    useEffect(() => {
+        setData(prevData => ({...prevData,gender: gender}));
+    }, [gender]);
+
     const [editMode, setEdit] = useState(false);
     
     const handleDropdownSelect = (eventKey, event) => setGender(eventKey);
@@ -39,27 +46,24 @@ const Info = ({user, _user, updateUser, admin}) => {
         e.preventDefault();
         setError({phone:""})
         data.gender = gender;
-    
-        axios.post(`../backend/user/${user.slug}`, { data }
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
+
+        axios.patch(`../backend/api/users/${user.slug}`, data
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}).
         then( res => {
-            if(res.data?.status === 200) {
-                if(_user.slug != res.data.data.slug){
-                    const {firstname, lastname, slug} = res.data.data
+            console.log(res)
+            if(res.status === 200) {
+                setEdit(false);
+                if(_user.slug != res.data.slug){
+                    const {firstname, lastname, slug} = res.data
                     updateUser({..._user, 'name': firstname+" "+lastname, 'slug': slug})
                     history.pushState(null, null, `/user/${slug}`);
                 }
-                setEdit(false);
-            }
-            if(res.data?.error?.phone[0]) {
-                console.log("Phone error")
-                setError(prevState => ({
-                    ...prevState,
-                    phone: res.data?.error.phone
-                }))
             }
         }).
-        catch( er => console.log(er)) 
+        catch( err => {
+            console.log(err)
+            if(err.response.data.phone[0]) setError(prevState => ({...prevState,phone: err.response.data.phone}))
+        }) 
     }
 
     const handleInputChange = (event) => {

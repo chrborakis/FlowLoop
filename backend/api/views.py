@@ -44,10 +44,40 @@ class UsersView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UserView(APIView):
-    def get(self, request, pk):
-        user = get_object_or_404(Users, user_id=pk)
-        serializer = UsersSerializer(user)
+    def get(self, request, user):
+        if user.isdigit():
+            user_inst = get_object_or_404(Users, pk=user)
+        else:
+            user_inst = get_object_or_404(Users, slug=user)
+        serializer = UsersSerializer(user_inst)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, user):
+        print("DATA IN API: ", request.data)
+        try:
+            if user.isdigit():
+                user_instance = get_object_or_404(Users, pk=user)
+            else:
+                user_instance = get_object_or_404(Users, slug=user)
+        except Users.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        updated_fields = {}
+        for field_name, value in request.data.items():
+            if hasattr(user_instance, field_name) and getattr(user_instance, field_name) != value:
+                updated_fields[field_name] = value
+    
+        try:
+            serializer = UsersSerializer(user_instance, data=updated_fields, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                print("User updated successfully")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UsersCredentialView(APIView):
@@ -160,22 +190,35 @@ class CompaniesView(APIView):
 
         
 class CompanyView(APIView):    
-    def get( self, request, company):
-        instance = get_object_or_404(Companies, slug=company)
+    def get(self, request, company):
+        if company.isdigit():
+            instance = get_object_or_404(Companies, pk=company)
+        else:
+            instance = get_object_or_404(Companies, slug=company)
         serializers = CompaniesSerializer(instance)
         # print(serializers.data)
         return Response(serializers.data)
+
     def post( self, request, company):
         print("DATA IN API: ", request.data)
-        serializer = CompaniesSerializer(slug=company)
+        if company.isdigit():
+            serializer = CompaniesSerializer(pk=company)
+        else:
+            serializer = CompaniesSerializer(slug=company)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
     def patch(self, request, company):
         print("DATA IN API: ", request.data)
         try:
-            company_instance = Companies.objects.get(slug=company)
+            if company.isdigit():
+                company_instance = Companies.objects.get(pk=company)
+            else:
+                company_instance = Companies.objects.get(slug=company)
         except Companies.DoesNotExist:
             return Response({"error": "Company not found"}, status=status.HTTP_404_NOT_FOUND)
         
@@ -197,6 +240,7 @@ class CompanyView(APIView):
         except Exception as e:
             print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class WorkRequestsView(APIView):
     def get( self, request, company):

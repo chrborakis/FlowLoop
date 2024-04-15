@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Badge from 'react-bootstrap/Badge';
 
 const Friends = ({friends}) => {
-    console.log(friends)
     return(<>
         <Card className="text-center mx-auto d-block">  
             <Card.Header>Friends</Card.Header>

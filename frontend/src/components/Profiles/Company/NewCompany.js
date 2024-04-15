@@ -74,12 +74,11 @@ const NewCompany = (props) => {
         
         createCompany( user.id, data, address, setError, props.onHide)
         .then(res => {
-            console.log(res.data)
             updateUser({
                     ...user, 
                     'company': res.data.company_info,
-                    'work_id': res.data.id,
-                    'is_admin': res.data.is_admin
+                    'work_id': res.work.work_id,
+                    'is_admin': res.work.is_admin
                 })
             props.onHide();
         })
