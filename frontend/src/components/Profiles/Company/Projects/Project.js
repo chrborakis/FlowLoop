@@ -1,8 +1,6 @@
 import React, {useState, useEffect, useRef} from "react";
 import { Container, Col, Row, Card, Button, Dropdown, Form} from 'react-bootstrap';
 import Badge from 'react-bootstrap/Badge';
-import {scrollTop} from '../../../Extra/LinkOnTop'
-import { Link } from "react-router-dom";
 import { getDivisions, deleteProject, updateProject} from "./ProjectUtils";
 import DivisionsList from "./DivisionsList";
 import "../../../../../static/css/projects.css"
@@ -13,6 +11,12 @@ import NewDivision from "./NewDivision";
 import { HiMiniCog6Tooth } from "react-icons/hi2";
 import Range from "./Range";
 import "../../../../../static/css/projects.css"
+import 'primeicons/primeicons.css';
+import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
+import 'primereact/resources/primereact.min.css';
+import { ConfirmDialog } from 'primereact/confirmdialog';
+
+import { User } from "../../Profile";
 
 const Project = ({project, setProjects}) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -24,6 +28,7 @@ const Project = ({project, setProjects}) => {
 
     const [projectOpts, setProjectOpts] = useState(false);
     const toggleDropdown = () => setProjectOpts(!projectOpts);
+    const [visible,setVisible] = useState(false)
 
     const [editMode, setEdit] = useState(false)
 
@@ -32,10 +37,16 @@ const Project = ({project, setProjects}) => {
         description: project?.description,
     });
 
-    const dateFormat = new Intl.DateTimeFormat(undefined, {
-        month: 'short',
-        day: 'numeric',
-      });
+    const accept = () => {
+        deleteProject(project.project_id, setProjects)
+        setVisible(false)
+    }
+    const reject = () => setVisible(false);    
+
+    // const dateFormat = new Intl.DateTimeFormat(undefined, {
+    //     month: 'short',
+    //     day: 'numeric',
+    //   });
 
     const [value, setValue] = useState([
         project?.start_date,
@@ -102,10 +113,7 @@ const Project = ({project, setProjects}) => {
             <Card.Header>
                 <Row className="align-items-center">
                     <Col className="d-flex justify-content-start">
-                        <Link to={`/user/${project.admin?.slug}`} onClick={scrollTop}>
-                            <img src={`/files/${project.admin?.image}`} width={60}/>
-                            {project.admin?.name}
-                        </Link>
+                        <User user={project.admin}/>
                     </Col>
 
                     <Col className="d-flex justify-content-end">
@@ -114,10 +122,15 @@ const Project = ({project, setProjects}) => {
                                 <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                                 <Dropdown.Menu style={{  width: 'fit-content',  margin: 'auto',}}>
                                     <Button variant="outline-info"   onClick={handleEdit}>Edit</Button>
-                                    <Button variant="outline-danger" onClick={() => deleteProject(project.project_id, setProjects)}>Delete</Button>
+
+                                    <Button variant="outline-danger" icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>Delete</Button>
                                 </Dropdown.Menu>
                             </Dropdown>
                         }
+                        <ConfirmDialog visible={visible} onHide={() => setVisible(false)}
+                            message="Are you sure you want to delete this project?" header="Delete Project"
+                            icon="pi pi-exclamation-triangle" accept={accept} reject={reject}
+                        />
                     </Col>
                 </Row>                       
             </Card.Header>

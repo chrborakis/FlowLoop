@@ -14,22 +14,28 @@ import { deletePost, editPost } from "./PostUtils";
 import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
 import 'primereact/resources/primereact.min.css';
+import { Company } from "../Profiles/Profile";
+
        
 const Post = ({post, url, setPosts}) => {
     const { user} = useAuth();
     const [visible,setVisible] = useState(false)
     const [editMode, setEditMode] = useState(false)
-    const [data, setData] = useState({"post_id": post.post_id,"author":post.author,"title":post.title,"body":post.body,"image":post.image})
+    const [data, setData] = useState({"post_id": post.post_id,"title":post.title,"body":post.body})
     
+
+    //Dropdown on delete confirm message
     const accept = () => {
         deletePost( url, post.post_id, setPosts)
         setVisible(false);
     };
+    const reject = () => setVisible(false);    
+
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setData({...data,[name]: value,});
     };
-    const reject = () => setVisible(false);    
 
     const handleEdit = () => {
         setEditMode((prev)=>!prev)
@@ -44,6 +50,7 @@ const Post = ({post, url, setPosts}) => {
         editPost( url, data, setPosts, setEditMode)
     }
 
+
     return(
         <Card className="card-content">
             <Card.Header>
@@ -57,9 +64,7 @@ const Post = ({post, url, setPosts}) => {
                         <Row>
                             <Col xs={12} className="d-flex justify-content-start">
                                 { post.user?.company_name && 
-                                    <Link to={`/company/${post.user?.company_slug}`} onClick={scrollTop}>
-                                        {post.user?.company_name}
-                                    </Link>
+                                    <Company company={{name:post.user?.company_name, slug:post.user?.company_slug}}/>
                                 }
                             </Col>
                             <Col xs={12}className="d-flex justify-content-start">
@@ -108,11 +113,11 @@ const Post = ({post, url, setPosts}) => {
                                 value={data.body} onChange={handleInputChange} required  
                             />
                         ) : (<>{data.body}</>)}
-
-                        { post?.image && <div className="container">
+                        { !editMode && post?.image && 
                             <div className="image-wrapper">
-                                <img src={data.image} alt=""/></div>
+                                <img src={post.image} style={{ maxWidth: '50%' }} />
                             </div>
+
                         }
                         <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
                     </Card.Text>

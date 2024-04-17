@@ -147,26 +147,27 @@ export const removeAssign = async(divToDel, participant_id,setDivisions) => {
     .catch( err => console.log(err.response.data))
 }
 
-export const setProjectAdmin = async( project_id, work_on, onSubmit, setNewProject, project) => {
+export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, project, setFormData) => {
     await axios.post(`../backend/projects/admin`, {project:project_id, admin:work_on},
     {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
     .then( res => {
         if(res.data.status === 200){
             setNewProject({...project, admin: res.data.data.admin_info})
-            onSubmit();
+            setFormData({ title: '',  description: ''})
+            hide();
         }
     })
     .catch( err => console.log(err.response.data))
 }
 
-export const addProject = async( data, onSubmit, setNewProject, work_id, setProjectError, setProject) => {
+export const addProject = async( data, hide, setNewProject, work_id, setProjectError, setProject, setFormData) => {
     await axios.post(`../backend/projects/projects/0`, data,
     {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
     .then( res => {
         console.log(res.data)
         if(res.data.status === 200){
             console.log(res.data)
-            setProjectAdmin(res.data?.data?.project_id, work_id, onSubmit, setNewProject, res.data.data)
+            setProjectAdmin(res.data?.data?.project_id, work_id, hide, setNewProject, res.data.data, setFormData)
             setProject(res.data?.data?.project_id)
         }else if(res.data.status===400){
             setProjectError("This title arleady exists")

@@ -2,9 +2,7 @@ import React, { useContext, useState, useEffect} from "react";
 import Button from 'react-bootstrap/Button';
 import { useAuth } from "../../store/AuthContext";
 import { getRequests, replyRequest, checkRequest } from "./FriendUtils"; 
-
-import { Link } from "react-router-dom";
-import {scrollTop} from '../Extra/LinkOnTop';
+import { User } from "../Profiles/Profile";
 
 const FriendRequests = ({ refresh}) => {
     const {user} = useAuth();
@@ -29,10 +27,11 @@ const FriendRequests = ({ refresh}) => {
                     <div key={req.user1} className="request">
                         {console.log(req.user1_info)}
                         <div className="left">
-                            <Link to={`/user/${req?.user1_info?.slug}`} onClick={scrollTop}>
+                            {/* <Link to={`/user/${req?.user1_info?.slug}`} onClick={scrollTop}>
                                 <img src={`/files/${req.user1_info.image}`} width={50}/>
                                 {req.user1_info.name}
-                            </Link>
+                            </Link> */}
+                            <User user={req?.user1_info}/>
                         </div>
                         <div className="right">
                             <Button onClick={() => reply( req.user1, 'A')} variant="outline-primary">Accept</Button>

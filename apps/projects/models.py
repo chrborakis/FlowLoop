@@ -43,6 +43,25 @@ class ProjectDivision(models.Model):
         unique_together = ('project', 'title',)
         db_table = 'project_divisions'
 
+    
+class ProjectRequestAssign(models.Model):
+    division = models.ForeignKey(ProjectDivision, on_delete=models.CASCADE)
+    employee = models.ForeignKey(WorksOn, on_delete=models.CASCADE)
+    STATUS = [("P", "Pending"),("A", "Accepted"),("D", "Declined")]
+    status = models.CharField(max_length=1, choices=STATUS, default="P")
+
+    def __str__(self):
+        return f'{self.employee} -> {self.status}'
+    class Meta:
+        unique_together = ('division', 'employee',)
+        db_table = 'project_request_assign'
+    def clean(self):
+        if self.division.project.company != self.employee.employee.company:
+            raise ValidationError("Project participants should be working for the company!")
+        if ProjectAssign.objects.filter(division=self.division).exists():
+            raise ValidationError("A division can only have one participant!")
+        
+
 
 class ProjectAssign(models.Model):
     participant_id = models.AutoField(primary_key=True, null=False)

@@ -1,5 +1,4 @@
 import React, {useState,useEffect,useRef } from "react";
-import GetPosts from "./GetPosts";
 import Post from "./Post";
 import NewPost from "./NewPost";
 import InfiniteScroll from 'react-infinite-scroll-component';

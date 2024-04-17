@@ -466,6 +466,21 @@ class PostPrivateView(APIView):
         instance = get_object_or_404(PostsPrivate, post_id=post)
         serializers = PostsPrivateSerializer(instance)
         return Response(serializers.data)
+    def patch( self, request, post):
+        try:
+            post_inst = PostsPrivate.objects.get(pk=post)
+        except PostsPrivate.DoesNotExist: return Response({"error": "PostsPrivate "+str(post)+" not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            serializer = PostsPrivateSerializer(post_inst, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class PostsPrivateView(APIView):    
     def get( self, request, company):
@@ -715,3 +730,10 @@ class ProjectAssignView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ProjectRequestAssignView(APIView):
+    def get( self, request):
+        instances = get_list_or_404(ProjectRequestAssign)
+        serializers = ProjectRequestAssignSerializer(instances, many=True)        
+        return Response(serializers.data)

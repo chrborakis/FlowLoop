@@ -6,14 +6,16 @@ const DivisionInvite = ({ division, company, admin_slug,user_slug, setDivisions}
     const [modalShow, setModalShow] = useState(false);
 
     return(<>
+        {/* Admin Option */}
         {admin_slug === user_slug ? (
             <>
-                <Button onClick={()=>setModalShow(true)}>Add Member</Button>
+                <Button variant="primary" onClick={()=>setModalShow(true)}>Add Member</Button>
                 <AdminInvite division={division} company={company} show={modalShow} onHide={() => setModalShow(false)} setDivisions={setDivisions}/>
             </>
         ) : (
-            <p>Request Assignment...</p>
+            <Button variant="outline-primary" onClick={()=>setModalShow(true)}>Request Assignment</Button>
         )}
+        {/* User Option */}
     </>);
     
 }

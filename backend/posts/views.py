@@ -183,6 +183,36 @@ def post_private(request, company):
         except PostsPrivate.DoesNotExist:return JsonResponse({'message': 'PostPrivate '+str(post_id)+' not found','status': 404})
         except Exception as e: return JsonResponse({'message': str(e),'status': 500})
 
+    elif request.method == 'PATCH':
+        post_id = company
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        base_url = get_base_url(request)
+        try:
+            response = requests.patch(base_url+'/backend/api/post_private/'+str(post_id), json=data)
+            print(response)
+           
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[PATCH]PostPrivate '+str(post_id)+' updated successfully',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': '[PATCH]PostPrivate '+str(post_id)+' update failed',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+        except Exception as e:
+            print(e)
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
+
+
 @csrf_exempt
 def public_comments(request, post):
     base_url = get_base_url(request)

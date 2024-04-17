@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { searchUsers, searchCompanies } from "./Search";
 import '../../../static/css/NavBar.css'
 
+import { User, Company } from "../Profiles/Profile";
 
 const SearchBar = () => {
     const [searchValue, setSearch] = useState('');
@@ -61,12 +62,7 @@ const SearchBar = () => {
                             <div className="search-results">
                                     <ListGroup variant="flush">
                                         {users?.map((result) => (<ListGroup.Item key={result.id}>
-                                            <Link to={`/user/${result.slug}`}>
-                                                <div>
-                                                    <img src={`/files/${result.image}`} width={60}/>
-                                                    {result.firstname} {result.lastname}
-                                                </div>
-                                            </Link>
+                                            <User user={{ ...result, name: result.firstname + ' ' + result.lastname }} />
                                         </ListGroup.Item>))}
                                     </ListGroup>
                             </div>
@@ -76,12 +72,7 @@ const SearchBar = () => {
                             <div className="search-results">
                                     <ListGroup variant="flush">
                                         {companies?.map((result) => (<ListGroup.Item key={result}>   
-                                            <Link to={`/company/${result.slug}`}>
-                                                <div>
-                                                    <img src={`/files/${result.image}`} width={60}/>
-                                                    {result.name}
-                                                </div>
-                                            </Link>
+                                            <Company company={result}/>
                                         </ListGroup.Item>))}
                                     </ListGroup>
                             </div>

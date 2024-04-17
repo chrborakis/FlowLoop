@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.companies.models import Companies, WorkRequests, WorksOn
 from apps.models import Address
 from apps.posts.models import PostsPrivate, PostsPrivateComments, PostsPrivateLikes, PostsPublic, PostsPublicComments, PostsPublicLikes
-from apps.projects.models import ProjectDivision,ProjectAdmin, Projects, ProjectAssign
+from apps.projects.models import ProjectDivision,ProjectAdmin, ProjectRequestAssign, Projects, ProjectAssign
 from apps.users.models import *
 from rest_framework import serializers, fields
 
@@ -427,8 +427,18 @@ class ProjectAssignSerializer(serializers.ModelSerializer):
             'work_id': obj.assign.id
         }
 
+class ProjectRequestAssignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectRequestAssign
+        fields = (
+            "division",
+            "employee",
+            "status"
+        )
+
 class ProjectDivisionSerializer(serializers.ModelSerializer):
     assign = serializers.SerializerMethodField()    
+    requests = serializers.SerializerMethodField()
     class Meta:
         model = ProjectDivision
         fields = (
@@ -437,7 +447,8 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "file",
-            "assign"
+            "assign",
+            "requests"
         )
 
     def get_assign(self, obj):
@@ -455,8 +466,25 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
         except ProjectAssign.DoesNotExist:
             return None
 
-
-
+    def get_requests(self, obj):
+        try:
+            project_requests = ProjectRequestAssign.objects.filter(division=obj.division)
+            if project_requests.exists():
+                user_list = []
+                for request in project_requests:
+                    user = request.employee.employee.user
+                    user_list.append({
+                        'id': request.id,
+                        'name': str(user),
+                        'slug': str(user.slug),
+                        'image': str(user.image),
+                    })
+                    return user_list
+            else:
+                return None
+        except ProjectRequestAssign.DoesNotExist as e:
+            print(str(e))
+            return None
 
 
 

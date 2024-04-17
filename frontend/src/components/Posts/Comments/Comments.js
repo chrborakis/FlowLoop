@@ -8,11 +8,11 @@ import '../../../../static/css/Posts/Comment.css';
 
 import { scrollTop } from "../../Extra/LinkOnTop";
 
+// post: post_id
+// url: ../backend/postpubliccomments OR backend/postpubliccomments
 const Comments = ({post,url}) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const toggleExpand = () => setIsExpanded(prevState => !prevState);
-    // post: post_id
-    // url: ../backend/postpubliccomments OR backend/postpubliccomments
 
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState();
@@ -29,26 +29,24 @@ const Comments = ({post,url}) => {
                     isExpanded ? (
                         comments ? (
                             comments.map( comment => 
-                                // <div className="comments" key={comment.id}>
-                                    <Row className="comment align-items-start">
-                                        <Col xs={2}>
-                                            <img src={`/files/${comment.user.image}`} width={60}/>
-                                        </Col>
-                                        <Col xs={10}>
-                                            <Row>
-                                                <Col xs={12} className="d-flex justify-content-between align-items-start">
-                                                    <Link to={`/user/${comment.user.slug}`} onClick={scrollTop}>
-                                                        {comment.user.name}
-                                                    </Link>
-                                                    <span className="ml-auto">
-                                                        {new Date(comment.date).toISOString().split('T')[1].split('.')[0]} {new Date(comment.date).toISOString().split('T')[0]} 
-                                                    </span>
-                                                </Col>
-                                                <Col xs={12} className="text-left">{comment.comment}</Col>
-                                            </Row>
-                                        </Col>
-                                    </Row>               
-                                // </div> 
+                                <Row className="comment align-items-start">
+                                    <Col xs={2}>
+                                        <img src={`/files/${comment.user.image}`} width={60}/>
+                                    </Col>
+                                    <Col xs={10}>
+                                        <Row>
+                                            <Col xs={12} className="d-flex justify-content-between align-items-start">
+                                                <Link to={`/user/${comment.user.slug}`} onClick={scrollTop}>
+                                                    {comment.user.name}
+                                                </Link>
+                                                <span className="ml-auto">
+                                                    {new Date(comment.date).toISOString().split('T')[1].split('.')[0]} {new Date(comment.date).toISOString().split('T')[0]} 
+                                                </span>
+                                            </Col>
+                                            <Col xs={12} className="text-left">{comment.comment}</Col>
+                                        </Row>
+                                    </Col>
+                                </Row>               
                             )
                         ): <p>No comments</p>
                         

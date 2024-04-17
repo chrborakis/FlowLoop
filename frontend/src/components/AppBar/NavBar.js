@@ -21,6 +21,8 @@ import WorkRequests from '../Requests/WorkRequests';
 import FriendRequests from '../Requests/FriendRequests';
 import '../../../static/css/NavBar.css'
 
+import { User, Company } from '../Profiles/Profile';
+
 function NavBar({user}) {
     const { logout } = useAuth();
     // const history = useHistory();
@@ -85,19 +87,9 @@ function NavBar({user}) {
                             <Nav.Link href="#action2">Link</Nav.Link>
                             <Nav.Link href="#action2">LogOut</Nav.Link> */}
                         <Nav className="justify-content-start flex-grow-1 pe-3">
-                            <Link to={`/user/${user.slug}`}>
-                                <div>
-                                    <img src={`/files/profile/user/${user.slug}/${user.image}`} width={80}/>
-                                    {user.name}
-                                </div>
-                            </Link>
+                            <User user={user}/>
                             {user?.company?.slug && 
-                                <Link to={`/company/${user?.company?.slug}`}>
-                                    <div>
-                                        <img src={`/files/profile/company/${user?.company?.slug}/${user?.company?.image}`} width={80}/>
-                                        {user?.company?.name}
-                                    </div>
-                                </Link>
+                                <Company company={user?.company}/>
                             }
                             <Link to={`/`} onClick={logOut}>Log Out</Link>
                         </Nav>

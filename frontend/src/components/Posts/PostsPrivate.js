@@ -1,10 +1,9 @@
 import React, {useState,useEffect} from "react";
-import GetPosts from "./GetPosts";
 import Post from "./Post";
 import NewPost from "./NewPost";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircleLoader } from 'react-spinners';
-
+import { Row, Col } from "react-bootstrap";
 import { getPosts } from "./PostUtils";
 
 import "../../../static/css/Posts/Post.css"
@@ -36,9 +35,12 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
     };
 
     return (<>
-        { displayNew && <NewPost user={user} url={url} newPost={setNewPost}/>}
+        <Row className="center-posts">
+                <Col>
+                    {displayNew && <NewPost user={user} url={url} newPost={setNewPost} />}
+                </Col>
+            </Row>
 
-        <div className="center-posts">
         <InfiniteScroll
             dataLength={posts?.length}
             next={loadMore}
@@ -57,7 +59,6 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
             <p>No Posts Found!</p>
         )}
         </InfiniteScroll>
-        </div>
     </>);
 };
 

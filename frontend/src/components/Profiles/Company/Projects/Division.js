@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from "react";
 import { Container, Col, Row, Card, Button, Form,Dropdown ,CloseButton} from 'react-bootstrap';
 import { Link } from "react-router-dom";
-import {scrollTop} from '../../../Extra/LinkOnTop'
 import { BsFillShiftFill } from "react-icons/bs";
 import { uploadDivision, removeAssign, deleteDivision} from './ProjectUtils';
 import { useAuth } from '../../../../store/AuthContext';
@@ -11,6 +10,8 @@ import '../../../../../static/css/projects.css';
 import DivisionInvite from './Invite/DivisionInvite'
 
 import { HiMiniCog6Tooth } from "react-icons/hi2";
+
+import { User } from "../../Profile";
 
 const Division = ({ company, admin_slug,division,setDivisions}) => {
     const [assignOptsOpen, setAssignOptOpen] = useState(false);
@@ -39,15 +40,14 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
     return(<>
         <Card id={division.division} style={{ width: '90%', marginTop: '10px' }}>
             <Card.Header>
-
-
             <Row className="align-items-center">
                 {division?.assign ? (
                     <Col className="d-flex justify-content-start">
-                        <Link to={`/user/${division.assign?.slug}`} onClick={scrollTop}>
+                        {/* <Link to={`/user/${division.assign?.slug}`} onClick={scrollTop}>
                             <img src={`/files/${division.assign?.image}`} width={60}/>
                             {division.assign?.name}
-                        </Link>
+                        </Link> */}
+                        <User user={division.assign}/>
                     </Col>
                 ) : (
                     <Col xs={8} className="d-flex justify-content-start">

@@ -8,7 +8,6 @@ import Form from 'react-bootstrap/Form';
 
 import '../../../../static/css/Posts/NewComment.css';
 
-
 const NewComment = ({post, onComment, url}) => {
     const { user} = useAuth();
     const commentRef = useRef(null);
