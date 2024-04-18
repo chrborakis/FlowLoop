@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Modal,Button, Form,Dropdown } from "react-bootstrap"
-import { fetchStaff, addAssign } from "../ProjectUtils";
+import { fetchStaff, addAssign } from "../Projects/ProjectUtils";
 
 const AdminInvite = (props) => {
     const [workers, setWorkers] = useState([])

@@ -17,6 +17,8 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(true);
 
+    const end_message = posts?.length === 0 ? "No posts found!" : "You have seen all posts!"
+
     useEffect( () => {
         getPosts(setPosts, `${url}/${slug}`, setLoading, setHasNextPage, currentPage)
     }, [slug, currentPage]);
@@ -35,17 +37,14 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
     };
 
     return (<>
-        <Row className="center-posts">
-                <Col>
-                    {displayNew && <NewPost user={user} url={url} newPost={setNewPost} />}
-                </Col>
-            </Row>
+        {displayNew && <NewPost user={user} url={url} newPost={setNewPost} />}
 
+        <div className="center-posts">
         <InfiniteScroll
             dataLength={posts?.length}
             next={loadMore}
             hasMore={hasNextPage} loader={<div className="loader-container"><CircleLoader color="#36d7b7" /></div>}
-            endMessage={<p style={{ textAlign: 'center' }}><b>Yay! You have seen it all</b></p>}
+            endMessage={<p style={{ textAlign: 'center' }}><b>{end_message}</b></p>}
             // refreshFunction={this.refresh}
             // pullDownToRefresh pullDownToRefreshThreshold={50}
             pullDownToRefreshContent={<div style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</div>}
@@ -59,6 +58,7 @@ const PostsPrivate = ({user, url, slug, displayNew}) => {
             <p>No Posts Found!</p>
         )}
         </InfiniteScroll>
+        </div>
     </>);
 };
 

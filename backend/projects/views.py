@@ -119,7 +119,7 @@ def divisions(request,id):
             else:
                 return JsonResponse({
                     'message': '[POST]Failed to create New Division',
-                    'data': response.json(),
+                    'data': new_division,
                     'status': response.status_code
                 })
         except Exception as e:

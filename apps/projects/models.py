@@ -7,8 +7,8 @@ from apps.companies.models import Companies, WorksOn
 class Projects(models.Model):
     project_id = models.AutoField(primary_key=True)
     company    = models.ForeignKey(Companies, on_delete=models.CASCADE)
-    title      = models.CharField( null=False, blank=False, max_length=256)
-    description= models.TextField( null=False, blank=False)
+    title      = models.TextField( null=False, blank=False, max_length=1024)
+    description= models.TextField( null=False, blank=False, max_length=2048)
     STATUS = [("I", "Initiation"),("P", "Planning"),("E", "Execution"),("C", "Closed"),    ]
     phase = models.TextField(
         choices=STATUS,
@@ -32,8 +32,8 @@ def get_upload_path(instance, filename):
 class ProjectDivision(models.Model):
     division= models.AutoField(primary_key=True)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    title       = models.CharField( null=False, blank=False, max_length=256)
-    description = models.TextField( null=False, blank=False)
+    title       = models.TextField( null=False, blank=False, max_length=1024)
+    description = models.TextField( null=False, blank=False, max_length=2048)
     file        = models.FileField(upload_to=get_upload_path, null=True, blank=True)
 
     def __str__(self):
