@@ -15,7 +15,7 @@ const Education = ({user, admin}) => {
 
 
     return(<>   
-        <School education={education} admin={admin}/>
+        <School user={user} education={education} admin={admin}/>
         <University user={user} university={university} admin={admin}/>       
     </>);
 }

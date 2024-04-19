@@ -136,12 +136,27 @@ class EducationView(APIView):
             return Response(serializers.data)
         except Http404:
             return Response({'error': 'Education instance not found.'}, status=404)    
-    def post( self, request):
+    def post( self, request, user):
+        print("data : ", request.data)
         serializer = EducationSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, user):
+        try:
+            education_inst = EducationDetails.objects.get(pk=user)
+        except EducationDetails.DoesNotExist: return Response({"error": "Education "+str(user)+" not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            serializer = EducationSerializer(education_inst, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
     
 class UniversityView(APIView):
     def get(self, request, user):

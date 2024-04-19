@@ -39,7 +39,7 @@ const PostsPrivate = ({user, url, slug}) => {
     };
 
     return (<>
-        <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>Create new {slug} Post</Button>
+        <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>New {slug.replace(/-/g, ' ')} Post</Button>
         <NewPost user={user} url={url} newPost={setNewPost} show={newPostModal} onHide={() => setNewPostModal(false)}/>  
 
         <div className="center-posts">

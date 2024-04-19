@@ -1,39 +1,37 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import Comments from "./Comments/Comments";
 import Likes from "./Likes/Likes";
 import { Link } from "react-router-dom";
 import {Card, Row,Col, Dropdown, Form} from 'react-bootstrap';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-
-import '../../../static/css/Posts/Post.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {scrollTop} from '../Extra/LinkOnTop';
-import { HiMiniCog6Tooth } from "react-icons/hi2";
 import { ConfirmDialog } from 'primereact/confirmdialog';
-
-import '../../../static/css/index.css'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from "../../store/AuthContext";
+import { TextField } from "@material-ui/core";
 import { deletePost, editPost } from "./PostUtils";
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
-import 'primereact/resources/primereact.min.css';
 import { Company } from "../Profiles/Profile";
-
+import IconButton from '@mui/material/IconButton';
+import '../../../static/css/index.css'
+// import 'primeicons/primeicons.css';
+// import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
+// import 'primereact/resources/primereact.min.css';
+import '../../../static/css/Posts/Post.css';
        
 const Post = ({post, url, setPosts}) => {
     const { user} = useAuth();
     const [visible,setVisible] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [data, setData] = useState({"post_id": post.post_id,"title":post.title,"body":post.body})
-    
 
     //Dropdown on delete confirm message
     const accept = () => {
         deletePost( url, post.post_id, setPosts)
         setVisible(false);
     };
-    const reject = () => setVisible(false);    
-
+    const reject = () => setVisible(false); 
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -53,7 +51,6 @@ const Post = ({post, url, setPosts}) => {
         editPost( url, data, setPosts, setEditMode)
     }
 
-
     return(
         <Card className="card-content">
             <Card.Header>
@@ -61,7 +58,7 @@ const Post = ({post, url, setPosts}) => {
             <Row className="align-items-center">
                 <Col className="d-flex justify-content-start">
                     <Col xs={3}>
-                        <img src={`/files/${post.user?.user_image}`} width={60}/>
+                        <img src={`/files/${post.user?.user_image}`} style={{ width: '60px', height: '60px', borderRadius:'50%' }} />
                     </Col>
                     <Col xs={9}>
                         <Row>
@@ -82,7 +79,11 @@ const Post = ({post, url, setPosts}) => {
                 <Col className="d-flex justify-content-end">
                     {parseInt(post.user?.user_id) === parseInt(user.id) && 
                         <Dropdown show={postOpts} onToggle={toggleDropdown}>
-                            <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
+                            <Dropdown.Toggle style={{ backgroundColor: 'transparent',border: 'none'}}>
+                                <IconButton aria-label="Example">
+                                <FontAwesomeIcon icon={faEllipsisV} />
+                                </IconButton>
+                            </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <ButtonGroup orientation="vertical" className="w-100" aria-label="Vertical button group">
                                     <Button variant="outlined" color="primary" className="w-100" onClick={handleEdit}>
@@ -107,26 +108,29 @@ const Post = ({post, url, setPosts}) => {
                     <Card.Title>
                         <Row className="align-items-center">
                             {editMode ? (
-                                <Form.Control name="title" type="text" disabled={!editMode}
-                                    placeholder="Enter a title"
-                                    value={data.title} onChange={handleInputChange} required  
+                                <TextField label="Title" variant="standard" disabled={!editMode}
+                                    placeholder="Enter a post title" name="title"
+                                    value={data.title} required multiline fullWidth 
+                                    onChange={handleInputChange}
+                                    style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
                                 />
                             ) : (<Col>{data.title}</Col>)}
                         </Row>
                     </Card.Title>
                     <Card.Text>
                         {editMode ? (
-                            <Form.Control name="body" type="text" as="textarea" rows={3}  disabled={!editMode}
-                                placeholder="Enter your Description" 
-                                value={data.body} onChange={handleInputChange} required  
+                            <TextField label="Description" variant="standard" disabled={!editMode}
+                                placeholder="Enter a post Description" name="body"
+                                value={data.body} required multiline fullWidth 
+                                onChange={handleInputChange}
+                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
                             />
                         ) : (<>{data.body}</>)}
-                        { !editMode && post?.image && 
-                            <div className="image-wrapper">
-                                <img src={post.image} style={{ maxWidth: '50%' }} />
-                            </div>
-
-                        }
+                        { !editMode && (
+                                <div className="image-wrapper">
+                                    <img src={post?.image} style={{ maxWidth: '50%' }} />
+                                </div>
+                        )}
                         <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
                     </Card.Text>
                     {editMode && (
@@ -138,7 +142,6 @@ const Post = ({post, url, setPosts}) => {
                             Save
                         </Button>   
                         </Col>
-
                     )}
                 </Form>
             </Card.Body>

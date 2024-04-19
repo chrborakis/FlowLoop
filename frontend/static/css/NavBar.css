@@ -1,18 +1,14 @@
-/* .searchbar{
-  display: flex;
-  flex-direction: column;
-} */
+.navbar {
+  background-color: #303F9F;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
 
-/* .results{
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 5%;
-  z-index: 999;
-} */
+.nav-title{
+  color: white;
+}
 
 .searchbar {
   position: relative; /* Set the position of the search bar to relative */
@@ -30,3 +26,4 @@
   margin-top: 5%;
   z-index: 999;
 }
+

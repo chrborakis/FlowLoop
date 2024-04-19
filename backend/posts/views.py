@@ -99,7 +99,7 @@ def post_public(request, user):
         data = json.loads(request.body.decode('utf-8'))
         print(data)
         base_url = get_base_url(request)
-        try:
+        try:                                  
             response = requests.patch(base_url+'/backend/api/post_public/'+str(post_id), json=data)
             print(response)
            

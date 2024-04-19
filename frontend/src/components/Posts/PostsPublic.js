@@ -38,7 +38,7 @@ const PostsPublic = ({user, url, slug}) => {
     };
 
     return (<>
-        <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>Create new Post</Button>
+        <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>New Post</Button>
         <NewPost user={user} url={url} newPost={setNewPost} show={newPostModal} onHide={() => setNewPostModal(false)}/>  
 
         <div className="center-posts">

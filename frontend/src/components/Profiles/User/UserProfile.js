@@ -7,8 +7,10 @@ import { useAuth } from '../../../store/AuthContext';
 
 import '../../../../static/css/Profile/Profile.css'
 import { Link } from 'react-router-dom';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import TabPanel from '../../Extra/TabPanel';
 
 import Education from './Info/Education';
 import FriendButton from './FriendButton';
@@ -52,6 +54,9 @@ const UserProfile = () => {
             getFriends( slug, setFriends)
     }, [slug, data, requested, replyRequestProfile]);
 
+    const [tab, setTab] = useState(0);
+    const handleTab = (event, newTab) => setTab(newTab);
+
     return (
         <div className='profile'>
             { data ? (
@@ -82,17 +87,24 @@ const UserProfile = () => {
                     <Container fluid className="mt-5"> 
                         <Row className="justify-content-center"> 
                             <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
-                                <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
-                                    <Tab eventKey="basic-info" title="User Info">
-                                        <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
-                                    </Tab>
-                                    <Tab eventKey="education" title="Education">
-                                        <Education user={data.user} admin={user.id===data?.user}/>
-                                    </Tab>
-                                    <Tab eventKey="friends" title={`Friends (${friends.length})`}>
-                                        { friends && <Friends friends={friends}/>}
-                                    </Tab>
+                                <Tabs value={tab} onChange={handleTab}
+                                        indicatorColor="primary" textColor="primary" centered
+                                        aria-label="scrollable auto tabs example">
+                                    <Tab label="Information"/>
+                                    <Tab label="Education"/>
+                                    <Tab label={`Friends (${friends.length})`}/>
                                 </Tabs>
+                                <TabPanel value={tab} index={0}>
+                                    <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
+                                </TabPanel>
+                                <TabPanel value={tab} index={1}>
+                                    <Education user={data.user} admin={user.id===data?.user}/>
+                                </TabPanel>
+                                <TabPanel value={tab} index={2}>
+                                    { friends && <Friends friends={friends}/>}
+                                </TabPanel>
+
+
                             </Col> 
                             <Col lg={8} className="right-divpage-box order-lg-2 order-md-2 order-2">
                                 <PostsPublic user={user} url='../backend/posts/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>

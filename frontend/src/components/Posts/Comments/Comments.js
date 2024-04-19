@@ -32,7 +32,7 @@ const Comments = ({post,url}) => {
                         comments.map( comment => 
                             <Row style={{ width: '90%', margin: '5%' }} className="comment align-items-start">
                                 <Col xs={2}>
-                                    <img src={`/files/${comment.user.image}`} width={60}/>
+                                    <img src={`/files/${comment.user.image}`} style={{ width: '60px', height: '60px', borderRadius:'50%' }} />
                                 </Col>
                                 <Col xs={10}>
                                     <Row>

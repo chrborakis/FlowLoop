@@ -1,23 +1,27 @@
 import React, {useState, useEffect} from 'react';
-import Button from 'react-bootstrap/Button';
 import {Card, Row,Col} from 'react-bootstrap';
-import EditNoteIcon from '@mui/icons-material/EditNote';
 import Form from 'react-bootstrap/Form';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { getCountries } from '../../../Extra/Countries';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import { TextField } from "@material-ui/core";
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
+import Button from '@mui/material/Button';
 
 const Info = ({user, _user, updateUser, admin}) => {
     const [countries, setCountries] = useState([]);
     useEffect(() => { getCountries(countries, setCountries)}, []);
 
     const [gender, setGender] = useState(user.gender);
-    
-    const [error, setError] = useState({
-        phone: "",
-    })
+    const [error, setError] = useState({phone: "",})
+
+    const handleSelect = (event) => {setGender(event.target.value);};
+  
     const [data, setData] = useState({ 
         user: user.user,
         firstname: user.firstname,
@@ -30,13 +34,9 @@ const Info = ({user, _user, updateUser, admin}) => {
         country: user.country,
     });
 
-    useEffect(() => {
-        setData(prevData => ({...prevData,gender: gender}));
-    }, [gender]);
+    useEffect(() => {setData(prevData => ({...prevData,gender: gender}))}, [gender]);
 
     const [editMode, setEdit] = useState(false);
-    
-    const handleDropdownSelect = (eventKey, event) => setGender(eventKey);
     const handleEdit = (e) => {
         e.preventDefault();
         setEdit(true);
@@ -79,100 +79,84 @@ const Info = ({user, _user, updateUser, admin}) => {
                     {
                         editMode &&
                         <>
-                            <Form.Group as={Col} className="mb-3" controlId="firstname">
-                                <Form.Label>First Name</Form.Label>
-                                <Form.Control name="firstname" type="text" 
-                                    placeholder="Enter your First Name" 
-                                    value={data.firstname} onChange={handleInputChange} required  
-                                />
-                            </Form.Group>
-                            <Form.Group as={Col} className="mb-3" controlId="midname">
-                                <Form.Label>Middle Name</Form.Label>
-                                <Form.Control name="midname" type="text" 
-                                    placeholder="Enter your Mid Name" 
-                                    value={data.midname} onChange={handleInputChange}  
-                                />
-                            </Form.Group>
-                            <Form.Group as={Col} className="mb-3" controlId="lastname">
-                                <Form.Label>Last Name</Form.Label>
-                                <Form.Control name="lastname" type="text" 
-                                    placeholder="Enter your Last Name" 
-                                    value={data.lastname} onChange={handleInputChange}  required  
-                                />
-                            </Form.Group>
+                            <TextField disabled={!editMode} variant="standard"
+                                placeholder="Enter your First Name" name="first_name"
+                                label="First Name" required multiline fullWidth 
+                                value={data.firstname} onChange={handleInputChange}
+                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                            />
+                            <TextField disabled={!editMode} variant="standard"
+                                placeholder="Enter your Middle Name" name="middle_name"
+                                label="Middle Name" multiline fullWidth 
+                                value={data.midname} onChange={handleInputChange}
+                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                            />
+                            <TextField disabled={!editMode} variant="standard"
+                                placeholder="Enter your Last Name" name="last_name"
+                                label="Last Name" required multiline fullWidth 
+                                value={data.lastname} onChange={handleInputChange}
+                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                            />
                         </>
                     }
 
-                    <Form.Group as={Col} className="mb-3" controlId="occupation">
-                        <Form.Label>Occupation</Form.Label>
-                        <Form.Control name="occupation" type="text" disabled={!editMode}
-                            placeholder="Enter your Occupation" 
-                            value={data.occupation} onChange={handleInputChange} required  
-                        />
-                    </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="about">
-                        <Form.Label>About</Form.Label>
-                        <Form.Control name="occupation" type="text" as="textarea" rows={3} disabled={!editMode}
-                            placeholder="Enter your Description" 
-                            value={data.about} onChange={handleInputChange} required  
-                        />
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="formBasicDropdown">
-                        <Form.Label>Gender</Form.Label>
-                        {
-                            !editMode ? (
-                                <Form.Control name="gender" type="text"  disabled={!editMode}
-                                placeholder="Enter your Gender" 
-                                value={data.gender==="M" ? "Male" : "Female"} onChange={handleInputChange} required  
-                                />
-                            ):(
-                                    <DropdownButton id="dropdown-basic-button"  disabled={!editMode} title={data.gender==="M" ? "Male" : "Female" || 'Select your gender'}
-                                        onSelect={handleDropdownSelect}> 
-                                        <Dropdown.Item eventKey="M">Male</Dropdown.Item>
-                                        <Dropdown.Item eventKey="F">Female</Dropdown.Item>
-                                    </DropdownButton>
-                            ) 
-                        }
-                    </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="country">
-                        <Form.Label>Country</Form.Label>
-                        {countries ? (
-                            <Form.Control as="select" default={data.country} value={data.country} disabled={!editMode} name="country" onChange={handleInputChange} required>
-                                {countries.map((country, index) => (
-                                    <option key={index} value={country.country}>
-                                        {country.country}
-                                    </option>
-                                ))}
-                            </Form.Control>
-                        ) : (
-                            <Form.Control name="country" type="text" disabled={!editMode}
-                                placeholder="Enter Country"
-                                value={data.country} onChange={handleInputChange} required
-                            />
-                        )}
-                    </Form.Group>
+                    <TextField disabled={!editMode} variant="standard"
+                        placeholder="Enter your Occupation" name="occupation"
+                        label="Occupation" required multiline fullWidth 
+                        value={data.occupation}
+                        onChange={handleInputChange}
+                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                    />
 
-                    <Form.Group as={Col} className="mb-3" controlId="phone">
-                        <Form.Label>Phone</Form.Label>
-                        <Form.Control name="phone" type="text"  disabled={!editMode}
-                            placeholder="Enter your Phone" 
-                            value={data.phone} onChange={handleInputChange} required  
-                        />
-                            {<span className="text-danger">{error.phone}</span>}
-                    </Form.Group>
+                    <TextField disabled={!editMode} variant="standard"
+                        placeholder="Enter your About" name="about"
+                        label="About" required multiline fullWidth 
+                        value={data.about}
+                        onChange={handleInputChange}
+                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                    />
+
+                    <FormControl fullWidth style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    >
+                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                            Gender
+                        </InputLabel>
+                        <NativeSelect defaultValue={'M'} inputProps={{name: 'Gender', id: 'uncontrolled-native',}} value={gender} onChange={handleSelect} required disabled={!editMode}>
+                            <option value={'M'}>Male</option>
+                            <option value={'F'}>Female</option>
+                        </NativeSelect>
+                    </FormControl>
+
+                    <FormControl fullWidth disabled={!editMode} style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    >
+                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                            Country
+                        </InputLabel>
+                        <NativeSelect defaultValue={data.country} name='country' value={data.country} onChange={handleInputChange} required>
+                            {countries ? (
+                            countries.map((country, index) => (
+                                <option key={index} value={country.country}>
+                                    {country.country}
+                                </option>
+                            ))
+                            ) : (<option value="">Loading countries...</option>)}
+                        </NativeSelect>
+                    </FormControl>
+
+                    <TextField disabled={!editMode} variant="standard"
+                        placeholder="Enter your Phone" name="phone"
+                        label="Phone" required multiline fullWidth 
+                        value={data.phone}
+                        onChange={handleInputChange} inputProps={{ inputMode: 'numeric' }}
+                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                    />
+                    {<span className="text-danger">{error.phone}</span>}
+
                 </Card.Body>
                 <Card.Footer className="text-muted">
-                    {
-                        editMode ? (
-                            <Button variant="primary" type="submit" disabled ={!editMode}>
-                                Save
-                            </Button>   
-                        ) : (
-                            // admin && <Button variant="outline-secondary" onClick={handleEdit} endIcon={<EditNoteIcon />}>Edit</Button>
-                            admin && <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
-                        )
-                    }
-
+                    {editMode ? (
+                        <Button variant="contained" color="success" type="submit" disabled ={!editMode}>
+                            Save
+                        </Button>   
+                    ) : (admin && <Button variant="secondary" onClick={handleEdit}>Edit</Button>)}
                 </Card.Footer>
             </Card>
         </Form>

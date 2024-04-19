@@ -44,9 +44,9 @@ function NavBar({user}) {
     
     return (<>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className="bg-body-tertiary mb-3">
+        <Navbar key={expand} expand={expand} className="navbar">
             <Container fluid>
-                <Navbar.Brand href="/">FlowLoop</Navbar.Brand>
+                <Navbar.Brand href="/" className='nav-title'>FlowLoop</Navbar.Brand>
                 <SearchBar />
                 <NavDropdown title={
                         <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >

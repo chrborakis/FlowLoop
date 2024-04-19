@@ -37,7 +37,7 @@ const ProjectsList = ({company}) => {
 
     return (<>
         <div className="center-projects">
-            <Button variant="contained" color="primary" onClick={() => setNewProjModal(true)}>Create new Project</Button>
+            <Button variant="contained" color="primary" onClick={() => setNewProjModal(true)}>New Project</Button>
             <NewProject company={company} show={newProjModal} onHide={() => setNewProjModal(false)} setNewProject={setNewProject}/>  
             
             <InfiniteScroll

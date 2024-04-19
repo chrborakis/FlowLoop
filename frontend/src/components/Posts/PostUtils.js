@@ -31,13 +31,20 @@ export const deletePost = async( url, post, setPosts) => {
 }
 
 export const editPost = async( url, post, setPosts, setEditMode) => {
-    await axios.patch(`${url}/${post.post_id}/`, post, 
+    const new_url = `${url}/${post.post_id}/`
+    // let end_url;
+    // if(url.includes('postpublic')){
+    //     end_url = url.replace("posts/postpublic", `api/post_public/${post.post_id}`);
+    // }else if(url.includes('postprivate')){
+    //     end_url = url.replace("posts/postprivate", `api/post_private/${post.post_id}`);
+    // }
+    await axios.patch(new_url, post, 
     {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
     .then( res => {
-        console.log(res.data.data)
-        if(res.data.status === 200){
+        console.log(res.data)
+        if(res.status === 200){
+            setPosts(prevData =>prevData.map(post => (post.post_id === post.post_id ? { ...post, value: res.data.data } : post)));        
             setEditMode(false)    
-            // setPosts(prevData =>prevData.map(post => (post.post_id === post.post_id ? { ...post, value: res.data.data } : post)));        
         }
     })
     .catch( err => console.log(err))
@@ -46,6 +53,8 @@ export const editPost = async( url, post, setPosts, setEditMode) => {
 export const postPost = async( url, data, newPost, onHide, setErrors, setFormData) => {
     console.log("New Post: ", data)
     const new_url = url + '/0/'
+    console.log("[POST]: ", new_url)
+    
     await axios.post(new_url, data,{
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'multipart/form-data'}})
     .then(  res => {

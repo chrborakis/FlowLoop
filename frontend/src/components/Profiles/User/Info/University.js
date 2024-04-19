@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import Button from 'react-bootstrap/Button';
 import {Card, Row,Col} from 'react-bootstrap';
 import { getUniversity, postUniversity } from '../UserUtils'
 import Form from 'react-bootstrap/Form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
-
+import { TextField } from "@material-ui/core";
+import Button from '@mui/material/Button';
 
 const University = ({user, university, admin}) => {   
     const [editMode, setEdit] = useState(false);
@@ -85,16 +85,14 @@ const University = ({user, university, admin}) => {
                         data ? (
                             data.map(uni => (
                                 <div key={uni.id}>
-                                    <Row><h4>University: </h4> 
-                                    { editMode ? (
-                                        <Form.Control name="name" type="text"  disabled={!editMode}
-                                            placeholder="Enter your university name" 
-                                            value={uni?.name} onChange={(e) => handleInputChange(e, uni?.id)}
-                                        />
-                                        ) : (<>{uni?.name}</>)  
-                                    }
-                                    </Row>
-                                    <Row><h4>Graduation: </h4> 
+                                    <TextField disabled={!editMode} variant="standard"
+                                        placeholder="Enter University Name" name="name"
+                                        label="University Name" required multiline fullWidth 
+                                        value={uni?.name} onChange={(e) => handleInputChange(e, uni?.id)}
+                                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                                    />
+
+                                    {/* <Row><h4>Graduation: </h4> 
                                     { editMode ? (
                                         <DatePicker name="graduation" required disabled={!editMode} 
                                             selected={uni?.graduation} onChange={(e) => handleInputChange(e, uni?.id)}
@@ -105,19 +103,30 @@ const University = ({user, university, admin}) => {
                                         />
                                         ) : (<>{new Date(uni?.graduation).toISOString().split('T')[0]}</>)
                                     }
-                                    </Row>
-                                    <Row><h4>Degree: </h4> 
-                                    { editMode ? (
-                                        <Form.Control name="degree" type="text"  disabled={!editMode}
-                                            placeholder="Enter your graduation degree" 
-                                            value={uni?.degree} onChange={(e) => handleInputChange(e, uni?.id)}
-                                        />
-                                        ) : (<>{uni?.degree}</>)  
-                                    }
-                                    </Row>
+                                    </Row> */}
+
+                                    <TextField label="Graduation Date" variant="standard" disabled={!editMode}
+                                        placeholder="Insert your graduation date"
+                                        InputProps={{readOnly: true,}} value={ 'None'} 
+                                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}
+                                    />
+                                    <DatePicker name="graduation" required disabled={!editMode} 
+                                        selected={uni?.graduation} onChange={(e) => handleInputChange(e, uni?.id)}
+                                        dateFormat="yyyy-MM-dd"
+                                        minDate={minDate} maxDate={today}
+                                        isClearable ={true}
+                                        showYearDropdown={true} scrollableYearDropdown={true}
+                                    />
+
+                                    <TextField disabled={!editMode} variant="standard"
+                                        placeholder="Enter your graduation degree" name="degree"
+                                        label="Degree" required multiline fullWidth 
+                                        value={uni?.degree} onChange={(e) => handleInputChange(e, uni?.id)}
+                                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                                    />
                                     { editMode && 
                                         <div className='center-button'>
-                                            <Button variant="danger" onClick={() => handleRemoveUniversity(uni.id)}>
+                                            <Button variant="secondary" color="error" onClick={() => handleRemoveUniversity(uni.id)}>
                                                 Remove
                                             </Button>
                                         </div>
@@ -139,14 +148,14 @@ const University = ({user, university, admin}) => {
                     {
                         editMode ? (
                             <div className='center-button'>
-                            <Button variant="primary" type="submit" disabled ={!editMode}>
+                            <Button variant="contained" color="success" type="submit" disabled ={!editMode}>
                                 Save
-                            </Button>   
+                            </Button>     
                             </div>
                         ) : (
                             admin && 
                             <div className='center-button'>
-                            <Button variant="outline-secondary" onClick={handleEdit}>Edit</Button>
+                            <Button variant="secondary" onClick={handleEdit}>Edit</Button>
                             </div>
                         )
                     }

@@ -100,26 +100,32 @@ def friends(request, user):
             
 @csrf_exempt
 def education(request, user):
-    base_url = get_base_url(request)
-    if request.method == "POST":
+    if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        print("DATA", data)
-        instance = get_object_or_404(EducationDetails, id=data.get("id"))
+        base_url = get_base_url(request)
         try:
-            serializer = EducationSerializer(instance, data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse({'data':serializer.data, "status":status.HTTP_200_OK})
+            response = requests.post(base_url+'/backend/api/education/'+str(user), json=data)
+            assign = response.json() 
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[POST]Education create successfully',
+                    'data': assign,
+                    'status': response.status_code
+                })
             else:
-                print(serializer.errors)
-                return JsonResponse({'error': serializer.errors,'status': status.HTTP_400_BAD_REQUEST}) 
-        except Http404:
-            return JsonResponse({'error': 'Edu details not found', 'status': status.HTTP_404_NOT_FOUND})
-        except ValidationError as err:
-            return JsonResponse({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as err:
-            return JsonResponse({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return JsonResponse({
+                    'message': '[POST]Education create Failed',
+                    'data': assign,
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
     elif request.method == 'GET':
+        base_url = get_base_url(request)
         response = requests.get(base_url+'/backend/api/education/'+str(user))
         print(response.json())
         return JsonResponse({
@@ -127,6 +133,33 @@ def education(request, user):
             'data': response.json(),
             'status': response.status_code
         })   
+    elif request.method == 'PATCH':
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        base_url = get_base_url(request)
+        try:
+            response = requests.patch(base_url+'/backend/api/education/'+str(user), json=data)
+            print(response)
+           
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[PATCH]Education '+str(user)+' updated successfully',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': '[PATCH]Education '+str(user)+' update failed',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+        except Exception as e:
+            print(e)
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
 
 @csrf_exempt
 def university(request, user):
