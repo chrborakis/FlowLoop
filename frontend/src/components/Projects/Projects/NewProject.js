@@ -123,12 +123,12 @@ const NewProject = (props) => {
                     </Form.Group> */}
                     {projectError && <span className="text-danger">{projectError}</span>}
                 {/* </Row> */}
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="success" type="submit">
-                    Create
-                </Button>
-            </Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <Button variant="contained" color="success" type="submit">
+                            Create
+                        </Button>
+                </Modal.Footer>
             </Form>
         </Modal>
     );

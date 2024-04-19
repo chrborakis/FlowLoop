@@ -43,17 +43,17 @@ export const editPost = async( url, post, setPosts, setEditMode) => {
     .catch( err => console.log(err))
 }
 
-export const postPost = async( url, data, newPost, setIsContentVisible) => {
+export const postPost = async( url, data, newPost, onHide, setErrors, setFormData) => {
     console.log("New Post: ", data)
     const new_url = url + '/0/'
     await axios.post(new_url, data,{
-        headers: {
-            'X-CSRFToken': Cookies.get('csrftoken'),
-            'Content-Type': 'multipart/form-data'
-    }})
+        headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'multipart/form-data'}})
     .then(  res => {
-        console.log("New Post res.data: ", res.data)
-        newPost(res.data);
-        setIsContentVisible(false)
+        console.log(res.status)
+        if(res.status === 200){
+            newPost(res.data);
+            setFormData({ title: '', description: '', image: null})
+            onHide()
+        }
     }).catch( err => console.log(err))  
 }

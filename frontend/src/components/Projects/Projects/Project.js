@@ -48,7 +48,7 @@ const Project = ({project, setProjects}) => {
         description: project?.description,
     });
 
-    const [errors, setErrors] = useState({title:'', description:'', dates:''})
+    const [errors, setErrors] = useState({title:'', description:'', start_date:'', finish_date:''})
 
     const accept = () => {
         deleteProject(project.project_id, setProjects)
@@ -170,7 +170,7 @@ const Project = ({project, setProjects}) => {
                                     value={data.title} disabled={!editMode}
                                     multiline fullWidth  style={{ margin: '1em' }}       
                                     onChange={handleInputChange}
-                                    />
+                                />
                                 { errors?.title && <span className="text-danger">{errors.title}</span>}
                             </>) : (<Col>{data.title}</Col>)}
                         </Row>
@@ -209,7 +209,8 @@ const Project = ({project, setProjects}) => {
                             </>) : (<>{data.description}</>)}
                         {editMode ? (<>
                             <DateRange dateRange={dateRange} setDateRange={setDateRange}/>
-                            { errors?.dates && <span className="text-danger">{errors.dates}</span>}
+                            { errors?.start_date  && <span className="text-danger">{errors.start_date}</span>}
+                            { errors?.finish_date && <span className="text-danger">{errors.finish_date}</span>}
                         </>) : (<p>{dateRange[0].startDate} - {dateRange[0].endDate}</p>)
                         }
                     </Card.Text>

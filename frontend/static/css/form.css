@@ -1,0 +1,8 @@
+.TextField {
+    margin: 1em;
+    width: 95%;
+    max-width: 15em;
+    overflow: auto;
+}
+  
+

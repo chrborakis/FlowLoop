@@ -4,17 +4,19 @@ import NewPost from "./NewPost";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircleLoader } from 'react-spinners';
 import { getPosts } from "./PostUtils";
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Button } from "@material-ui/core";
 
 import "../../../static/css/Posts/Post.css"
 
-const PostsPublic = ({user, url, slug, displayNew}) => {
+const PostsPublic = ({user, url, slug}) => {
     // url: ../backend/postpublic OR backend/postpublic
     const [ posts, setPosts] = useState([]);
     const [ newPost, setNewPost] = useState();
     const [ loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(true);
+
+    const [newPostModal, setNewPostModal] = useState(false);
 
     const end_message = posts?.length === 0 ? "No posts found!" : "You have seen all posts!"
 
@@ -36,7 +38,8 @@ const PostsPublic = ({user, url, slug, displayNew}) => {
     };
 
     return (<>
-        { displayNew && <NewPost user={user} url={url} newPost={setNewPost}/>}
+        <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>Create new Post</Button>
+        <NewPost user={user} url={url} newPost={setNewPost} show={newPostModal} onHide={() => setNewPostModal(false)}/>  
 
         <div className="center-posts">
             <InfiniteScroll
