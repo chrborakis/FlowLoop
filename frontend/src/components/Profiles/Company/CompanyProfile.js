@@ -9,7 +9,7 @@ import PostsPrivate from '../../Posts/PostsPrivate';
 import Info from './Info/Info';
 import Address from './Info/Address';
 import Staff from './Info/Staff';
-import ProjectsList from './Projects/ProjectsList';
+import ProjectsList from '../../Projects/Projects/ProjectsList';
 
 import {Card, Row,Col, Container,Button} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css"; 

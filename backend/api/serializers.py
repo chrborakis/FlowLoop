@@ -413,7 +413,7 @@ class ProjectAssignSerializer(serializers.ModelSerializer):
             "participant_id",
             "division",
             "assign",
-            "user"
+            "user",
         )
 
     def get_user( self, obj):
@@ -428,13 +428,26 @@ class ProjectAssignSerializer(serializers.ModelSerializer):
         }
 
 class ProjectRequestAssignSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = ProjectRequestAssign
         fields = (
+            "id",
             "division",
             "employee",
-            "status"
+            "status",
+            "user",
         )
+
+    def get_user( self, obj):
+        user = obj.employee.employee.user
+        return{
+            'id'  : user.user_id,
+            'name': str(user),
+            'slug': str(user.slug),
+            'image':str(user.image),
+            'work_id': obj.employee.id
+        }
 
 class ProjectDivisionSerializer(serializers.ModelSerializer):
     assign = serializers.SerializerMethodField()    
@@ -475,16 +488,19 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
                     user = request.employee.employee.user
                     user_list.append({
                         'id': request.id,
+                        'work_id': request.employee.id,
                         'name': str(user),
                         'slug': str(user.slug),
                         'image': str(user.image),
                     })
-                    return user_list
+                return user_list  # Moved outside the loop
             else:
                 return None
         except ProjectRequestAssign.DoesNotExist as e:
             print(str(e))
             return None
+    
+
 
 
 

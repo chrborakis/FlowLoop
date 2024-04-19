@@ -13,5 +13,6 @@ urlpatterns = [
     # id company - getDivisions || id project - addDivision
     path("divisions/<int:id>", views.divisions),
     path("assign/<int:division>", views.assign),
+    path("assign_request/<int:request_id>", views.assign_request),
     path("admin", views.admin)
 ]

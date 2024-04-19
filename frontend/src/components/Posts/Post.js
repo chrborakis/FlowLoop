@@ -2,7 +2,10 @@ import React, {useState, useRef} from "react";
 import Comments from "./Comments/Comments";
 import Likes from "./Likes/Likes";
 import { Link } from "react-router-dom";
-import {Card, Row,Col, Dropdown, Button, Form} from 'react-bootstrap';
+import {Card, Row,Col, Dropdown, Form} from 'react-bootstrap';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+
 import '../../../static/css/Posts/Post.css';
 import {scrollTop} from '../Extra/LinkOnTop';
 import { HiMiniCog6Tooth } from "react-icons/hi2";
@@ -81,9 +84,14 @@ const Post = ({post, url, setPosts}) => {
                         <Dropdown show={postOpts} onToggle={toggleDropdown}>
                             <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Button variant="outline-info"   onClick={handleEdit}>Edit</Button>
-                                <Button variant="outline-danger" icon="pi pi-check"
-                        label="Confirm" onClick={() => setVisible(true)}>Delete</Button>
+                                <ButtonGroup orientation="vertical" className="w-100" aria-label="Vertical button group">
+                                    <Button variant="outlined" color="primary" className="w-100" onClick={handleEdit}>
+                                        Edit
+                                    </Button>
+                                    <Button variant="outlined" color="error" className="w-100" icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>
+                                        Delete
+                                    </Button>
+                                </ButtonGroup>
                             </Dropdown.Menu>
                         </Dropdown>
                     }
@@ -123,13 +131,14 @@ const Post = ({post, url, setPosts}) => {
                     </Card.Text>
                     {editMode && (
                         <Col className="justify-content-between">
-                        <Button variant="outline-danger" type="button" onClick={handleEdit}disabled ={!editMode}>
+                        <Button variant="plain" color="error" type="button" onClick={handleEdit}disabled ={!editMode}>
                             Cancel
                         </Button> 
-                        <Button variant="success" type="submit" disabled ={!editMode}>
+                        <Button variant="contained" color="success" type="submit" disabled ={!editMode}>
                             Save
                         </Button>   
                         </Col>
+
                     )}
                 </Form>
             </Card.Body>

@@ -139,6 +139,37 @@ def divisions(request,id):
         except Exception as e: return JsonResponse({'message': str(e),'status': 500})
         
 @csrf_exempt
+def assign_request(request, request_id):
+    if request.method == 'PATCH':
+        data = json.loads(request.body.decode('utf-8'))
+        print("request: ", request)
+        print("reueqst: ", data)
+        base_url = get_base_url(request)
+        try:
+            response = requests.patch(base_url+'/backend/api/projects_requests_assign/'+str(request_id), json=data)
+            print(response)
+           
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[POST]ProjectAssignRequest '+str(id)+' accepted successfully',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': '[POST]ProjectAssignRequest '+str(id)+' accepted failed',
+                    'data':  response.json() ,
+                    'status': response.status_code
+                })
+        except Exception as e:
+            print(e)
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
+    
+@csrf_exempt
 def assign(request, division):
     if request.method == 'POST':
         work_on = json.loads(request.body.decode('utf-8'))

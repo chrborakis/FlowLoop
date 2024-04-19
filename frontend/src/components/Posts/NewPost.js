@@ -3,7 +3,9 @@ import '../../../static/css/Posts/PostForm.css'
 import Form from 'react-bootstrap/Form';
 
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import { Container, Row, Col, Button, Card } from 'react-bootstrap'; 
+import { Container, Row, Col, Card } from 'react-bootstrap'; 
+import Button from '@mui/material/Button';
+
 import '../../../static/css/Profile/Forms.css';
 import '../../../static/css/index.css'
 import { postPost } from './PostUtils';
@@ -39,7 +41,7 @@ const NewPost = ({ user, url, newPost}) => {
 
     return(<>
         <div className='center-button'>
-            <Button variant="primary" onClick={handleButtonClick}> 
+            <Button variant="contained" color="primary" onClick={handleButtonClick}> 
                 {url.includes('public') ? 'New Post Public' : `New ${user?.company?.name} Post`}
             </Button>
         </div>
@@ -67,7 +69,7 @@ const NewPost = ({ user, url, newPost}) => {
                             onChange={handleImageChange} 
                         />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button variant="containted" color="success" type="submit">
                         Submit
                     </Button>
                 </Form>

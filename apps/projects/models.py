@@ -32,7 +32,7 @@ def get_upload_path(instance, filename):
 class ProjectDivision(models.Model):
     division= models.AutoField(primary_key=True)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    title       = models.TextField( null=False, blank=False, max_length=1024)
+    title       = models.TextField( null=False, blank=False, max_length=512)
     description = models.TextField( null=False, blank=False, max_length=2048)
     file        = models.FileField(upload_to=get_upload_path, null=True, blank=True)
 
@@ -58,6 +58,8 @@ class ProjectRequestAssign(models.Model):
     def clean(self):
         if self.division.project.company != self.employee.employee.company:
             raise ValidationError("Project participants should be working for the company!")
+        if ProjectAssign.objects.filter(division=self.division, assign=self.employee.id).exists():
+            raise ValidationError("Division and employee already exist!")
         if ProjectAssign.objects.filter(division=self.division).exists():
             raise ValidationError("A division can only have one participant!")
         

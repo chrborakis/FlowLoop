@@ -53,5 +53,5 @@ urlpatterns = [
     path("project_admins/<int:id>",    ProjectAdminsView.as_view()),
     path("project_divisions/<int:id>", ProjectDivisionView.as_view()),
     path("project_assign/<int:division>",   ProjectAssignView.as_view()),
-    path("projects_requests_assign", ProjectRequestAssignView.as_view())
+    path("projects_requests_assign/<int:request_id>", ProjectRequestAssignView.as_view())
 ]

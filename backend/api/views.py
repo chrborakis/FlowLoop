@@ -721,9 +721,12 @@ class ProjectDivisionView(APIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class ProjectAssignView(APIView):
     def get( self, request, division):
-        instances = get_list_or_404(ProjectAssign, division=division)
-        serializers = ProjectAssignSerializer(instances, many=True)        
-        return Response(serializers.data)
+        try:
+            instance = get_object_or_404(ProjectAssign, division=division)
+            serializers = ProjectAssignSerializer(instance)        
+            return Response(serializers.data)
+        except Http404 as e:
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
 
     def post( self, request, division):
         serializer = ProjectAssignSerializer( data = request.data)
@@ -731,10 +734,23 @@ class ProjectAssignView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 class ProjectRequestAssignView(APIView):
-    def get( self, request):
+    def get( self, request, request_id):
         instances = get_list_or_404(ProjectRequestAssign)
         serializers = ProjectRequestAssignSerializer(instances, many=True)        
         return Response(serializers.data)
+    def patch( self, request, request_id):
+        try:
+            req_inst = ProjectRequestAssign.objects.get(pk=request_id)
+        except ProjectRequestAssign.DoesNotExist: return Response({"error": "ProjectRequestAssign "+str(request_id)+" not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            serializer = ProjectRequestAssignSerializer(req_inst, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("Error:", e)
+            return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
