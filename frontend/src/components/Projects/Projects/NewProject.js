@@ -1,49 +1,36 @@
 import React, { useState} from "react";
 import {Modal,Button, Form,Dropdown,Row,Col } from "react-bootstrap"
 // import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Range from '../Range'
 import { addProject } from "./ProjectUtils";
 import {TextField} from '@material-ui/core';
 import { useAuth } from "../../../store/AuthContext"; 
+import DateRange from "../../Extra/DateRange";
 
-import { Grid } from '@material-ui/core';
-import { DatePicker } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/styles';
-import Popover from '@material-ui/core/Popover';
-import { DateRangePicker } from 'react-date-range';
+// import { Grid } from '@material-ui/core';
+// import { DatePicker } from '@material-ui/lab';
+// import { makeStyles } from '@material-ui/styles';
 
-import "react-datepicker/dist/react-datepicker.css";
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
 
 const NewProject = (props) => {
     const { user} = useAuth();
-    const today = new Date()
+    
     const [project, setProject] = useState(null)
     const [projectError, setProjectError] = useState()
-    const minDate = new Date(today.getFullYear() - 50, today.getMonth(), today.getDate());
+    
     const [formData, setFormData] = useState({ 
         title: '',  description: ''
     });
 
-
-    // const [startDate, setStartDate] = useState();
-    // const handleStartDateChange = (date) => setStartDate(date);
-
-    // const [finishDate, setFinishDate] = useState();
-    // const handleFinishDateChange = (date) => setFinishDate(date);
+    const [dateRange, setDateRange] = useState([{
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection'
+    }]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormData({...formData,[name]: value,});
     };    
-
-    const [anchorEl, setAnchorEl] = useState(null);
-    const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClose = () => setAnchorEl(null);
-    const open = Boolean(anchorEl);
-    const id = open ? 'date-range-popover' : undefined;
 
     const handleSubmit = async(e) => {
         e.preventDefault()
@@ -69,22 +56,6 @@ const NewProject = (props) => {
             setProjectError("Start date must be before finish date...")
         }
     }
-    const [dateRange, setDateRange] = useState([
-        {
-            startDate: new Date(),
-            endDate: new Date(),
-            key: 'selection'
-        }
-    ]);
-    const [dateRangeString, setDateRangeString] = useState('');
-
-    const handleDateChange = (ranges) => {
-        setDateRange([ranges.selection]);
-        const startDateString = ranges.selection.startDate.toLocaleDateString();
-        const endDateString = ranges.selection.endDate.toLocaleDateString();
-        const rangeString = `${startDateString} - ${endDateString}`;
-        setDateRangeString(rangeString);
-    };
 
     return (
         <Modal {...props} size="lg" centered
@@ -132,30 +103,7 @@ const NewProject = (props) => {
                     </Grid>
                 </Grid> */}
 
-        <div>
-            <TextField
-                id="outlined-basic"
-                label="Duration"
-                variant="standard"
-                placeholder="Insert project duration"
-                value={dateRangeString}
-                onClick={handleClick}
-                InputProps={{
-                    readOnly: true,
-                }}
-            />
-            <Popover id={id} open={open} anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center',}}
-                transformOrigin={{vertical: 'top',horizontal: 'center',}}
-            >
-                <DateRangePicker
-                    minDate={today}
-                    ranges={dateRange}
-                    onChange={handleDateChange}
-                />
-            </Popover>
-        </div>
+                <DateRange dateRange={dateRange} setDateRange={setDateRange}/>
 {/*                 
                     <Form.Group as={Col} className="mb-3" controlId="Started">
                     <Form.Label>Start Date</Form.Label>
