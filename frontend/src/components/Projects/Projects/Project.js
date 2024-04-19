@@ -13,16 +13,23 @@ import NewDivision from "../Divisions/NewDivision";
 import { HiMiniCog6Tooth } from "react-icons/hi2";
 import Range from "../Range";
 import { ConfirmDialog } from 'primereact/confirmdialog';
-
+import { TextField } from "@material-ui/core";
 import { User } from "../../Profiles/Profile";
-
+import DateRange from "../../Extra/DateRange";
 import '../../../../static/css/HomePage.css'
 import '../../../../static/css/projects.css'
 import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
 import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
+import { setDate } from "date-fns";
 
 const Project = ({project, setProjects}) => {
+    const [dateRange, setDateRange] = useState([{
+        startDate: project?.start_date,
+        endDate: project?.finish_date,
+        key: 'selection'
+    }]);
+    
     const [isExpanded, setIsExpanded] = useState(false);
     const toggleExpand = () => setIsExpanded(prevState => !prevState);
 
@@ -41,16 +48,13 @@ const Project = ({project, setProjects}) => {
         description: project?.description,
     });
 
+    const [errors, setErrors] = useState({title:'', description:'', dates:''})
+
     const accept = () => {
         deleteProject(project.project_id, setProjects)
         setVisible(false)
     }
     const reject = () => setVisible(false);    
-
-    const [value, setValue] = useState([
-        project?.start_date,
-        project?.finish_date,
-    ]);
 
     const options = [
         { label: 'Initiating', value: 'Initiating', bgColor: 'secondary' },
@@ -97,14 +101,31 @@ const Project = ({project, setProjects}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setErrors({title:'', description:'', dates:''})
+        const { startDate, endDate } = dateRange[0];
+        const start_date1  = new Date(startDate).toISOString().split('T')[0];
+        const finish_date1 = new Date(endDate).toISOString().split('T')[0];
+
+        const adjustedStartDate = new Date(start_date1);
+        adjustedStartDate.setDate(adjustedStartDate.getDate() + 1);
+        const start_date = adjustedStartDate.toISOString().split('T')[0];
+
+        const adjustedEndDate = new Date(finish_date1);
+        adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+        const finish_date = adjustedEndDate.toISOString().split('T')[0];
+
+        setDateRange([{startDate:start_date, endDate:finish_date, key: "selection"}])
+
         const editedProject = {
             ...data,
-            start_date: value[0],
-            finish_date: value[1],
+            start_date: start_date,
+            finish_date: finish_date,
             phase: phase.name[0]
         }
         console.log(editedProject)
-        updateProject(project.project_id, editedProject, setEdit, setProjects)
+        updateProject(project.project_id, editedProject, setEdit, setProjects, setErrors)
+
+        console.log("AFter: ",dateRange)
     }
 
     return(<>
@@ -142,12 +163,16 @@ const Project = ({project, setProjects}) => {
                 <Form onSubmit={handleSubmit}>
                     <Card.Title>
                         <Row className="align-items-center">
-                            {editMode ? (
-                                <Form.Control name="title" type="text" disabled={!editMode}
-                                    placeholder="Enter a title"
-                                    value={data.title} onChange={handleInputChange} required  
-                                />
-                            ) : (<Col>{data.title}</Col>)}
+                            {editMode ? (<>
+                                <TextField 
+                                    id="outlined-basic" label="Title"  variant="standard" 
+                                    placeholder="Enter a project title" name="title"
+                                    value={data.title} disabled={!editMode}
+                                    multiline fullWidth  style={{ margin: '1em' }}       
+                                    onChange={handleInputChange}
+                                    />
+                                { errors?.title && <span className="text-danger">{errors.title}</span>}
+                            </>) : (<Col>{data.title}</Col>)}
                         </Row>
 
                         <Row className="align-items-center">
@@ -172,19 +197,20 @@ const Project = ({project, setProjects}) => {
 
                     </Card.Title>
                     <Card.Text>
-                        {editMode ? (
-                            <Form.Control name="description" type="text" as="textarea" rows={3}  disabled={!editMode}
-                                placeholder="Enter your Description" 
-                                value={data.description} onChange={handleInputChange} required  
-                            />
-                        ) : (<>{data.description}</>)}
-                        
-
-                        {editMode ? (
-                            <Range value={value} setValue={setValue}/>
-                        ) : (   
-                            <p>{value[0]} - {value[1]}</p>
-                        )
+                        {editMode ? (<>
+                            <TextField 
+                                    id="outlined-basic" label="Description"  variant="standard" 
+                                    placeholder="Enter a project description" name="description"
+                                    value={data.description} disabled={!editMode}
+                                    multiline fullWidth  style={{ margin: '1em' }}       
+                                    onChange={handleInputChange}
+                                />
+                                { errors?.description && <span className="text-danger">{errors.description}</span>}
+                            </>) : (<>{data.description}</>)}
+                        {editMode ? (<>
+                            <DateRange dateRange={dateRange} setDateRange={setDateRange}/>
+                            { errors?.dates && <span className="text-danger">{errors.dates}</span>}
+                        </>) : (<p>{dateRange[0].startDate} - {dateRange[0].endDate}</p>)
                         }
                     </Card.Text>
                     {editMode ? (

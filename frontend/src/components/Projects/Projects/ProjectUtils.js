@@ -28,14 +28,23 @@ export const deleteProject = async(project_id,setProjects) => {
     .catch( err => console.log(err))
 }
 
-export const updateProject = async(project_id, data, setEdit, setProjects) => {
+export const updateProject = async(project_id, data, setEdit, setProjects, setErrors) => {
     await axios.patch(`../backend/projects/projects/${project_id}`, data,
     {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
     .then( res => {
         console.log(res.data)
         if(res.data.status === 200){
-            setEdit(false)
             setProjects(prevData =>prevData.map(item => (item.project_id === project_id ? { ...item, value: res.data.data } : item)));
+            setEdit(false)
+        }else if(res.data.status === 400){
+            const errorData = res.data.data;
+            setErrors(prevErrors => {
+                const updatedErrors = { ...prevErrors };
+                Object.keys(prevErrors).forEach(key => {
+                    updatedErrors[key] = errorData[key] || prevErrors[key];
+                });
+                return updatedErrors;
+            });
         }
     })
     .catch( err => console.log(err))

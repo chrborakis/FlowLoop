@@ -17,8 +17,9 @@ const DateRange = ({dateRange, setDateRange}) => {
     const open = Boolean(anchorEl);
     const id = open ? 'date-range-popover' : undefined;
 
-    const [dateRangeString, setDateRangeString] = useState('');
-
+    const [dateRangeString, setDateRangeString] = useState(`${dateRange[0].startDate} - ${dateRange[0].endDate}`);
+    {console.log("dateRangeString: ", dateRangeString)}
+    
     const handleDateChange = (ranges) => {
         setDateRange([ranges.selection]);
         const startDateString = ranges.selection.startDate.toLocaleDateString();

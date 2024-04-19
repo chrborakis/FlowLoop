@@ -32,7 +32,7 @@ def get_upload_path(instance, filename):
 class ProjectDivision(models.Model):
     division= models.AutoField(primary_key=True)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    title       = models.TextField( null=False, blank=False, max_length=512)
+    title       = models.TextField( null=False, blank=False, max_length=1024)
     description = models.TextField( null=False, blank=False, max_length=2048)
     file        = models.FileField(upload_to=get_upload_path, null=True, blank=True)
 
