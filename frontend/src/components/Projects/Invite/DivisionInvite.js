@@ -16,7 +16,7 @@ const DivisionInvite = ({ division, company, admin_slug, user_slug, setDivisions
                 <ButtonGroup aria-label="Basic button group">
                     <Button variant="contained" color="primary" onClick={() => setModalShow(true)}>Add Member</Button>
                     <AdminInvite division={division} company={company} show={modalShow} onHide={() => setModalShow(false)} setDivisions={setDivisions} />
-                    {division.requests.length > 0 && (<div>
+                    {division.requests?.length > 0 && (<div>
                         <Button variant="secondary" onClick={() => setRequestsShow(true)}>Requests</Button>
                         <Requests  division={division} setDivisions={setDivisions} show={requestsShow} onHide={() => setRequestsShow(false)}/>
                     </div>

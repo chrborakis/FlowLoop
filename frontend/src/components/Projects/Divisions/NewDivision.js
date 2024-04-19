@@ -3,7 +3,7 @@ import { Container, Col, Row, Card, Form} from 'react-bootstrap';
 import { BsPlusLg } from "react-icons/bs";
 import { addDivision} from './DivisionUtils';
 import Button from '@mui/material/Button';
-
+import {TextField} from '@material-ui/core';
 import '../../../../static/css/projects.css'
 import '../../../../static/css/HomePage.css'
 
@@ -17,8 +17,8 @@ const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
     }
 
     const adjustInputHeight = (target) => {
-        target.style.height = 'auto'; // Reset the height
-        target.style.height = `${target.scrollHeight}px`; // Set the height to the scroll height
+        target.style.height = 'auto';
+        target.style.height = `${target.scrollHeight}px`;
     };
 
     const handleInputChange = (event) => {
@@ -40,33 +40,31 @@ const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
             ) : (
                 <Row className="justify-content-center">
                 <Card className="new-division"  style={{ width: '95%' }}>
-                <Card.Header>
-                    New Division
-                </Card.Header>
-                <Card.Body>
-                <Form onSubmit={submitNewDiv}>
-                    <Form.Group className='mb-3' controlId='formTitle'>
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control as="textarea" value={newDivision.title} required
-                            placeholder="Enter a project title" name="title"
+                    <Card.Header>
+                        New Division
+                    </Card.Header>
+                    <Card.Body>
+                    <Form onSubmit={submitNewDiv}>
+                        <TextField 
+                            id="outlined-basic" label="Title"  variant="standard" 
+                            placeholder="Enter a division title"  name="title"
+                            value={newDivision.title} required 
+                            multiline fullWidth  style={{ margin: '1em' }}       
                             onChange={handleInputChange}
-                            rows={1} style={{ resize: "none", maxHeight: "20em", overflowY: "auto" }}
                         />
                         { error && <span className="text-danger">{error}</span>}
-                    </Form.Group>
-                    <Form.Group className='mb-3' controlId='formDescription'>
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control as="textarea" value={newDivision.description} required
-                            placeholder="Enter a project description" name="description"
+                        <TextField 
+                            id="outlined-basic" label="Description"  variant="standard" 
+                            placeholder="Enter a division description"  name="description"
+                            value={newDivision.description} required
+                            multiline fullWidth style={{ margin: '1em' }}
                             onChange={handleInputChange}
-                            rows={1} style={{ resize: "none", maxHeight: "20em", overflowY: "auto" }}
                         />
-                    </Form.Group>
-                    <Button variant="contained" type="success">
-                        <BsPlusLg/>
-                    </Button>
-                </Form>
-                </Card.Body>
+                        <Button variant="contained" type="success">
+                            <BsPlusLg/>
+                        </Button>
+                    </Form>
+                    </Card.Body>
                 </Card>
                 </Row>
             ) 

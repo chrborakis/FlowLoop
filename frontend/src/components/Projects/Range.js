@@ -8,8 +8,6 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 });
 
 export const Range = ({value,setValue}) => {
-
-  
   const onChange = (event) => {
     const nextValue = event.value;
     console.log('onChange iso date:', nextValue);

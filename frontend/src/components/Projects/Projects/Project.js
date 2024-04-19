@@ -47,11 +47,6 @@ const Project = ({project, setProjects}) => {
     }
     const reject = () => setVisible(false);    
 
-    // const dateFormat = new Intl.DateTimeFormat(undefined, {
-    //     month: 'short',
-    //     day: 'numeric',
-    //   });
-
     const [value, setValue] = useState([
         project?.start_date,
         project?.finish_date,
@@ -188,7 +183,7 @@ const Project = ({project, setProjects}) => {
                         {editMode ? (
                             <Range value={value} setValue={setValue}/>
                         ) : (   
-                            <>{value[0]} - {value[1]}</>
+                            <p>{value[0]} - {value[1]}</p>
                         )
                         }
                     </Card.Text>
