@@ -23,6 +23,8 @@ import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
 import { setDate } from "date-fns";
 
+import '../../../../static/css/index.css'
+
 const Project = ({project, setProjects}) => {
     const [dateRange, setDateRange] = useState([{
         startDate: project?.start_date,
@@ -124,8 +126,6 @@ const Project = ({project, setProjects}) => {
         }
         console.log(editedProject)
         updateProject(project.project_id, editedProject, setEdit, setProjects, setErrors)
-
-        console.log("AFter: ",dateRange)
     }
 
     return(<>
@@ -168,7 +168,7 @@ const Project = ({project, setProjects}) => {
                                     id="outlined-basic" label="Title"  variant="standard" 
                                     placeholder="Enter a project title" name="title"
                                     value={data.title} disabled={!editMode}
-                                    multiline fullWidth  style={{ margin: '1em' }}       
+                                    multiline fullWidth  className="textfield"  
                                     onChange={handleInputChange}
                                 />
                                 { errors?.title && <span className="text-danger">{errors.title}</span>}
@@ -184,9 +184,9 @@ const Project = ({project, setProjects}) => {
                                 
                                     <Dropdown.Menu>
                                         {options.map((option, index) => (
-                                            <Dropdown.Item key={index} eventKey={option.value}
+                                            <Dropdown.Item key={index} eventKey={option.value} className="textfield" 
                                                 onClick={(ev)=>handleSelect(ev.target)} active={phase.state === option.value}
-                                                style={{ width: '100%' }}>
+                                            >
                                                 <Badge bg={option.bgColor}>{option.label}</Badge>
                                             </Dropdown.Item>
                                         ))}
@@ -198,12 +198,11 @@ const Project = ({project, setProjects}) => {
                     </Card.Title>
                     <Card.Text>
                         {editMode ? (<>
-                            <TextField 
+                            <TextField className="textfield" 
                                     id="outlined-basic" label="Description"  variant="standard" 
                                     placeholder="Enter a project description" name="description"
                                     value={data.description} disabled={!editMode}
-                                    multiline fullWidth  style={{ margin: '1em' }}       
-                                    onChange={handleInputChange}
+                                    multiline fullWidth onChange={handleInputChange}
                                 />
                                 { errors?.description && <span className="text-danger">{errors.description}</span>}
                             </>) : (<>{data.description}</>)}

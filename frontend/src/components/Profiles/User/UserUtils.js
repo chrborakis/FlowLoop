@@ -34,7 +34,7 @@ export const updateUser = async( company_slug, data, setEdit, setError) => {
         }) 
 }
 
-export const changeImage = async( url, id, image, setImage) => {
+export const changeImage = async( url, id, image, setImage, setNewImage) => {
     // url: users || companies
     const data = {'image':image}
     
@@ -43,8 +43,11 @@ export const changeImage = async( url, id, image, setImage) => {
         'X-CSRFToken': Cookies.get('csrftoken'),
         "Content-Type": "multipart/form-data"
     }})
-    .then(  res => {    
-        if(res.status===200)setImage(res.data.image)
+    .then(  res => {        
+        if(res.status===200) {
+            if(setImage) setImage(res.data.image)
+            if(setNewImage)setNewImage(res.data.image)
+        }
     })
     .catch( err => console.log(err.response.data))
 };
@@ -94,20 +97,28 @@ export const getEducation = async( user, setEducation) => {
     .catch( err => console.log(err))
 }
 
-export const postEducation = async( data, setEdit) => {
+export const postEducation = async( data, setEdit, setAlert) => {
     axios.post("/backend/users/education/0", data)
     .then(  res => {
-        if(res.data.status === 200)
-        setEdit(false)})
+        if(res.data.status === 200){
+            setEdit(false)
+            setAlert({state: true, info:"success", text:"Education updated successfully!"})
+        }else{
+            setAlert({state: true, info:"error", text:"Failed to update education!"})
+        }
+    })
     .catch( err => console.log(err))
 }
 
-export const editEducation = async( data, setEdit) => {
+export const editEducation = async( data, setEdit, setAlert) => {
     axios.patch(`/backend/users/education/${data.id}`, data)
     .then(  res => {
         console.log(res.data)
-        if(res.data.status === 200)
-        setEdit(false)})
+        if(res.data.status === 200){ 
+            setEdit(false)
+            setAlert({state: true, info:"success", text:"Education updated successfully!"})
+        }else{setAlert({state: true, info:"error", text:"Failed to update education!"})}
+    })
     .catch( err => console.log(err))
 }
 
@@ -122,8 +133,13 @@ export const getUniversity = async( user, setUniversity) => {
     .catch( err => console.log(err))
 }
 
-export const postUniversity = async( user, data, setEdit) => {
+export const postUniversity = async( user, data, setEdit, setAlert) => {
     axios.post(`/backend/users/university/${user}`, data)
-    .then(  res => {if(res.status === 200)setEdit(false)})
+    .then(  res => {
+        if(res.status === 200){
+            setEdit(false)
+            setAlert({state: true, info:"success", text:"University updated successfully!"})
+        }else{setAlert({state: true, info:"error", text:"Failed to update university!"})}
+    })
     .catch( err => console.log(err))
 }

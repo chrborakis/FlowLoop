@@ -8,14 +8,14 @@ export const getComments = async( setComments, url) => {
     .catch(err => console.log(err.data))
 };
 
-export const postComment = async( data, url, setComment, comment, commentRef, setText) => {
+export const postComment = async( data, url, setComment, comment, setText) => {
     await axios.post(`${url}/0`, data,{
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),
         'Content-Type': 'application/json'}
     })
     .then(  res => {
         setComment(comment)
-        commentRef.current.value = '';
+        // commentRef.current.value = '';
         setText('');
     }).catch( err => console.log(err))
 };

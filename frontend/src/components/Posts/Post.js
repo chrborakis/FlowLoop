@@ -111,8 +111,7 @@ const Post = ({post, url, setPosts}) => {
                                 <TextField label="Title" variant="standard" disabled={!editMode}
                                     placeholder="Enter a post title" name="title"
                                     value={data.title} required multiline fullWidth 
-                                    onChange={handleInputChange}
-                                    style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
+                                    onChange={handleInputChange} className="textfield"       
                                 />
                             ) : (<Col>{data.title}</Col>)}
                         </Row>
@@ -121,9 +120,8 @@ const Post = ({post, url, setPosts}) => {
                         {editMode ? (
                             <TextField label="Description" variant="standard" disabled={!editMode}
                                 placeholder="Enter a post Description" name="body"
-                                value={data.body} required multiline fullWidth 
-                                onChange={handleInputChange}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
+                                value={data.body} required multiline fullWidth
+                                onChange={handleInputChange} className="textfield"      
                             />
                         ) : (<>{data.body}</>)}
                         { !editMode && (

@@ -1,20 +1,4 @@
-/* *{
-    background-color: #121212;
-    color: white;
-}
-
-.card.card, .card-body, .card-header, .card-title, p, div.col-3, .card-footer{
-    background-color: #1E1E1E;
-    color: inherit;
-    background-color: #1E1E1E;
-    text-decoration: none;
-    color: white;
-}
-
-.col, .row, .container{
-    background-color:inherit
-}
- */
+@import 'colors.css';
 
  *{
     text-align: center;
@@ -24,3 +8,24 @@
     max-height: 500px;
     overflow-y: auto;
  }
+
+
+.textfield {
+    margin: 1em;
+    width: 95%;
+    max-height: 15em;
+    overflow: auto;
+}
+
+/* BUTTONS */
+.btn-primary{
+    background-color: var(--primary);
+}
+
+.btn-error{
+    background-color: var(--error);
+}
+
+.btn-success{
+    background-color: var(--success);
+}

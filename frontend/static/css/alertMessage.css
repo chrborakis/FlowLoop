@@ -1,0 +1,9 @@
+.alertMessage {
+    width: '100%';
+    animation: fadeOut 10s forwards;
+}
+
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}

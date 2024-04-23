@@ -14,7 +14,7 @@ class Companies(models.Model):
     company_name = models.CharField(unique=True,blank=False, null=False)
     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
     description = models.TextField(blank=True, null=True)
-    address = models.OneToOneField(Address, on_delete=models.CASCADE, unique=True)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE, unique=True, blank=True, null=True)
     phone = PhoneNumberField(unique=True,blank=False, null=False)
     image = models.ImageField(upload_to=get_upload_path_company, blank=True, null=True)
     establishment_date = models.DateField(blank=False, null=False)

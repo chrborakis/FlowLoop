@@ -53,31 +53,26 @@ const NewPost = (props) => {
                 <Modal.Body>
                     <Col>
                         <Row>
-                            <TextField className="text-field" label="Title" variant="standard" 
+                            <TextField className="textfield" label="Title" variant="standard" 
                                 placeholder="Enter a post title" name="title"
-                                value={formData.title} required 
-                                multiline fullWidth 
+                                value={formData.title} required multiline fullWidth
                                 onChange={handleInputChange}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
                             />
                             {errors.title && <span className="text-danger">{errors.title}</span>}
                         </Row>
                         <Row>
-                            <TextField className="text-field" label="Description" variant="standard" 
+                            <TextField className="textfield" label="Description" variant="standard" 
                                 placeholder="Enter a post description" name="description"
-                                value={formData.description} required 
-                                multiline fullWidth 
-                                onChange={handleInputChange}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
+                                value={formData.description} required multiline fullWidth 
+                                onChange={handleInputChange}  
                             />
                             {errors.description && <span className="text-danger">{errors.description}</span>}
                         </Row>
                         <Row>
-                            <TextField className="text-field" label="Image" variant="standard"
+                            <TextField className="textfield" label="Image" variant="standard"
                                 placeholder="Insert image"  onClick={handleButtonClick}
                                 value={formData?.image?.name || 'None'} fullWidth
-                                InputProps={{startAdornment: <CloudUploadIcon/>,readOnly: true,}}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}       
+                                InputProps={{startAdornment: <CloudUploadIcon/>,readOnly: true,}}   
                             />
                             <Form.Control ref={fileInputRef}
                                 className="file-input" type="file" accept="image/*"

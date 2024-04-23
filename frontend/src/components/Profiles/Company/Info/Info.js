@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Button from 'react-bootstrap/Button';
+import Button from '@mui/material/Button';
 import {Form,Card,Col} from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -7,7 +7,12 @@ import { updateCompany } from '../CompanyUtils';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+import { TextField } from "@material-ui/core";
+
+
 import { useAuth } from '../../../../store/AuthContext';
+
+import '../../../../../static/css/index.css'
 
 const Info = ({company, admin}) => {
     const [editMode, setEdit] = useState(false);
@@ -66,7 +71,61 @@ const Info = ({company, admin}) => {
     }
 
     return(<>   
-        <Form className='form' onSubmit={handleSave}>
+        <Form className='form' onSubmit={handleSave} style={{textDecoration:'none'}}>
+            <Card className="text-center">  
+                <Card.Header>Company Information</Card.Header>
+                <Card.Body>
+                        {editMode &&
+                            <TextField disabled={!editMode} variant="standard" className="textfield" 
+                                placeholder="Enter company's" name="company_name"
+                                label="Company Name" required multiline fullWidth 
+                                value={data.company_name} onChange={handleInputChange}
+                            />
+                        }
+
+                    <TextField disabled={!editMode} variant="standard" className="textfield" 
+                        placeholder="Enter company's Description" name="description"
+                        label="Description" required multiline fullWidth 
+                        value={data.description} onChange={handleInputChange}
+                    />
+
+                    { editMode ? (<>
+                        <p style={{ textAlign:'left'}} className="textfield">Started</p>
+                        <DatePicker name="started"  required 
+                            disabled={!editMode} selected={selectedDate} onChange={handleDateChange}
+                            dateFormat="yyyy-MM-dd" minDate={minDate} maxDate={today} 
+                            isClearable={true} showYearDropdown={true} scrollableYearDropdown={true}
+                        />
+                            </>
+                        ) : (<>
+                        <TextField  label="Started" variant="standard" 
+                            disabled={!editMode} InputProps={{ readOnly: true }}
+                            className="textfield" value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : 'None'}
+                        />
+                        </>)
+                    }
+
+                    <TextField disabled={!editMode} variant="standard" className="textfield" 
+                        placeholder="Enter company's Phone" name="phone"
+                        label="Phone" required multiline fullWidth 
+                        value={data.phone} onChange={handleInputChange}
+                    />
+                    
+                    {<span className="text-danger">{errors?.phone}</span>}
+
+                </Card.Body>
+                <Card.Footer className="text-muted">
+                    {editMode ? (
+                        <Button variant="contained" color="success" type="submit" disabled ={!editMode}>
+                            Save
+                        </Button>   
+                    ) : (
+                        admin && <Button variant="secondary" onClick={handleEdit}>Edit</Button>
+                    )}
+                </Card.Footer>
+            </Card>
+        </Form>
+        {/* <Form className='form' onSubmit={handleSave}>
             <Card className="text-center">  
                 <Card.Header>Company Information</Card.Header>
                 <Card.Body>
@@ -125,7 +184,7 @@ const Info = ({company, admin}) => {
 
                 </Card.Footer>
             </Card>
-        </Form>
+        </Form> */}
     </>);
 }
 

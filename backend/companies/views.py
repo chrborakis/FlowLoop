@@ -12,7 +12,7 @@ from PIL import Image
 from io import BytesIO
 from urllib.parse import urljoin
 from django.conf import settings
-
+from django.db import IntegrityError
 # Create your views here.
 def staff(request, company):
     print("company: ", company)
@@ -42,27 +42,24 @@ def staff(request, company):
 def address(request, pk):
     base_url = get_base_url(request)
     if request.method == 'POST':
+        company_id = pk
         data = json.loads(request.body.decode('utf-8'))
-        print(data.get("address"))
         base_url = get_base_url(request)
         try:
-            response = requests.post(base_url+'/backend/api/address/0', json=data.get("address"))
+            response = requests.post(base_url+'/backend/api/address/0', json=data)
             print(response)
             new_address = response.json()
             new_address_id = new_address.get('id') 
+
+            address_instance = Address.objects.get(pk=new_address_id)
+            company = Companies.objects.get(pk=company_id)
+            company.address = address_instance
+            company.save()
  
             if response.status_code == 200:
-                return JsonResponse({
-                    'message': 'Address created successfully',
-                    'data': new_address_id,
-                    'status': response.status_code
-                })
+                return JsonResponse({'message': 'Address created successfully','data': new_address_id,'status': response.status_code})
             else:
-                return JsonResponse({
-                    'message': 'Failed to create address',
-                    'data': response.json(),
-                    'status': response.status_code
-                })
+                return JsonResponse({'message': 'Failed to create address','data': response.json(),'status': response.status_code})
         except Exception as e:
             return JsonResponse({
                 'message': str(e),
@@ -95,55 +92,19 @@ def address(request, pk):
 def company(request, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = {
-            'company_name':       request.POST.get('data[company_name]'),
-            'establishment_date': request.POST.get('data[date]'),
-            'description':        request.POST.get('data[description]'),
-            # 'image':              request.FILES.get('data[image]').name,
-            'phone':              request.POST.get('data[phone]'),
-            'address' :           int(request.POST.get('address'))
-        }
-        print("Company: ", data)
-
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
         base_url = get_base_url(request)
         try:
-            new_inst = Companies.objects.create(
-                company_name =       data['company_name'],
-                establishment_date = data['establishment_date'],
-                description =        data['description'],
-                phone =              data['phone'],
-                address =            Address.objects.get(pk=data['address']),
-                image =              request.FILES.get('data[image]')
-            )
-            print("NEW INST", new_inst)
-            new_inst.save()
-            response = requests.get(base_url+'/backend/api/companies/'+str(new_inst.slug))
-            # response = requests.post(base_url+'/backend/api/companies/0', json=data)
+            response = requests.post(base_url+'/backend/api/companies/0', json=data)
             print(response)
-            new_company = response.json()
-
+ 
             if response.status_code == 200:
-                return JsonResponse({
-                    'message': 'Company created successfully',
-                    'data': new_company.get('company_id'),
-                    'status': response.status_code
-                })
+                return JsonResponse({'message': 'Company created successfully','data': response.json(), 'status': response.status_code})
             else:
-                instance = get_object_or_404(Address, pk=data['address'])
-                instance.delete()
-                return JsonResponse({
-                    'message': 'Failed to create Company',
-                    'data': response.json(),
-                    'status': response.status_code
-                })
+                return JsonResponse({'message': 'Failed to create Company','data': response.json(), 'status': response.status_code})
         except Exception as e:
-            instance = get_object_or_404(Address, pk=data['address'])
-            instance.delete()
-            return JsonResponse({
-                'message': str(e),
-                'data': response.json(),
-                'status': response.status_code
-            })
+            return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/companies/'+str(company))
         print(response.json())
@@ -152,41 +113,6 @@ def company(request, company):
             'data': response.json(),
             'status': response.status_code
         })
-    
-    elif request.method == 'PUT':
-        print(request.FILES)
-        
-        print(request.FILES.get('data'))
-        print(request.FILES.get('image'))
-        print(request.FILES.get('data[image]'))
-
-        return JsonResponse({})
-        # data = request.FILES.get('data[image]')
-        # if 'image' in data:
-        #     new_image = data['image']
-        #     print("image",new_image)
-        # else:
-        #     print("No file uploaded.")
-        # new_image = None
-        # image = Image.open(new_image)
-        # resized_image = image.resize((150, 150))
-        # output_io = BytesIO()
-        # resized_image.save(output_io, format='JPEG') 
-
-        # try:
-        #     company = Companies.objects.get(company_id=company)
-        #     company.image.save(new_image.name, output_io, save=False)
-        #     company.save()
-        #     updated_image_url = urljoin(settings.MEDIA_URL, company.image.url)
-        #     return JsonResponse({'message': 'Image updated successfully', 'data': updated_image_url}, status=200)
-
-        # except Exception as e:
-        #     print(e)
-        #     return JsonResponse({'message': 'Image updated successfully', 
-        #         'error': str(e),
-        #         'status':200}
-        #     )
-
 
 # THIS IS FOR HEADER REQUEST MODAL QUERY BY COMPANY_ID 
 # for admins
@@ -248,8 +174,6 @@ def id_workrequests(request, user, company):
                     'status': response.status_code
                 })
             else:
-                instance = get_object_or_404(Address, pk=address)
-                instance.delete()
                 return JsonResponse({
                     'message': 'Failed to POST Work Request',
                     'data': response.json(),

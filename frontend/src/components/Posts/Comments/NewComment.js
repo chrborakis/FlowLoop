@@ -4,55 +4,46 @@ import {postComment} from "./CommentsUtils";
 
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
-import Form from 'react-bootstrap/Form';
-
+import {Form, Row, Col} from 'react-bootstrap';
+import { TextField } from "@material-ui/core";
 import '../../../../static/css/Posts/NewComment.css';
+
+import '../../../../static/css/index.css'
 
 const NewComment = ({post, onComment, url}) => {
     const { user} = useAuth();
 
-    const [text, setText] = useState("");
-    const commentRef = useRef(null);
+    const [comment, setComment] = useState("");
 
     const handleChange = (event) => {
-        setText(event.target.value);
-        adjustTextareaRows(); // Adjust the number of rows
-    };
-
-    const adjustTextareaRows = () => {
-        if (!commentRef.current) return;
-        const textarea = commentRef.current;
-        textarea.style.height = 'auto'; // Reset the height
-        textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scroll height
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter' && !event.shiftKey && commentRef.current.value.trim() !== '') {
-            event.preventDefault();
-            handleSubmit();
-        }
+        setComment(event.target.value);
     };
 
     const handleSubmit = async (e) => {
         e && e.preventDefault();
-        const commentValue = commentRef.current.value.trim();
+        if(!comment){
+            return
+        }
         const commentor = url.includes('public') ? user.id : user.work_id;
-        const data = {post:post, commentor, comment: commentValue}
-        postComment(data, url, onComment, commentValue, commentRef, setText);
+        const data = {post:post, commentor, comment: comment}
+        postComment(data, url, onComment, comment, setComment);
     }
 
     return(
         <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Control as="textarea" value={text} required
-                    placeholder="Your comment.."
-                    onChange={handleChange} onKeyDown={handleKeyDown}
-                    ref={commentRef}
-                    rows={1} style={{ resize: "none" }}
-                />
-            </Form.Group>
-            <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-            </Button>
+            <Row>
+                <Col xs={10}>
+                    <TextField style={{ marginTop: '5%' }}
+                        className="textfield" variant="outlined"
+                        placeholder="Type your comment" name="comment" label="What's your opinion?"
+                        value={comment} onChange={handleChange}
+                        multiline fullWidth  
+                    />
+                </Col>
+                <Col xs={2} className="d-flex align-items-center justify-content-end">
+                    <Button variant="contained" className="btn-primary" type="submit" endIcon={<SendIcon />}/>
+                </Col>
+            </Row>
         </Form>
     );
 }

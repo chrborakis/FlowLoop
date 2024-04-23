@@ -15,9 +15,7 @@ def get_workson_instance(user_id):
         instance = get_object_or_404(WorksOn, employee__user_id__user_id=user_id)
         serializer = WorksOnSerializer(instance)
             
-        return serializer.data
+        return serializer.data 
     
     except Exception as err:
         return None
-
-    

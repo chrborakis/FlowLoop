@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 
 import '../../../static/css/Login.css';
 
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,7 +13,12 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useAuth } from '../../store/AuthContext';
 import { getCountries } from '../Extra/Countries';
-
+import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import {Button, TextField} from '@material-ui/core'
 
 const Register = ({login}) => {
     const onLogin = (userV) => login(userV)
@@ -36,8 +40,13 @@ const Register = ({login}) => {
         const { name, value } = event.target;
         setFormData({...formData,[name]: value,});
     };
+    
+    const [showPassword, setShowPassword] = useState(false);
 
-    const handleDropdownSelect = (eventKey, event) => setGender(eventKey);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event) => event.preventDefault();
+
+    const handleSelect = (event) => {setGender(event.target.value);};
 
     const handleRegister = (e) => {
         e.preventDefault()
@@ -86,89 +95,98 @@ const Register = ({login}) => {
                     <Card.Body>
                         <Row>
                             <Form.Group as={Col} className="mb-3" controlId="firstname">
-                                <Form.Label>First Name</Form.Label>
-                                <Form.Control name="firstname" type="text" 
-                                    placeholder="Enter your First Name" 
-                                    value={formData.firstname} onChange={handleInputChange} required  
+                                <TextField value={formData.firstname} onChange={handleInputChange}
+                                    id="outlined-textarea" type='text' name='firstname'
+                                    label="First Name" placeholder="Enter your First Name"
+                                    multiline required
                                 />
-                                    {errors?.firstname && <span className="text-danger">{errors?.firstname}</span>}
+                                {errors?.firstname && <span className="text-danger">{errors?.firstname}</span>}
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="lastname">
-                                <Form.Label>Last Name</Form.Label>
-                                <Form.Control name="lastname" type="text" 
-                                    placeholder="Enter your Last Name" 
-                                    value={formData.lastname} onChange={handleInputChange}  required  
+                                <TextField value={formData.lastname} onChange={handleInputChange}
+                                    id="outlined-textarea" label="Last Name" placeholder="Enter your Last Name"
+                                    multiline required  type='text' name='lastname'
                                 />
-                                    {errors?.lastname && <span className="text-danger">{errors?.lastname}</span>}
+                                {errors?.lastname && <span className="text-danger">{errors?.lastname}</span>}
                             </Form.Group>
                         </Row>
-                        <Form.Group className="mb-3" controlId="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control name="email" type="email" 
-                                placeholder="Enter your Email" 
-                                value={formData.email} onChange={handleInputChange} required  
+                        <Form.Group as={Col} className="mb-3" controlId="email">
+                            <TextField value={formData.email} onChange={handleInputChange}
+                                id="outlined-textarea" label="E-Mail" placeholder="Enter your E-Mail"
+                                multiline required fullWidth  type='email' name='email'
                             />
-                                {errors?.email  && <span className="text-danger">{errors?.email}</span>} 
+                                {errors?.email && <span className="text-danger">{errors?.email}</span>}
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control name="password" type="password" 
-                                placeholder="Enter your Password" 
-                                value={formData.password} onChange={handleInputChange} required  
-                            />
-                                {errors?.password && <span className="text-danger">{errors?.password}</span>}
+                        <Form.Group as={Col} className="mb-3" controlId="password">
+                            <FormControl variant="outlined" fullWidth style={{marginTop:'10%'}}>
+                                <TextField  id="outlined-adornment-password"  className="textfield"  variant="outlined" 
+                                    label="Password" type={showPassword ? 'text' : 'password'}  placeholder="Enter your Password" 
+                                    name="password" required  value={formData.password}  onChange={handleInputChange}
+                                />
+                                <Form.Text className="text-muted">
+                                    {showPassword ? (
+                                    <VisibilityOff onClick={handleClickShowPassword} />
+                                    ) : (<Visibility onClick={handleClickShowPassword} />)}
+                                </Form.Text>
+                                {errors?.password  && <span className="text-danger">{errors?.password}</span>} 
+                            </FormControl>
                         </Form.Group>
                         <Row>
                             <Form.Group as={Col} controlId="dropdown">
-                                <Form.Label>Dropdown</Form.Label>
-                                <DropdownButton id="dropdown-basic-button" title={gender || 'Select your gender'}
-                                    onSelect={handleDropdownSelect}>   
-                                    <Dropdown.Item eventKey="M">Male</Dropdown.Item>
-                                    <Dropdown.Item eventKey="F">Female</Dropdown.Item>
-                                </DropdownButton>
-                                    {errors?.gender && <span className="text-danger">{errors?.gender}</span>}
+                                <FormControl fullWidth className="textfield">
+                                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                        Gender
+                                    </InputLabel>
+                                    <NativeSelect inputProps={{name: 'Gender', id: 'uncontrolled-native',}} value={gender} onChange={handleSelect} required>
+                                        <option value="" disabled></option>
+                                        <option value={'M'}>Male</option>
+                                        <option value={'F'}>Female</option>
+                                    </NativeSelect>
+                                </FormControl>
+                                {errors?.gender && <span className="text-danger">{errors?.gender}</span>}
                             </Form.Group>
                             <Form.Group as={Col} className="mb-3" controlId="occupation">
-                                <Form.Label>Occupation</Form.Label>
-                                <Form.Control name="occupation" type="text" 
-                                    placeholder="Enter your Occupation" 
-                                    value={formData.occupation} onChange={handleInputChange} required  
+                                <TextField value={formData.occupation} onChange={handleInputChange}
+                                    id="outlined-textarea"
+                                    label="Occupation" placeholder="Enter your Occupation"
+                                    multiline type='text' name='occupation'
                                 />
                                     {errors?.occupation && <span className="text-danger">{errors?.occupation}</span>}
                             </Form.Group>
                         </Row>
                         <Row>
                             <Form.Group as={Col} className="mb-3" controlId="country">
-                                <Form.Label>Country</Form.Label>
-                                {countries ? (
-                                    <Form.Control as="select" name="country" value={formData.country} onChange={handleInputChange} required>
+                                <FormControl className="textfield">
+                                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                        Country
+                                    </InputLabel>
+                                    <NativeSelect name='country' defaultValue={formData?.country} value={formData?.country} onChange={handleInputChange}>
+                                        {countries ? (
+                                            <>
+                                            <option value="" disabled></option>
                                             {countries.map((country, index) => (
                                                 <option key={index} value={country.country}>
                                                     {country.country}
                                                 </option>
                                             ))}
-                                        </Form.Control>
-                                    ) : (
-                                        <Form.Control name="country" type="text"
-                                            placeholder="Enter Country"
-                                            value={formData.country} onChange={handleInputChange} required
-                                        />
-                                    )}
+                                            </>
+                                        ) : (<option value="">Loading countries...</option>)}
+                                    </NativeSelect>
+                                </FormControl>
                                     {errors?.country && <span className="text-danger">{errors?.country}</span>}
                             </Form.Group>
 
                             <Form.Group as={Col} className="mb-3" controlId="phone">
-                                <Form.Label>Phone</Form.Label>
-                                <Form.Control name="phone" type="text" 
-                                    placeholder="Enter your Phone" 
-                                    value={formData.phone} onChange={handleInputChange} required  
+                                <TextField value={formData.phone} onChange={handleInputChange}
+                                    id="outlined-textarea" label="Phone" placeholder="Enter your Phone"
+                                    multiline type='text' name='phone'
                                 />
                                     {errors?.phone && <span className="text-danger">{errors?.phone}</span>}
                             </Form.Group>
                         </Row>
                     </Card.Body>
                     <Card.Footer className="text-muted">
-                        <Button variant="primary" type="submit">
+                        <Button variant="contained" color="primary" type="submit">
                             Register
                         </Button>
                     </Card.Footer>

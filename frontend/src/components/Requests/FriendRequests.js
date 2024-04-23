@@ -7,6 +7,8 @@ import { User } from "../Profiles/Profile";
 import { Link } from "react-router-dom";
 import { scrollTop } from "../Extra/LinkOnTop";
 
+import Avatar from '@mui/material/Avatar';
+
 const FriendRequests = ({ refresh}) => {
     const {user} = useAuth();
     const [requests, setRequests] = useState([]);
@@ -31,10 +33,9 @@ const FriendRequests = ({ refresh}) => {
                         {console.log(req.user1_info)}
                         <div className="left">
                             <Link to={`/user/${req?.user1_info?.slug}`} onClick={scrollTop}>
-                                <img src={`/files/${req.user1_info.image}`} width={50}/>
+                                <Avatar src={`/files/${req.user1_info.image}`} width={75}/>
                                 {req.user1_info.name}
                             </Link>
-                            {/* <User user={req?.user1_info}/> */}
                         </div>
                         <div className="right">
                             <Button onClick={() => reply( req.user1, 'A')} variant="outline-primary">Accept</Button>

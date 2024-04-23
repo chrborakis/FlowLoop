@@ -62,10 +62,6 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
             <Row className="align-items-center">
                 {division?.assign ? (
                     <Col className="d-flex justify-content-start">
-                        {/* <Link to={`/user/${division.assign?.slug}`} onClick={scrollTop}>
-                            <img src={`/files/${division.assign?.image}`} width={60}/>
-                            {division.assign?.name}
-                        </Link> */}
                         <User user={division.assign}/>
                         {console.log("division.assign: ",division.assign)}
                     </Col>
@@ -107,16 +103,6 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
                 }
                 {
                     parseInt(user?.work_id) === parseInt(division.assign?.work_id) && (
-                        // <Form onSubmit={ (event) => handleSubmit( event, division.division)}><Row>
-                        //     <Col xs={9}>
-                        //         <Form.Control className="file-input" type="file" onChange={handleFileChange} hidden/>
-                        //     </Col>
-                        //     <Col xs={3}> 
-                        //         <Button className="button" type="submit">
-                        //             <BsFillShiftFill className="icon" />
-                        //         </Button>
-                        //     </Col>
-                        // </Row></Form>
                         <Form onSubmit={ (event) => handleSubmit( event, division.division)}>
                             <Button onClick={handleButtonClick} className="button" type="submit" startIcon={<CloudUploadIcon/>}>
                                 {division.file ? "Replace File" : "Upload File"}

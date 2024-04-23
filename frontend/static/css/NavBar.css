@@ -1,5 +1,7 @@
+@import 'colors.css';
+
 .navbar {
-  background-color: #303F9F;
+  background-color: var(--primary);
   position: sticky;
   width: 100%;
   top: 0;

@@ -15,6 +15,7 @@ from backend.util import get_base_url, get_workson_instance
 
 @csrf_exempt
 def login_view(request):
+    print('in-------------------------')
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         email    = data.get('formData').get('email')
@@ -37,10 +38,8 @@ def login_view(request):
                         'id': user.user_id,
                         'name':  f"{user_dict['firstname']} {user_dict['lastname']}",
                         'slug':  user_dict['slug'],
-                        'image': user_dict['image'],
-                        'company': None,
-                        'work_id': None,
-                        'is_admin': None
+                        'image': user_dict['image'] or '/profile/user/dummy-user.png',
+                        'company': None,'work_id': None,'is_admin': None
                     }
 
                     try:
@@ -51,17 +50,8 @@ def login_view(request):
                         user1['work_id'] = workOn['id']
                         user1['is_admin'] = workOn['is_admin']
                     except:
-                        return JsonResponse({
-                            'message': 'Login Successful',
-                            'user': json.dumps(user1),
-                            'authenticated': True
-                        })
-                        
-                    return JsonResponse({
-                        'message': 'Login Successful',
-                        'user': json.dumps(user1),
-                        'authenticated': True
-                    })
+                        return JsonResponse({'message': 'Login Successful','user': json.dumps(user1),'authenticated': True})
+                    return JsonResponse({'message': 'Login Successful','user': json.dumps(user1),'authenticated': True})
                 except:
                     return JsonResponse({'message': 'User Data not Found'})
             else:

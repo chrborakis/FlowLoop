@@ -14,16 +14,14 @@ const SearchBar = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-          if (cardRef.current && !cardRef.current.contains(event.target)) {
-            setIsFocused(false);
-          }
+            if (cardRef.current && !cardRef.current.contains(event.target)) {
+                setIsFocused(false);
+            }
         };
     
         document.addEventListener("click", handleClickOutside);
     
-        return () => {
-            document.removeEventListener("click", handleClickOutside);
-        };
+        return () => {document.removeEventListener("click", handleClickOutside);};
       }, []);
 
     const handleFocus = () => {
@@ -35,9 +33,8 @@ const SearchBar = () => {
             setIsFocused(false);
         }
     };
-    const handleSearch = (event) => {
-        setSearch(event.target.value);
-    };
+    const handleSearch = (event) => setSearch(event.target.value);
+ 
 
     const [users, setUsers] = useState([])
     const [companies, setCompanies] = useState([])

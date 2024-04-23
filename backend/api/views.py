@@ -193,17 +193,13 @@ class CompaniesView(APIView):
         except UnicodeDecodeError:
             return Response({"error": "UnicodeDecodeError occurred while processing data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def post(self, request):
-        print("DATA IN API: ", request.data)
+    def post(self, request, *args, **kwargs):
         serializer = CompaniesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
-
-        
 class CompanyView(APIView):    
     def get(self, request, company):
         if company.isdigit():
@@ -216,11 +212,7 @@ class CompanyView(APIView):
 
     def post( self, request, company):
         print("DATA IN API: ", request.data)
-        if company.isdigit():
-            serializer = CompaniesSerializer(pk=company)
-        else:
-            serializer = CompaniesSerializer(slug=company)
-        
+        serializer = CompaniesSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -403,7 +395,7 @@ class AllPostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print("AllDATA IN API", request.data)
+        print("API:", request.data)
         serializer = PostsPublicSerializer( data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -417,7 +409,7 @@ class PostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print("1DATA IN API", request.data)
+        print("API:", request.data)
         serializer = PostsPublicSerializer( data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

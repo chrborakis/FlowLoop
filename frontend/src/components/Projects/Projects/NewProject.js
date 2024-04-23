@@ -1,15 +1,13 @@
 import React, { useState} from "react";
-import {Modal,Button, Form,Dropdown,Row,Col } from "react-bootstrap"
-// import DatePicker from 'react-datepicker';
+import {Modal, Form,Dropdown,Row,Col } from "react-bootstrap"
+import Button from '@mui/material/Button';
+
 import { addProject } from "./ProjectUtils";
 import {TextField} from '@material-ui/core';
 import { useAuth } from "../../../store/AuthContext"; 
 import DateRange from "../../Extra/DateRange";
 
-// import { Grid } from '@material-ui/core';
-// import { DatePicker } from '@material-ui/lab';
-// import { makeStyles } from '@material-ui/styles';
-
+import '../../../../static/css/index.css'
 
 const NewProject = (props) => {
     const { user} = useAuth();
@@ -17,9 +15,7 @@ const NewProject = (props) => {
     const [project, setProject] = useState(null)
     const [projectError, setProjectError] = useState()
     
-    const [formData, setFormData] = useState({ 
-        title: '',  description: ''
-    });
+    const [formData, setFormData] = useState({ title: '',  description: ''});
 
     const [dateRange, setDateRange] = useState([{
         startDate: new Date(),
@@ -73,7 +69,7 @@ const NewProject = (props) => {
                     id="outlined-basic" label="Title"  variant="standard" 
                     placeholder="Enter a project title" name="title"
                     value={formData.title} required 
-                    multiline fullWidth  style={{ margin: '1em' }}       
+                    multiline fullWidth  className="textfield" 
                     onChange={handleInputChange}
                 />
 
@@ -81,7 +77,7 @@ const NewProject = (props) => {
                     id="outlined-basic" label="Description"  variant="standard" 
                     placeholder="Enter a project description" name="description"
                     value={formData.description} required 
-                    multiline fullWidth  style={{ margin: '1em' }}       
+                    multiline fullWidth className="textfield" 
                     onChange={handleInputChange}
                 />
   

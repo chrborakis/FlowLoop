@@ -80,18 +80,6 @@ const CompanyProfile = () => {
                 <Container fluid className="mt-5"> 
                     <Row className="justify-content-center"> 
                         <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
-                            {/* <Tabs defaultActiveKey="basic-info" id="justify-tab-example" className="mb-3" justify>
-                                <Tab eventKey="basic-info" title="Company Information">
-                                    { data    && <Info company={data} admin={data?.company_id===user?.company?.id && user.is_admin}/>}
-                                </Tab>
-                                <Tab eventKey="address" title="Address">
-                                    { address && <Address address={address} admin={data.company_id===user?.company?.id && user.is_admin}/>}
-                                </Tab>
-                                <Tab eventKey="staff" title={`Staff (${staff.length})`}>
-                                    { staff && <Staff staff={staff}/>}
-                                </Tab>
-                            </Tabs> */}
-
                             <Tabs value={tabInfo} onChange={handleTabInfo}
                                         indicatorColor="primary" textColor="primary" centered
                                         aria-label="scrollable auto tabs example">
@@ -103,7 +91,7 @@ const CompanyProfile = () => {
                                 { data    && <Info company={data} admin={data?.company_id===user?.company?.id && user.is_admin}/>}
                             </TabPanel>
                             <TabPanel value={tabInfo} index={1}>
-                                { address && <Address address={address} admin={data.company_id===user?.company?.id && user.is_admin}/>}
+                                <Address company_id={data?.company_id} address={address} admin={data.company_id===user?.company?.id && user.is_admin}/>
                             </TabPanel>
                             <TabPanel value={tabInfo} index={2}>
                                 { staff && <Staff staff={staff}/>}
@@ -112,14 +100,6 @@ const CompanyProfile = () => {
                         </Col> 
                         <Col lg={8} className="right-div page-box order-lg-2 order-md-2 order-2">
                         {user?.company?.id == data?.company_id ? (
-                            // <Tabs defaultActiveKey="posts" id="companies" className="mb-3" justify>
-                            // <Tab eventKey="posts" title="Posts">
-                            //     <PostsPrivate user={user} url='../backend/posts/postprivate' slug={slug} displayNew={true}/>
-                            // </Tab>
-                            // <Tab eventKey="projects" title="Projects">
-                            //     <ProjectsList company={data?.company_id}/>
-                            // </Tab>
-                            // </Tabs>
                             <>
                                 <Tabs value={tabContent} onChange={handleTabContent}
                                         indicatorColor="primary" textColor="primary"
@@ -156,8 +136,7 @@ const CompanyProfile = () => {
                     </Row> 
                 </Container> 
             </>
-        ) : (<></>
-        )}
+        ) : (<>Page Not Found!</>)}
         </div>
     );
 };

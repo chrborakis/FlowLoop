@@ -53,12 +53,10 @@ const PostsPrivate = ({user, url, slug}) => {
             pullDownToRefreshContent={<div style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</div>}
             releaseToRefreshContent={<div style={{ textAlign: 'center' }}>&#8593; Release to refresh</div>}
         >
-            {posts?.length > 0 ? (
+            {posts?.length > 0 && (
             posts.map( post => 
                 post && <Post key={post.post_id} post={post} url={url} setPosts={setPosts}/>
             )
-        ) : (
-            <p>No Posts Found!</p>
         )}
         </InfiniteScroll>
         </div>

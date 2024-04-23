@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useAuth } from '../../../store/AuthContext';
-
+import {changeImage} from '../User/UserUtils'
 
 export const getAddress = async( company, setAddress) => {
     axios.get(`/backend/companies/address/${company}`)
@@ -40,7 +40,10 @@ export const updateAddress = async( company, address, setEdit, setError) => {
 
 export const getCompany = async( setData, slug) => {
     axios.get(`/backend/companies/company/${slug}`)
-    .then(  res => setData(res.data.data))
+    .then(  res => {
+        if(res.data.status === 200) setData(res.data.data)
+        else setData(null)
+    })
     .catch( err => console.log(err))
 };
 
@@ -49,7 +52,7 @@ export const updateCompany = async( company_slug, data, setEdit, setError) => {
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
         then( res => {
             if(res.status === 200) {
-                setEdit(false);
+                if(setEdit)setEdit(false);
                 const companyToSlug = (str) => str.trim().toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
                 const new_slug = companyToSlug(data.company_name)
                 console.log(new_slug)
@@ -66,58 +69,46 @@ export const updateCompany = async( company_slug, data, setEdit, setError) => {
         }) 
 }
 
-export const newCompany = async( user_id, data, address, setError, hide) => {
-    try {
-        const res = await axios.post('/backend/companies/company/0', {data, address}, 
-            {headers: {
-                'X-CSRFToken': Cookies.get('csrftoken'),
-                'Content-Type': 'multipart/form-data'
-            }
+export const createCompany = async( user_id, data, image, setErrors, next) => {
+    console.log('next: ', next)
+    try{
+        const res = await axios.post('/backend/companies/company/0', data, 
+            {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}
         });
-        console.log(res.data);
-        if(res.data.status === 400) {
-            console.log(res.data.data);
-            setError(res.data.data);
-            return null;
-        } else if(res.data.status === 200) {
-            const user_data = {
-                "user": user_id,
-                "company": res.data.data,
-                "status": "A",
-                "is_admin": true
-            };
-            const response = await sendWorkRequest(user_data, null);
-            console.log("response sendwork: ", response)
-            // hide
+        if(res.data.status === 200) {
+            const user_data = {"user": user_id,"company": res.data.data.company_id ,"status": "A","is_admin": true};
+            const postImage = await changeImage( 'companies', res.data.data.company_id, image, null, null)
+            const response  = await sendWorkRequest(user_data, null);
             return response;
+        }else{
+            const errorData = res.data.data;
+            console.log(errorData)
+            setErrors(prevErrors => {
+                const updatedErrors = { ...prevErrors };
+                Object.keys(prevErrors).forEach(key => {
+                    updatedErrors[key] = errorData[key] || prevErrors[key];
+                });
+                return updatedErrors;
+            });
         }
-    } catch(err) {
-        console.log(err);
-    }
+    } catch(err) {console.log(err)}
 }
-
 
 // CREATE ADDRESS
-export const createCompany = async( user_id, data, address, setError, hide) => {
-    console.log(data, address)
-    try {
-        const res = await axios.post('/backend/companies/address/0', { address}, 
-            {headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
-        );
-        console.log(res.data);
-        if(res.data.status === 400) {
-            console.log(res.data.error);
-            setError(res.data.error);
-        } else if(res.data.status === 200) {
-            const newCompanyResponse = await newCompany(user_id, data, res.data.data, setError, hide);
-            return newCompanyResponse
-        }
-        // hide
-    } catch(err) {
-        console.log(err);
-    }
+export const createAddress = async( company_id, address, setEdit, setErrors) => {
+    console.log("address", address)
+    axios.post(`/backend/companies/address/${company_id}`, address, 
+    {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}})
+    .then( res => {
+        if(res.data.status === 200)
+            console.log(res.data);
+            setEdit(false)
+        if(res.status === 400)setErrors(res.data.error);
+    })
+    .catch( err => {
+        console.log("ERROR", err)
+    }) 
 }
-
 
 export const get_request = async ( user, user_id, company_id, setRequested) => {
     // const { user1, updateUser } = useAuth()

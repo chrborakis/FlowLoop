@@ -1,12 +1,7 @@
 .page {
-    /* display: flex;
-    width: 100vw; 
-    height: 100vh;  */
     margin: 10%;
     display: flex;
     flex-wrap: wrap;
-    /* align-items: center; */
-    /* justify-content: center;  */
   }
   .page-box {
     flex: 1;
@@ -15,14 +10,6 @@
     padding: 20px;
     box-sizing: border-box;
   }
-
-  /* .left-side,
-  .right-side { */
-    /* flex: 1;  */
-    /* padding: 2%;
-    width: 50%;
-    margin: 0 auto;
-  } */
 
   .preview {
     display: flex;

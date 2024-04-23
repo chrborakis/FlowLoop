@@ -7,6 +7,8 @@ import { User } from "../Profiles/Profile";
 import { Link } from "react-router-dom";
 import { scrollTop } from "../Extra/LinkOnTop";
 
+import Avatar from '@mui/material/Avatar';
+
 const WorkRequests = ({company, refresh}) => {
     // const { requests_ctx } = useReq();   
 
@@ -30,10 +32,9 @@ const WorkRequests = ({company, refresh}) => {
                         <div className="left">
                             {console.log(req.user_info)}
                             <Link to={`/user/${req?.user_info?.slug}`} onClick={scrollTop}>
-                                <img src={`/files/${req.user_info.image}`} width={50}/>
+                                <Avatar src={`/files/${req.user_info.image}`} width={75}/>
                                 {req.user_info.name}
                             </Link>
-                            {/* <User user={req?.user1_info}/> */}
                         </div>
                         <div className="right">
                             <Button onClick={() => reply( req.id, 'A')} variant="outline-primary">Accept</Button>

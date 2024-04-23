@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import {TextField} from '@material-ui/core';
 import '../../../../static/css/projects.css'
 import '../../../../static/css/HomePage.css'
+import '../../../../static/css/index.css'
 
 const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
     const [newDivState, setNewDivState] = useState(false)
@@ -49,7 +50,7 @@ const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
                             id="outlined-basic" label="Title"  variant="standard" 
                             placeholder="Enter a division title"  name="title"
                             value={newDivision.title} required 
-                            multiline fullWidth  style={{ margin: '1em' }}       
+                            multiline fullWidth  className="textfield"  
                             onChange={handleInputChange}
                         />
                         { error && <span className="text-danger">{error}</span>}
@@ -57,7 +58,7 @@ const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
                             id="outlined-basic" label="Description"  variant="standard" 
                             placeholder="Enter a division description"  name="description"
                             value={newDivision.description} required
-                            multiline fullWidth style={{ margin: '1em' }}
+                            multiline fullWidth className="textfield" 
                             onChange={handleInputChange}
                         />
                         <Button variant="contained" type="success">

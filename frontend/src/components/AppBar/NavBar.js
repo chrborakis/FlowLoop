@@ -82,17 +82,22 @@ function NavBar({user}) {
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                        {console.log(user)}
                             {/* <Nav.Link href="#action1">Home</Nav.Link>
                             <Nav.Link href="#action2">Link</Nav.Link>
                             <Nav.Link href="#action2">LogOut</Nav.Link> */}
-                        <Nav className="justify-content-start flex-grow-1 pe-3">
-                            <User user={user}/>
-                            {user?.company?.slug && 
-                                <Company company={user?.company}/>
-                            }
-                            <Link to={`/`} onClick={logOut}>Log Out</Link>
-                        </Nav>
+                        <Col className="justify-content-start">
+                            <Row>
+                                <Badge><User user={user} /></Badge>
+                            </Row>
+                            {user?.company?.slug && (
+                                <Row>
+                                    <Badge><Company company={user.company} /></Badge>
+                                </Row>
+                            )}
+                            <Row>
+                                <Link to="/" onClick={logOut}>Log Out</Link>
+                            </Row>
+                        </Col>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>
             </Container>

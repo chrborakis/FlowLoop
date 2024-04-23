@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {Card, Row,Col} from 'react-bootstrap';
 import { editEducation, postEducation } from '../UserUtils'
 import Form from 'react-bootstrap/Form';
@@ -8,7 +8,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../../../../../static/css/Profile/Forms.css';
 import { TextField } from "@material-ui/core";
 import Button from '@mui/material/Button';
-import Popover from '@material-ui/core/Popover';
+import AlertMessage from '../../../Extra/AlertMessage';
+
+import '../../../../../static/css/index.css'
 
 const School = ({ user, education, admin}) => {
     const [editMode, setEdit] = useState(false);
@@ -23,109 +25,84 @@ const School = ({ user, education, admin}) => {
         setSelectedDate(education?.graduation);
     }, [education]);
 
-    // const [anchorEl, setAnchorEl] = useState(null);
-    // const handleClick = (event) => setAnchorEl(event.currentTarget);
-    // const handleClose = () => setAnchorEl(null);
-    // const open = Boolean(anchorEl);
-    // const id = open ? 'date-range-popover' : undefined;
-
     const handleNameChange = (event) => setSelectedName(event.target.value);
     const handleDateChange = (date) => setSelectedDate(new Date(date));
-
+    
+    const [alert, setAlert] = useState({state:'', info:'', text:''})
+    
     const handleEdit = (e) => {
         e.preventDefault();
         setEdit(true);
     }
-
     const handleSave = (e) => {
         e.preventDefault()
-        const date = new Date(selectedDate).toISOString().split('T')[0];
-        const data = {
+        
+        
+        const updatedData = {
             ...(education?.id ? { id: education.id } : {}), 
             user: user,
             name: selectedName,
-            graduation: date
-        };
-        console.log(data)
-        if(data.id){
-            editEducation( data, setEdit)
+            graduation: new Date(selectedDate).toISOString().split('T')[0]
+        }
+
+        console.group("Dates")
+        console.log(selectedDate)
+        console.log(updatedData.graduation)
+        console.groupEnd()
+
+        if(updatedData.id){
+            editEducation( updatedData, setEdit, setAlert)
         }else{
-            postEducation( data, setEdit)
+            postEducation( updatedData, setEdit, setAlert)
         }
         return
     }
 
-    return (
-        <>
-            <Form className='form' onSubmit={handleSave}>
-                <Card>
-                    <Card.Header>Education</Card.Header>
-                    <Card.Body>
-                        {selectedName || editMode? (
-                            <>
-                                <TextField disabled={!editMode} variant="standard"
-                                    placeholder="Enter your School Name" name="school_name"
-                                    label="School Name" required multiline fullWidth 
-                                    value={selectedName} onChange={handleNameChange}
-                                    style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
-                                />
-                                {/* <Row>
-                                    <h4>Graduation: </h4> 
-                                    {editMode ? (
-                                        <DatePicker  required disabled={!editMode}
-                                            selected={selectedDate} onChange={handleDateChange}
-                                            dateFormat="yyyy-MM-dd"
-                                            minDate={minDate} maxDate={today}
-                                            isClearable ={true}
-                                            showYearDropdown={true} scrollableYearDropdown={true}
-                                        />
-                                    ) : (<>{new Date(selectedDate).toISOString().split('T')[0]}</>)}
-                                </Row> */}
-
-
-
-                            {/* <TextField label="Graduation Date" variant="standard" disabled={!editMode}
-                                placeholder="Enter your graduation date" required multiline fullWidth
-                                value={selectedDate?.toLocaleDateString() || 'None'}
-                                onClick={handleClick} InputProps={{readOnly: true,}}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}
+    return (<>
+        <Form className='form' onSubmit={handleSave}>
+            <Card>
+                <Card.Header>Education</Card.Header>
+                <Card.Body>
+                    {selectedName || editMode? (
+                        <>
+                            <TextField disabled={!editMode} variant="standard"
+                                placeholder="Enter your School Name" name="school_name"
+                                label="School Name" required multiline fullWidth 
+                                value={selectedName} onChange={handleNameChange}
+                                className="textfield" 
                             />
 
-                            <Popover id={id} open={open} anchorEl={anchorEl}
-                                onClose={handleClose}
-                                anchorOrigin={{ vertical: 'bottom', horizontal: 'center',}}
-                                transformOrigin={{vertical: 'top',horizontal: 'center',}}
-                            > */}
-                                <TextField label="Graduation Date" variant="standard" disabled={!editMode}
-                                    placeholder="Inser your graduation date"
-                                    InputProps={{readOnly: true,}}
-                                    style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}
+                            { editMode ? (<>
+                                <p style={{ textAlign:'left'}} className="textfield">Graduation</p>
+                                <DatePicker name="graduation"  required 
+                                    disabled={!editMode} selected={selectedDate} onChange={handleDateChange}
+                                    dateFormat="yyyy-MM-dd" minDate={minDate} maxDate={today} 
+                                    isClearable={true} showYearDropdown={true} scrollableYearDropdown={true}
                                 />
-                                <DatePicker  required disabled={!editMode}
-                                    selected={selectedDate} onChange={handleDateChange}
-                                    dateFormat="yyyy-MM-dd"
-                                    minDate={minDate} maxDate={today}
-                                    isClearable ={true}
-                                    showYearDropdown={true} scrollableYearDropdown={true}
+                                    </>
+                                ) : (<>
+                                <TextField  label="Graduation Date" variant="standard" 
+                                    disabled={!editMode} InputProps={{ readOnly: true }}
+                                    className="textfield" value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : 'None'}
                                 />
-
-                            {/* </Popover> */}
-                            </>
-                        ) : (
-                            <div>No education information available</div>
-                        )}
-                    </Card.Body>
-                    <Card.Footer className="text-muted">
-                        {editMode ? (
-                            <Button variant="contained" color="success" type="submit" disabled ={!editMode}>
-                                Save
-                            </Button>   
-                        ) : (admin && <Button variant="secondary" onClick={handleEdit}>Edit</Button>)}
-                    </Card.Footer>
-                </Card>
-            </Form>
-        </>
-    );
+                                </>)
+                            }
+                        </>
+                    ) : (
+                        <div>No education information available</div>
+                    )}
+                    { alert && <AlertMessage alert={alert}/>}
+                </Card.Body>
+                <Card.Footer className="text-muted">
+                    {editMode ? (
+                        <Button style={{background:'#388E3C', color:'white'}} type="submit" disabled ={!editMode}>
+                            Save
+                        </Button>   
+                    ) : (admin && <Button variant="secondary" onClick={handleEdit}>Edit</Button>)}
+                </Card.Footer>
+            </Card>
+        </Form>
+    </>);
 }
 
 export default School;

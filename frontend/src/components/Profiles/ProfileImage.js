@@ -6,20 +6,21 @@ import { changeImage } from './User/UserUtils';
 import { useAuth } from '../../store/AuthContext';
 
 const ProfileImage = ({ url, id, image, setImage}) => {
-    console.log(url)
-
     const { user, updateUser} = useAuth(); 
     const formRef = useRef(null);
+
+    const [newImage, setNewImage]= useState(null)
 
     const fileInputRef = useRef(null);
 
     const handleImageChange = (event) => {
         event.preventDefault();
-        changeImage( url, id, event.target.files[0], setImage)
+        changeImage( url, id, event.target.files[0], setImage, setNewImage)
+
         if(url === "users"){
-            updateUser({...user, 'image': event.target.files[0].name})
+            updateUser({...user, 'image': newImage?.replace("/files/", "")})
         }else if(url === "companies"){
-            updateUser({...user, company:{...user.company, 'image': event.target.files[0]}})
+            updateUser({...user, company:{...user.company, 'image': newImage?.replace("/files/", "")}})
         }
         console.log(user)
     };

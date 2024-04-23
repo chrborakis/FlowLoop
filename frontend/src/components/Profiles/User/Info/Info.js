@@ -13,6 +13,8 @@ import Select from '@mui/material/Select';
 
 import Button from '@mui/material/Button';
 
+import '../../../../../static/css/index.css'
+
 const Info = ({user, _user, updateUser, admin}) => {
     const [countries, setCountries] = useState([]);
     useEffect(() => { getCountries(countries, setCountries)}, []);
@@ -72,51 +74,46 @@ const Info = ({user, _user, updateUser, admin}) => {
     };
 
     return(<>   
-        <Form className='form' onSubmit={handleSave}>
+        <Form className='form' onSubmit={handleSave} style={{textDecoration:'none'}}>
             <Card className="text-center">  
                 <Card.Header>User Information</Card.Header>
                 <Card.Body>
                     {
                         editMode &&
                         <>
-                            <TextField disabled={!editMode} variant="standard"
+                            <TextField disabled={!editMode} variant="standard" className="textfield" 
                                 placeholder="Enter your First Name" name="first_name"
                                 label="First Name" required multiline fullWidth 
                                 value={data.firstname} onChange={handleInputChange}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
                             />
-                            <TextField disabled={!editMode} variant="standard"
+                            <TextField disabled={!editMode} variant="standard" className="textfield" 
                                 placeholder="Enter your Middle Name" name="middle_name"
                                 label="Middle Name" multiline fullWidth 
                                 value={data.midname} onChange={handleInputChange}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
                             />
-                            <TextField disabled={!editMode} variant="standard"
+                            <TextField disabled={!editMode} variant="standard" className="textfield" 
                                 placeholder="Enter your Last Name" name="last_name"
                                 label="Last Name" required multiline fullWidth 
                                 value={data.lastname} onChange={handleInputChange}
-                                style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
                             />
                         </>
                     }
 
-                    <TextField disabled={!editMode} variant="standard"
+                    <TextField disabled={!editMode} variant="standard" className="textfield" 
                         placeholder="Enter your Occupation" name="occupation"
                         label="Occupation" required multiline fullWidth 
                         value={data.occupation}
                         onChange={handleInputChange}
-                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
                     />
 
-                    <TextField disabled={!editMode} variant="standard"
+                    <TextField disabled={!editMode} variant="standard" className="textfield" 
                         placeholder="Enter your About" name="about"
                         label="About" required multiline fullWidth 
                         value={data.about}
                         onChange={handleInputChange}
-                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
                     />
 
-                    <FormControl fullWidth style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    >
+                    <FormControl fullWidth className="textfield">
                         <InputLabel variant="standard" htmlFor="uncontrolled-native">
                             Gender
                         </InputLabel>
@@ -126,7 +123,7 @@ const Info = ({user, _user, updateUser, admin}) => {
                         </NativeSelect>
                     </FormControl>
 
-                    <FormControl fullWidth disabled={!editMode} style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    >
+                    <FormControl fullWidth disabled={!editMode} className="textfield">
                         <InputLabel variant="standard" htmlFor="uncontrolled-native">
                             Country
                         </InputLabel>
@@ -141,12 +138,10 @@ const Info = ({user, _user, updateUser, admin}) => {
                         </NativeSelect>
                     </FormControl>
 
-                    <TextField disabled={!editMode} variant="standard"
+                    <TextField disabled={!editMode} variant="standard" className="textfield" 
                         placeholder="Enter your Phone" name="phone"
                         label="Phone" required multiline fullWidth 
-                        value={data.phone}
-                        onChange={handleInputChange} inputProps={{ inputMode: 'numeric' }}
-                        style={{ margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}    
+                        value={data.phone}onChange={handleInputChange} inputProps={{ inputMode: 'numeric' }}
                     />
                     {<span className="text-danger">{error.phone}</span>}
 
