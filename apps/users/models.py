@@ -8,9 +8,10 @@ from django.contrib.auth.hashers import make_password
 
 
 class UsersCredentials(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    email = models.EmailField(unique=True)
+    user_id  = models.AutoField(primary_key=True)
+    email    = models.EmailField(unique=True)
     password = models.TextField()
+    active   = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.password = make_password(self.password)
@@ -78,8 +79,8 @@ class UniversityDetails(models.Model):
 
 class FriendRequests(models.Model):
     id = models.AutoField(primary_key=True)
-    user1   = models.ForeignKey(Users, related_name='user1',   on_delete=models.CASCADE)
-    request = models.ForeignKey(Users, related_name='request', on_delete=models.CASCADE)
+    sender   = models.ForeignKey(Users, related_name='sender',   on_delete=models.CASCADE)
+    receiver  = models.ForeignKey(Users, related_name='receiver', on_delete=models.CASCADE)
     STATUS = [        ("P", "Pending"),        ("A", "Accepted"),        ("D", "Declined")    ]
     status = models.TextField(
         choices=STATUS,
@@ -88,14 +89,15 @@ class FriendRequests(models.Model):
     )
     
     def clean(self):
-        if self.user1 == self.request:
+        if self.sender == self.receiver:
             raise ValidationError("User can't friend request himself!")
     class Meta:
-        unique_together = ('user1', 'request',)
+        unique_together = ('receiver', 'sender',)
+        unique_together = ('sender', 'receiver',)
         db_table = 'friend_requests'
     
     def __str__(self):
-        return f'[{self.status}] {self.user1} -> {self.request}'
+        return f'[{self.status}] {self.sender} -> {self.receiver}'
 
 
 class Friends(models.Model):
@@ -104,6 +106,7 @@ class Friends(models.Model):
     
     class Meta:
         unique_together = ('person', 'friend',)
+        unique_together = ('friend', 'person',)
         db_table = 'friends'
 
     def __str__(self):

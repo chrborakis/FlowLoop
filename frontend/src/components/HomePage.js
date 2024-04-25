@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // import Tab from 'react-bootstrap/Tab';
 // import Tabs from 'react-bootstrap/Tabs';
-import Button from 'react-bootstrap/Button';
+import {Button, Row, Col} from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import PostsPublic from "./Posts/PostsPublic";
 import PostsPrivate from "./Posts/PostsPrivate";
@@ -9,7 +9,7 @@ import PostsPrivate from "./Posts/PostsPrivate";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from '../components/Extra/TabPanel'
-
+import FriendList from "./Chat/FriendList";
 import '../../static/css/HomePage.css'
 import NewCompany from "./Profiles/Company/NewCompany";
 import CompanyForm from "./Profiles/Company/NewCompany/CompanyForm";
@@ -22,8 +22,20 @@ const HomePage = ({user}) => {
 
     return (
         <div className="homepage">
-            <div className="box">
-                {
+            {/* <div className="box">
+                {user?.company ? (
+                    <Link to={`/company/${user?.company.slug}`}>
+                        <Button variant="outline-primary">{user?.company.name}</Button>
+                    </Link>
+                ) : <>
+                    <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
+                    <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
+                </>
+            }
+            </div> */}
+            {/* <div className="box"> */}
+            <Col lg={9}>
+            {
                     user?.company ? (
                         <Link to={`/company/${user?.company.slug}`}>
                             <Button variant="outline-primary">{user?.company.name}</Button>
@@ -34,8 +46,6 @@ const HomePage = ({user}) => {
                         <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
                     </>
                 }
-            </div>
-            <div className="box">
                 <Tabs value={value} onChange={handleChange}
                     indicatorColor="primary" textColor="primary"
                     scrollButtons="auto" centered
@@ -51,10 +61,13 @@ const HomePage = ({user}) => {
                         <PostsPrivate user={user} url='backend/posts/postprivate' slug={user?.company.slug}/>
                     </TabPanel>
                 }
-                
-            </div>
-            <div className="box">
-            </div>
+            </Col>
+            {/* </div>  */}
+            {/* <div className="box">  */}
+            <Col lg={3} style={{background:'red'}}>
+                <FriendList user_id={user?.id}/>
+            </Col>
+            {/* </div> */}
         </div>
     );
 };

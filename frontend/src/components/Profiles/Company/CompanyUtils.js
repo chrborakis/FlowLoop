@@ -69,7 +69,7 @@ export const updateCompany = async( company_slug, data, setEdit, setError) => {
         }) 
 }
 
-export const createCompany = async( user_id, data, image, setErrors, next) => {
+export const createCompany = async( user_id, data, image, setErrors) => {
     console.log('next: ', next)
     try{
         const res = await axios.post('/backend/companies/company/0', data, 

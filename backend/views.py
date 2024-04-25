@@ -94,3 +94,27 @@ def user_info(request, user_id):
                 return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return JsonResponse({'error':'Error fetching user data'}, status=status.HTTP_400_BAD_REQUEST)
+        
+def active_friends(request, user_id):
+    if request.method == 'GET':
+        if user_id:
+            base_url = get_base_url(request)
+            try:
+                response = requests.get(base_url+'/backend/api/active_friends/'+str(user_id))
+                print(response.json())
+                if response.status_code == 200:
+                    return JsonResponse({
+                        'message': str(user_id)+' Active Friends fetched Succesfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+                else:
+                    return JsonResponse({
+                        'message': str(user_id)+' Active Friends fetched Failed',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return JsonResponse({'error':'User Id is NULL'}, status=status.HTTP_400_BAD_REQUEST)

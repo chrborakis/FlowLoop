@@ -11,7 +11,6 @@ export const getRequests = async( setRequests, user) => {
 }
 
 export const replyRequest = async( user, req_id, status, setRequests) => {
-    console.log("User: ", user, "Req: ", req_id, "Status: ", status)
     await axios.post(`/backend/users/friend_requests/${user}`, 
     {req_id, status}, 
     {
@@ -25,13 +24,16 @@ export const replyRequest = async( user, req_id, status, setRequests) => {
     .catch(err => console.log(err))
 }
 
-export const replyRequestProfile = async( user, request, status, setRequested) => {
-    console.log("User: ", user, "Req: ", request, "Status: ", status)
-    await axios.post(`/backend/users/friend_requests/${user}`, {request, status}, 
+export const replyRequestProfile = async( sender, receiver, status, setRequested) => {
+    console.log("sender: ", sender," receiver: ", receiver," status: ", status)
+    await axios.post(`/backend/users/friend_requests/${sender.id}`, {receiver, status}, 
     {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}})
     .then( res => {
-        console.log(res.data)
-        setRequested(status)
+        console.log("REPLY: ",res.data)
+        if(res.data.status === 200) {
+            setRequested(status)
+
+        }
     })
     .catch(err => console.log(err))
 }

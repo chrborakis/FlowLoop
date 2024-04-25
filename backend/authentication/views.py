@@ -42,6 +42,9 @@ def login_view(request):
                         'company': None,'work_id': None,'is_admin': None
                     }
 
+                    user.active = True
+                    user.save()
+
                     try:
                         workOn = get_workson_instance(user_dict['user'])
                         print("WORNON AUTH -> ", workOn)

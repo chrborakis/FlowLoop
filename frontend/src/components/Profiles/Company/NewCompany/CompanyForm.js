@@ -7,8 +7,8 @@ import CreateAddress from "./CreateAddress";
 import CreateCompany from "./CreateCompany";
 
 const CompanyForm = (props) => {
-    const [form, setForm] = useState(0);
-    const handleChange = (event, newForm) => setForm(newForm);
+    // const [form, setForm] = useState(0);
+    // const handleChange = (event, newForm) => setForm(newForm);
 
     return(<>
         <Modal {...props} size="lg" centered>
@@ -17,17 +17,17 @@ const CompanyForm = (props) => {
                     Start your company!
                 </Modal.Title>
             </Modal.Header>
-                <Tabs value={form} onChange={handleChange} indicatorColor="primary"  variant="fullWidth" style={{ justifyContent: 'center' }} textColor="primary" centered>
+                {/* <Tabs value={form} onChange={handleChange} indicatorColor="primary"  variant="fullWidth" style={{ justifyContent: 'center' }} textColor="primary" centered>
                     <Tab label="Company" disabled />
                     <Tab label="Address" disabled />
-                </Tabs>
+                </Tabs> */}
             <Modal.Body>
-                <TabPanel value={form} index={0}>
-                    <CreateCompany setForm={setForm} onHide={props.onHide}/>
-                </TabPanel>
+                {/* <TabPanel value={form} index={0}> */}
+                    <CreateCompany onHide={props.onHide}/>
+                {/* </TabPanel>
                 <TabPanel value={form} index={1}>
                     <CreateAddress onHide={props.onHide}/>
-                </TabPanel>
+                </TabPanel> */}
             </Modal.Body>
         </Modal>       
     </>)

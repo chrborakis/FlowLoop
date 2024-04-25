@@ -15,9 +15,9 @@ class FriendRequestsAdmin(admin.ModelAdmin):
     # def project(self, obj): return obj.division.project
     # def company(self, obj): return obj.division.project.company
 
-    list_display = ('user1','request', 'status')
-    list_display_links = ('user1','request', 'status')
-    list_filter = ('user1','status')
+    list_display = ('sender','receiver', 'status')
+    list_display_links = ('sender','receiver', 'status')
+    list_filter = ('sender','status')
 
 class FriendsAdmin(admin.ModelAdmin):
     list_display = ('person','friend')

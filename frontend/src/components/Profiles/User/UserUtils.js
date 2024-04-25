@@ -62,28 +62,32 @@ export const getFriends = async( user, setFriends) => {
     .catch( err => console.log("ERROR", err))
 }
 
-export const get_request = async ( user1, request, setRequested) => {
-    console.log(user1, request)
-    axios.get('/backend/users/friend_requests/', {params: { user1, request}}
+export const get_request = async ( sender, receiver, setRequested) => {
+    console.log(sender, receiver)
+    axios.get('/backend/users/friend_requests/', {params: { sender, receiver}}
     ).then(  res => {
-        console.log(res.data.data)
-        setRequested(res.data.data.status)
+        console.log(res.data)
+        const response = res.data.data
+        console.log("get_request: ", response)
+
+        setRequested(response.status)
+        
     })
     .catch( err => console.log(err))
 };  
 
-export const send_request = async( user1, request, setRequested, status) => {
-    console.log("Friend request...", user1, request, status)
-    axios.post('/backend/users/friend_requests/', { user1, request, status}
+export const send_request = async( sender, receiver, setRequested, status) => {
+    console.log("Friend request...", sender, " to " , receiver, status)
+    axios.post('/backend/users/friend_requests/', { sender, receiver, status}
     ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
     ).then(  res => {
-        // if(res.data.status !== 200)
-            // setRequested(status=="P")
-        // addRequest(res.data);
-        if(res.data.status===200 && res.data.created){
-            setRequested(status=="P")
-        }else if(res.data.status===200 && res.data.deleted){
-            setRequested("")
+        console.log(res.data)
+        if(res.data.status === 200){
+            if(res.data.created){
+                setRequested(status=="P")
+            }else if(res.data.deleted){
+                setRequested("D")
+            }
         }
     }).catch( err => console.log(err))
 };

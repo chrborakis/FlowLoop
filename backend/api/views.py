@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
-
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils.decorators import method_decorator
@@ -79,7 +79,7 @@ class UserView(APIView):
             print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
 
-
+        
 class UsersCredentialView(APIView):
     def get( self, request):
         output = [{
@@ -317,10 +317,19 @@ class Employees(APIView):
         except Http404:
             return Response({'error': 'Employees not found.'}, status=404)    
 
+class ActiveFriendsView(APIView):
+    def get(self, request, user_id):
+        try:
+            instances = get_list_or_404(Friends.objects.filter( person=user_id, friend__user__active=True)).order_by('friend__slug')
+            serializers = FriendsSerializer(instances, many=True)
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Active Friends not found.'}, status=404) 
+
 class FriendRequestList(APIView):
     def get( self, request, id):
         try:
-            instances = get_list_or_404(FriendRequests.objects.filter( request=id, status="P"))
+            instances = get_list_or_404(FriendRequests.objects.filter( sender=id, status="P"))
             serializers = FriendsRequestsSerializer(instances, many=True)        
             return Response(serializers.data)
         except Http404:
@@ -334,11 +343,11 @@ class FriendRequestList(APIView):
         
 class FriendRequest(APIView):
     def get( self, request):
-        user1 = request.data.get("user1")
-        reque = request.data.get("request")
+        sender   = request.data.get("sender")
+        receiver = request.data.get("receiver")
         try:
             # request.query_params
-            instance = get_object_or_404(FriendRequests, user1=user1, request=reque)
+            instance = get_object_or_404(FriendRequests, sender=sender, receiver=receiver)
             print("INSTANCE: ",instance)
             serializers = FriendsRequestsSerializer(instance)
             return Response(serializers.data)
@@ -360,19 +369,19 @@ class AllFriendsRequestsView(APIView):
     def post( self, request):
         pass
         
-class FriendsView(APIView):
-    def get( self, request, user, friend):
-        instance = get_object_or_404(Friends, user1=user, friend=friend)
-        serializers = FriendsSerializer(instance)
-        return Response(serializers.data)
+# class FriendsView(APIView):
+#     def get( self, request, user, friend):
+#         instance = get_object_or_404(Friends, user1=user, friend=friend)
+#         serializers = FriendsSerializer(instance)
+#         return Response(serializers.data)
     
-    def post( self, request, user):
-        print("DATA IN API -> ", request.data)
-        serializer = FriendsSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post( self, request, user):
+#         print("DATA IN API -> ", request.data)
+#         serializer = FriendsSerializer(data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class FriendsList(APIView):
     def get( self, request, user):

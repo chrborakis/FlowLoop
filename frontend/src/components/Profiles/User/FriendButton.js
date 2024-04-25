@@ -8,9 +8,7 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply}) => {
     // const [client, setClient] = useState(null);
     const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success' });
     
-
     const [showButtons, setShowButtons] = useState(false);
-
     const handleClick = () => setShowButtons(true);    
 
     const sendRequest = () => {
@@ -31,6 +29,7 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply}) => {
         } else {
             setButtonConfig({ text: 'Send request', variant: 'success' });
         }
+        console.log("REQUESTED -> ", requested)
       }, [requested]);
 
     return(

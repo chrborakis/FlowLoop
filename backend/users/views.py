@@ -202,30 +202,45 @@ def university(request, user):
 def friend_requests_list(request, id):
     base_url = get_base_url(request)  
     if request.method == 'GET':
-        response = requests.get(base_url+'/backend/api/friend_requests/'+str(id))
-        print(response.json())
-        return JsonResponse({
-            'message': 'Friend Requests Fetched succesfully',
-            'data': response.json(),
-            'status': response.status_code
-        })      
+        try:
+            response = requests.get(base_url+'/backend/api/friend_requests/'+str(id))
+            print(response.json())
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': 'Friend Requests Fetched succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })  
+            else: return JsonResponse({
+                'message': 'Friend Requests Fetched failed',
+                'data': response.json(),
+                'status': response.status_code
+            })  
+        except:
+            return JsonResponse({
+                'message': 'Friend Requests Fetched failed',
+                'data': response.json(),
+                'status': response.status_code
+            }) 
+        
+    # reply profile
     elif request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
 
-        request = id
-        user1  = data.get("req_id")
+        sender = data.get("receiver")
+        receiver  = id
         status = data.get('status')
+        try:
+            instance = FriendRequests.objects.get(sender=sender, receiver=receiver)     #friend_request id
 
-        print("BEFORE POST:" , request, user1, status)
-
-        instance = FriendRequests.objects.get(request=id, user1=user1)     #friend_request id
-        if status=='A':
-            instance.status = status
-            instance.save()
-        elif status=='D':
-            instance.delete()
-        
-        return JsonResponse({'message': "Friend Request: " + str(id) + "set to "+str(status)})
+            if status=='A':
+                instance.status = status
+                instance.save()
+            elif status=='D':
+                instance.delete()
+            return JsonResponse({'message': "Friend Request: " + str(sender)+" -> "+str(receiver) + "set to "+str(status), 'status':200})
+        except:
+            return JsonResponse({'message': "Friend Request: " + str(sender)+" -> "+str(receiver) + "Failed set to "+str(status), 'status':200})
     else:
         return JsonResponse({'error': '[FRIENDREQ]Invalid request method'})
 
@@ -255,7 +270,7 @@ def friend_requests(request):
                     })  
             if data.get("status") == "D":
                 try:
-                    instance = get_object_or_404(FriendRequests, user1=data.get("user1"), request=data.get("request"))
+                    instance = get_object_or_404(FriendRequests, sender=data.get("sender"), receiver=data.get("receiver"))
                     instance.delete()
                     return JsonResponse({
                         'deleted': True,
@@ -263,7 +278,7 @@ def friend_requests(request):
                         "status":status.HTTP_200_OK
                     })  
                 except Http404:
-                    instance = get_object_or_404(FriendRequests, user1=data.get("request"), request=data.get("user1"))
+                    instance = get_object_or_404(FriendRequests, sender=data.get("receiver"), receiver=data.get("sender"))
                     instance.delete()
                     return JsonResponse({
                         'deleted': True,
@@ -276,22 +291,76 @@ def friend_requests(request):
 
     elif request.method == 'GET':
         try:
-            user1         = request.GET.get('user1')
-            request_param = request.GET.get('request')
-            data = { 'user1':user1, 'request':request_param}
+            sender   = request.GET.get('sender')
+            receiver = request.GET.get('receiver')
+            data = {'sender': sender, 'receiver': receiver}
             response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
             response_data = response.json()
-            if response.status_code == 404:
-                data = { 'user1':request_param, 'request':user1}
-                response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
-                response_data = response.json()
-                response_data["status"] = "reply"
-            print("RESPONSE -> ",response.json())
-            return JsonResponse({
-                'message': 'Friend Request Fetched succesfully',
-                'data': response_data,
-                'status': response.status_code
-            })  
+            print("RESPONSE -> ", response.json())
+
+            if response.status_code == 200:
+                if response_data["status"] == 'P' and response_data["sender"] == sender:
+                    response_data["status"] = "P"
+
+                return JsonResponse({
+                    'message': 'Friend Request Fetched successfully',
+                    'data': response_data,
+                    'status': response.status_code
+                })  
+            elif response.status_code == 404:
+                data = {'sender': receiver, 'receiver': sender}
+                response1 = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+                response_data = response1.json()
+
+                if response_data["status"] == 'P':
+                    response_data["status"] = "reply"
+
+                print("RESPONSE 2: ", response_data)
+
+                if response1.status_code == 200:
+                    return JsonResponse({
+                        'message': 'Friend Request Fetched successfully',
+                        'data': response_data,
+                        'status': response.status_code
+                    })  
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to fetch friend request',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+        # try:
+        #     sender   = request.GET.get('sender')
+        #     receiver = request.GET.get('receiver')
+        #     data = { 'sender':sender, 'receiver':receiver}
+        #     response = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+        #     response_data = response.json()
+        #     print("RESPONSE -> ",response.json())
+        #     if response.status_code == 200:
+        #         return JsonResponse({
+        #             'message': 'Friend Request Fetched succesfully',
+        #             'data': response_data,
+        #             'status': response.status_code
+        #         })  
+        #     elif response.status_code == 404:
+        #         data = { 'sender':receiver, 'receiver':sender}
+        #         response1 = requests.get(base_url+'/backend/api/friend_requests/', json=data)
+        #         response_data = response1.json()
+        #         if(response_data["status"] == 'P'):
+        #             response_data["status"] = "reply"
+        #         print("REPONSE 2: ", response_data)
+        #         if response1.status_code == 200:
+        #             return JsonResponse({
+        #                 'message': 'Friend Request Fetched succesfully',
+        #                 'data': response_data,
+        #                 'status': response.status_code
+        #             })  
+        #         else:
+        #             return JsonResponse({
+        #                 'message': 'Failed to fetch friend request',
+        #                 'data': response.json(),
+        #                 'status': response.status_code
+        #             })
         except Exception as e:
             return JsonResponse({
                 'message': str(e),

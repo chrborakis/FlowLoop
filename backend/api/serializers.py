@@ -10,7 +10,7 @@ from rest_framework import serializers, fields
 class UsersCredentialSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsersCredentials
-        fields = ('user_id','email','password')
+        fields = ('user_id','email','password','active')
 
     def validate(self, data):
         email = data.get('email')
@@ -165,29 +165,29 @@ class FriendsSerializer(serializers.ModelSerializer):
         }
     
 class FriendsRequestsSerializer(serializers.ModelSerializer):
-    user1_info = serializers.SerializerMethodField()
-    request_info = serializers.SerializerMethodField()
+    sender_info = serializers.SerializerMethodField()
+    receiver_info = serializers.SerializerMethodField()
     class Meta:
         model = FriendRequests
         fields = (
-            'user1',
-            'user1_info',
-            'request',
-            'request_info',
+            'sender',
+            'sender_info',
+            'receiver',
+            'receiver_info',
             'status'
         )
-    def get_user1_info( self, obj):
+    def get_sender_info( self, obj):
         return{
-            'name':  str(obj.user1),
-            'slug':  str(obj.user1.slug),
-            'image': str(obj.user1.image)
+            'name':  str(obj.sender),
+            'slug':  str(obj.sender.slug),
+            'image': str(obj.sender.image)
         }
     
-    def get_request_info( self, obj):
+    def get_receiver_info( self, obj):
         return{
-            'name':  str(obj.request),
-            'slug':  str(obj.request.slug),
-            'image': str(obj.request.image)
+            'name':  str(obj.receiver),
+            'slug':  str(obj.receiver.slug),
+            'image': str(obj.receiver.image)
         }
 
 class PostsPublicSerializer(serializers.ModelSerializer):

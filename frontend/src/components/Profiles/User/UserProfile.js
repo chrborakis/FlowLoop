@@ -33,7 +33,7 @@ const UserProfile = () => {
     
     const reply = ( status) => {
         console.log("Reply Friend Request -> ", user, data?.user, status)
-        replyRequestProfile( user, data?.user, status, requested)
+        replyRequestProfile( user, data?.user, status, setRequested)
     }
     
     const [ image, setImage] = useState(data?.image);
@@ -52,7 +52,7 @@ const UserProfile = () => {
         if(data && user.id!=data.user)
             get_request( user?.id, data?.user, setRequested);
             getFriends( slug, setFriends)
-    }, [slug, data, requested, replyRequestProfile]);
+    }, [slug, data]);
 
     const [tab, setTab] = useState(0);
     const handleTab = (event, newTab) => setTab(newTab);
