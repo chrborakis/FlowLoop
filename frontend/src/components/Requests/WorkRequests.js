@@ -1,17 +1,15 @@
 import React, { useContext, useState, useEffect} from "react";
-import Button from 'react-bootstrap/Button';
-import { useAuth } from "../../store/AuthContext";
-import { getRequests, replyRequest,checkRequest } from "./WorkUtils"; 
 
+import { useAuth } from "../../store/AuthContext";
 import { User } from "../Profiles/Profile";
+import {ButtonGroup, Button} from '@mui/material';
+import { Row,Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { scrollTop } from "../Extra/LinkOnTop";
 
-import Avatar from '@mui/material/Avatar';
+import { getRequests, replyRequest, checkRequest } from "./WorkUtils"; 
 
 const WorkRequests = ({company, refresh}) => {
-    // const { requests_ctx } = useReq();   
-
     const {user, updateUser} = useAuth();
     const [requests, setRequests] = useState([]);
 
@@ -21,25 +19,31 @@ const WorkRequests = ({company, refresh}) => {
     }
 
     useEffect(() => {getRequests( setRequests, company)}, [ replyRequest, refresh]);
-    useEffect(() => {checkRequest( user, updateUser)},[replyRequest]);
+    useEffect(() => {
+        if(user) checkRequest( user, updateUser)
+    },[replyRequest]);
 
     return(<>
         <div className="requests">
-            <h4>Work Requests</h4>
             { requests && requests.length > 0 ?(
                 requests.length > 0 && requests.map( (req, idx) => 
                     <div key={req.id} className="request">
-                        <div className="left">
-                            {console.log(req.user_info)}
-                            <Link to={`/user/${req?.user_info?.slug}`} onClick={scrollTop}>
-                                <Avatar src={`/files/${req.user_info.image}`} width={75}/>
-                                {req.user_info.name}
-                            </Link>
-                        </div>
-                        <div className="right">
-                            <Button onClick={() => reply( req.id, 'A')} variant="outline-primary">Accept</Button>
-                            <Button onClick={() => reply( req.id, 'D')} variant="outline-danger">Decline</Button>
-                        </div>
+                        <Col className="align-items-center">
+                            <Row>
+                                <Col className="d-flex justify-content-start">
+                                <Link to={`/user/${req?.user_info?.slug}`} onClick={scrollTop}>
+                                    <User user={req?.user_info}/>
+                                </Link>
+
+                                </Col>
+                            </Row>
+                            <Row>
+                                <ButtonGroup orientation="horizontal" className="w-100" style={{display:'block', width:'100%'}}>
+                                    <Button onClick={() => reply( req.id, 'A')} variant="contained" color="success">Accept</Button>
+                                    <Button onClick={() => reply( req.id, 'D')} color="error">Decline</Button>
+                                </ButtonGroup>
+                            </Row>
+                        </Col>
                         {idx !== requests.length - 1 && <hr />}
                     </div>
                 )

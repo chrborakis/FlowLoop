@@ -227,18 +227,21 @@ def friend_requests_list(request, id):
     elif request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
 
-        sender = data.get("receiver")
-        receiver  = id
-        status = data.get('status')
+        sender    = data.get("sender")
+        receiver  = data.get("receiver")
+        status    = data.get('status')
+
+        print("sender: ",sender,"receiver: ",receiver,"status: ",status)
         try:
             instance = FriendRequests.objects.get(sender=sender, receiver=receiver)     #friend_request id
+            id = instance.id
 
             if status=='A':
                 instance.status = status
                 instance.save()
             elif status=='D':
                 instance.delete()
-            return JsonResponse({'message': "Friend Request: " + str(sender)+" -> "+str(receiver) + "set to "+str(status), 'status':200})
+            return JsonResponse({'message': "Friend Request: " + str(sender)+" -> "+str(receiver) + "set to "+str(status), 'status':200, 'id':id})
         except:
             return JsonResponse({'message': "Friend Request: " + str(sender)+" -> "+str(receiver) + "Failed set to "+str(status), 'status':200})
     else:
@@ -289,6 +292,8 @@ def friend_requests(request):
         except requests.exceptions.RequestException as e:
             print("Friend Request Failed: ", e)
 
+
+    # USED IN USER PROFILE TO GET BUTTON INFO
     elif request.method == 'GET':
         try:
             sender   = request.GET.get('sender')

@@ -170,6 +170,7 @@ class FriendsRequestsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequests
         fields = (
+            'id',
             'sender',
             'sender_info',
             'receiver',

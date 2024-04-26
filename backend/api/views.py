@@ -320,7 +320,7 @@ class Employees(APIView):
 class ActiveFriendsView(APIView):
     def get(self, request, user_id):
         try:
-            instances = get_list_or_404(Friends.objects.filter( person=user_id, friend__user__active=True)).order_by('friend__slug')
+            instances = get_list_or_404(Friends.objects.filter( person=user_id, friend__user__active=True).order_by('friend__slug'))
             serializers = FriendsSerializer(instances, many=True)
             return Response(serializers.data)
         except Http404:
@@ -329,7 +329,7 @@ class ActiveFriendsView(APIView):
 class FriendRequestList(APIView):
     def get( self, request, id):
         try:
-            instances = get_list_or_404(FriendRequests.objects.filter( sender=id, status="P"))
+            instances = get_list_or_404(FriendRequests.objects.filter( receiver=id, status="P"))
             serializers = FriendsRequestsSerializer(instances, many=True)        
             return Response(serializers.data)
         except Http404:

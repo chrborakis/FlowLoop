@@ -1,25 +1,24 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useParams } from 'react-router-dom';
-import { getUser,getFriends,get_request } from './UserUtils';
-import PostsPublic from '../../Posts/PostsPublic';
-import Info from './Info/Info';
-import { useAuth } from '../../../store/AuthContext';
 
-import '../../../../static/css/Profile/Profile.css'
 import { Link } from 'react-router-dom';
-
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import { Container, Row, Col, Card ,Form} from "react-bootstrap"; 
+import { Tab, Tabs} from '@mui/material';
 import TabPanel from '../../Extra/TabPanel';
 
+import { useAuth } from '../../../store/AuthContext';
+import Info from './Info/Info';
 import Education from './Info/Education';
-import FriendButton from './FriendButton';
 import Friends from './Friends';
-import { replyRequestProfile } from '../../Requests/FriendUtils';
-import { Container, Row, Col, Card ,Form} from "react-bootstrap"; 
-import "bootstrap/dist/css/bootstrap.min.css"; 
-
+import FriendButton from './FriendButton';
 import ProfileImage from '../ProfileImage';
+import PostsPublic from '../../Posts/PostsPublic';
+
+import { getUser, getFriends, get_request } from './UserUtils';
+import { replyRequestProfile } from '../../Requests/FriendUtils';
+
+import '../../../../static/css/Profile/Profile.css'
+import "bootstrap/dist/css/bootstrap.min.css"; 
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();

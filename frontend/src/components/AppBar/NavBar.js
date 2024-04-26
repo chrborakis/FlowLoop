@@ -14,8 +14,11 @@ import HomePage from '../HomePage';
 import SearchBar from './SearchBar';
 import CompanyProfile from '../Profiles/Company/CompanyProfile';
 
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
+// import Tabs from 'react-bootstrap/Tabs';
+// import Tab from 'react-bootstrap/Tab';
+
+import { Tabs, Tab } from '@material-ui/core';
+import TabPanel from '../Extra/TabPanel';
 
 import WorkRequests from '../Requests/WorkRequests';
 import FriendRequests from '../Requests/FriendRequests';
@@ -25,6 +28,8 @@ import { User, Company } from '../Profiles/Profile';
 
 function NavBar({user}) {
     const { logout } = useAuth();
+    const [reqTab, setReqTab] = useState(0);
+    const handleReqTab = (event, newTab) => setReqTab(newTab);
     // const history = useHistory();
     
     // const notifications_label = `show ${notifications} new notifications`
@@ -55,7 +60,7 @@ function NavBar({user}) {
 
                         <Row>
                         <Col>
-                            <Tabs defaultActiveKey="friend" id="justify-tab-example" className="mb-3" justify>
+                            {/* <Tabs defaultActiveKey="friend" id="justify-tab-example" className="mb-3" justify>
                                 <Tab eventKey="friend" title="Friend Requests">
                                     <FriendRequests refresh={refreshWorkRequests} />
                                 </Tab>
@@ -64,8 +69,20 @@ function NavBar({user}) {
                                     <WorkRequests company={user?.company?.id} refresh={refreshWorkRequests} />
                                 </Tab>
                                  }
+                            </Tabs> */}
+                            <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
+                                <Tab label="Friend Requests"/>
+                                {user.is_admin &&  <Tab label="Work Requests"/>}
                             </Tabs>
-                            </Col>
+                            <TabPanel value={reqTab} index={0}>
+                                <FriendRequests refresh={refreshWorkRequests} />
+                            </TabPanel>
+                            {user.is_admin &&
+                                <TabPanel value={reqTab} index={1}>
+                                    <WorkRequests company={user?.company?.id} refresh={refreshWorkRequests} />
+                                </TabPanel>
+                            }
+                        </Col>
                         </Row>
                     {/* <NavDropdown.Divider />
                     <NavDropdown.Item href="#action5">

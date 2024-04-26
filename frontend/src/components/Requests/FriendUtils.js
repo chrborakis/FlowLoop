@@ -5,28 +5,31 @@ import Cookies from 'js-cookie';
 export const getRequests = async( setRequests, user) => {
     await axios.get(`/backend/users/friend_requests/${user}`)
     .then( res => {
-        console.log(res.data.data)
+        console.log(res.data)
         setRequests(res.data.data)})
     .catch(err => console.log(err))
 }
 
-export const replyRequest = async( user, req_id, status, setRequests) => {
-    await axios.post(`/backend/users/friend_requests/${user}`, 
-    {req_id, status}, 
+export const replyRequest = async( sender, receiver, status, setRequests) => {
+    console.log(sender,receiver)
+    await axios.post(`/backend/users/friend_requests/${receiver}`, 
+    { sender:sender, receiver:receiver, status}, 
     {
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),
         'Content-Type': 'application/json'}
     })
     .then( res => {
-        console.log(res.data.message)
-        setRequests((current) => current.filter((req) => req.id !== user));
+        console.log(res.data)
+        if(res.data.status === 200){
+            setRequests((current) => current.filter((req) => req.id !== res.data.id));
+        }
     })
     .catch(err => console.log(err))
 }
 
 export const replyRequestProfile = async( sender, receiver, status, setRequested) => {
     console.log("sender: ", sender," receiver: ", receiver," status: ", status)
-    await axios.post(`/backend/users/friend_requests/${sender.id}`, {receiver, status}, 
+    await axios.post(`/backend/users/friend_requests/${sender.id}`, { sender:receiver, receiver:sender.id, status}, 
     {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}})
     .then( res => {
         console.log("REPLY: ",res.data)
