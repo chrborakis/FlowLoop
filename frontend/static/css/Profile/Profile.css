@@ -1,3 +1,4 @@
+
 .page {
     margin: 10%;
     display: flex;
@@ -72,3 +73,10 @@
   .image-container:hover .overlay {
     opacity: 1; /* Show overlay on hover */
   }
+
+
+  .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

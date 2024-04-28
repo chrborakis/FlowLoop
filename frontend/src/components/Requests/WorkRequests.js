@@ -31,10 +31,9 @@ const WorkRequests = ({company, refresh}) => {
                         <Col className="align-items-center">
                             <Row>
                                 <Col className="d-flex justify-content-start">
-                                <Link to={`/user/${req?.user_info?.slug}`} onClick={scrollTop}>
-                                    <User user={req?.user_info}/>
-                                </Link>
-
+                                    <Link to={`/user/${req?.user_info?.slug}`} onClick={scrollTop}>
+                                        <User user={req?.user_info}/>
+                                    </Link>
                                 </Col>
                             </Row>
                             <Row>

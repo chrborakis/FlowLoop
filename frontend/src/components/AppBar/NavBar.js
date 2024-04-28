@@ -14,9 +14,6 @@ import HomePage from '../HomePage';
 import SearchBar from './SearchBar';
 import CompanyProfile from '../Profiles/Company/CompanyProfile';
 
-// import Tabs from 'react-bootstrap/Tabs';
-// import Tab from 'react-bootstrap/Tab';
-
 import { Tabs, Tab } from '@material-ui/core';
 import TabPanel from '../Extra/TabPanel';
 
@@ -60,16 +57,6 @@ function NavBar({user}) {
 
                         <Row>
                         <Col>
-                            {/* <Tabs defaultActiveKey="friend" id="justify-tab-example" className="mb-3" justify>
-                                <Tab eventKey="friend" title="Friend Requests">
-                                    <FriendRequests refresh={refreshWorkRequests} />
-                                </Tab>
-                                {user.is_admin && 
-                                <Tab eventKey="work" title="Work Requests">
-                                    <WorkRequests company={user?.company?.id} refresh={refreshWorkRequests} />
-                                </Tab>
-                                 }
-                            </Tabs> */}
                             <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
                                 <Tab label="Friend Requests"/>
                                 {user.is_admin &&  <Tab label="Work Requests"/>}
@@ -120,11 +107,11 @@ function NavBar({user}) {
             </Container>
         </Navbar>
       ))}
-        <Switch>
+        {/* <Switch>
             <Route path="/user/:slug">    <UserProfile /></Route>
             <Route path="/company/:slug"> <CompanyProfile /></Route>
             <Route path="/"><HomePage user={user}/></Route>   
-        </Switch>
+        </Switch> */}
     </>
   );
 }

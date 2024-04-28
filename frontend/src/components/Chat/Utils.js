@@ -7,6 +7,9 @@ export const getFriends = async(user_id, setFriends) => {
     )
     .then( res => {
         console.log(res.data)
+        if(res.data.status === 200){
+            setFriends(res.data.data)
+        }
     })
     .catch(err => console.log(err))
 }

@@ -2,7 +2,7 @@
 
  *{
     text-align: center;
- }
+}
 
  .list-scroll{
     max-height: 500px;
@@ -28,4 +28,18 @@
 
 .btn-success{
     background-color: var(--success);
+}
+
+.body {
+    padding-top: 64px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.content {
+    margin-top: 20px;
+    padding: 20px;
+    flex-grow: 1;
+    /* overflow-y: auto; */
 }

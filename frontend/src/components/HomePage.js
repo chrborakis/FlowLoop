@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-// import Tab from 'react-bootstrap/Tab';
-// import Tabs from 'react-bootstrap/Tabs';
-import {Button, Row, Col} from 'react-bootstrap';
+import {Button, Row, Col, Card} from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import PostsPublic from "./Posts/PostsPublic";
 import PostsPrivate from "./Posts/PostsPrivate";
@@ -10,9 +8,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from '../components/Extra/TabPanel'
 import FriendList from "./Chat/FriendList";
-import '../../static/css/HomePage.css'
 import NewCompany from "./Profiles/Company/NewCompany";
 import CompanyForm from "./Profiles/Company/NewCompany/CompanyForm";
+
+import '../../static/css/HomePage.css'
 
 const HomePage = ({user}) => {
     const [modalShow, setModalShow] = useState(false);
@@ -21,20 +20,8 @@ const HomePage = ({user}) => {
     const handleChange = (event, newValue) => setValue(newValue);
 
     return (
-        <div className="homepage">
-            {/* <div className="box">
-                {user?.company ? (
-                    <Link to={`/company/${user?.company.slug}`}>
-                        <Button variant="outline-primary">{user?.company.name}</Button>
-                    </Link>
-                ) : <>
-                    <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
-                    <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
-                </>
-            }
-            </div> */}
-            {/* <div className="box"> */}
-            <Col lg={9}>
+        <>
+            <Col md={10} className="d-flex flex-column justify-content-start">
             {
                     user?.company ? (
                         <Link to={`/company/${user?.company.slug}`}>
@@ -42,7 +29,6 @@ const HomePage = ({user}) => {
                         </Link>
                     ) : <>
                         <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
-                        {/* <NewCompany show={modalShow} onHide={() => setModalShow(false)} /> */}
                         <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
                     </>
                 }
@@ -53,22 +39,21 @@ const HomePage = ({user}) => {
                     <Tab label="Feed" />
                     {user?.company?.name && <Tab label={user?.company?.name} />}
                 </Tabs>
-                <TabPanel value={value} index={0}>
-                    <PostsPublic user={user} url='backend/posts/postpublic' slug='/0'/>
-                </TabPanel>
-                {user?.company && 
-                    <TabPanel value={value} index={1}>
-                        <PostsPrivate user={user} url='backend/posts/postprivate' slug={user?.company.slug}/>
+                <div className="scroll-posts">
+                    <TabPanel value={value} index={0}>
+                        <PostsPublic user={user} url='backend/posts/postpublic' slug='/0'/>
                     </TabPanel>
-                }
+                    {user?.company && 
+                        <TabPanel value={value} index={1}>
+                            <PostsPrivate user={user} url='backend/posts/postprivate' slug={user?.company.slug}/>
+                        </TabPanel>
+                    }
+                </div>
             </Col>
-            {/* </div>  */}
-            {/* <div className="box">  */}
-            <Col lg={3} style={{background:'red'}}>
+            <Col md={2} className="friends-list d-flex flex-column justify-content-end">
                 <FriendList user_id={user?.id}/>
             </Col>
-            {/* </div> */}
-        </div>
+        </>
     );
 };
 

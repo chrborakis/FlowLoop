@@ -85,7 +85,7 @@ const UserProfile = () => {
                     </Col></Row> 
                     <Container fluid className="mt-5"> 
                         <Row className="justify-content-center"> 
-                            <Col lg={4} className="left-div page-box order-lg-1 order-md-1 order-1">
+                            <Col md={4} className="left-div page-box order-lg-1 order-md-1 order-1">
                                 <Tabs value={tab} onChange={handleTab}
                                         indicatorColor="primary" textColor="primary" centered
                                         aria-label="scrollable auto tabs example">
@@ -105,7 +105,7 @@ const UserProfile = () => {
 
 
                             </Col> 
-                            <Col lg={8} className="right-divpage-box order-lg-2 order-md-2 order-2">
+                            <Col md={8} className="right-divpage-box order-lg-2 order-md-2 order-2">
                                 <PostsPublic user={user} url='../backend/posts/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                             </Col> 
                         </Row> 
