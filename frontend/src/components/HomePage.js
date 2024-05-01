@@ -50,7 +50,7 @@ const HomePage = ({user}) => {
                     }
                 </div>
             </Col>
-            <Col md={2} className="friends-list d-flex flex-column justify-content-end">
+            <Col className="friends-list d-flex flex-column justify-content-end">
                 <FriendList user_id={user?.id}/>
             </Col>
         </>

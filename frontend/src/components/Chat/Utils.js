@@ -13,3 +13,14 @@ export const getFriends = async(user_id, setFriends) => {
     })
     .catch(err => console.log(err))
 }
+
+export const getMessages = async( user, friend, setMessages) => {
+    await axios.get(`backend/chat/conversation/${user}/${friend}`,{
+        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
+    }).then( res => {
+        console.log(res.data)
+        if(res.data.status===200){
+            setMessages(res.data.data)
+        }
+    }).catch(err => console.log(err))
+}

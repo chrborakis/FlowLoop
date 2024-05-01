@@ -43,3 +43,17 @@
     flex-grow: 1;
     /* overflow-y: auto; */
 }
+
+.header.card-header {
+    /* margin: 5%; */
+    text-decoration: none;
+    background-color: var(--primary);
+    color: white;
+}
+
+.header.card-header a {
+    color: white;
+    text-decoration: none;
+}
+
+.card{padding: 0;}

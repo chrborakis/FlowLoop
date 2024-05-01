@@ -5,6 +5,8 @@ from django.shortcuts import get_list_or_404, render
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from apps.chats.models import PrivateChat
 from .serializers import *
 from apps.users.models import *
 from rest_framework import viewsets
@@ -325,6 +327,41 @@ class ActiveFriendsView(APIView):
             return Response(serializers.data)
         except Http404:
             return Response({'error': 'Active Friends not found.'}, status=404) 
+
+class ConversationView(APIView):
+    def get( self, request, user, friend):
+        try:
+            instances = get_list_or_404(PrivateChat.objects.filter(
+                (Q(sender__person=user)   & Q(receiver__person=friend)) 
+                | 
+                (Q(sender__person=friend) & Q(receiver__person=user))
+            ))
+            serializers = PrivateChatSerializer(instances, many=True)        
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Conversation instances not found.'}, status=404)    
+    def post( self, request, user, friend):
+        serializer = FriendsRequestsSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ChatsView(APIView):
+    def get( self, request, user):
+        try:
+            instances = get_list_or_404(PrivateChat.objects.filter(Q(sender__person=user) | Q(receiver__person=user)))
+            serializers = PrivateChatSerializer(instances, many=True)        
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Chats instances not found.'}, status=404)    
+    def post( self, request, user):
+        serializer = FriendsRequestsSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class FriendRequestList(APIView):
     def get( self, request, id):

@@ -27,6 +27,9 @@ urlpatterns = [
 
     path("active_friends/<int:user_id>", ActiveFriendsView.as_view()),
 
+    path("conversation/<int:user>/<int:friend>", ConversationView.as_view()),
+    path("chats/<int:user>",                     ChatsView.as_view()),
+
     # path("friends",             FriendsView.as_view()),
     path("friends/<slug:user>", FriendsList.as_view()),
     path("all_friends",         AllFriendsView.as_view()),

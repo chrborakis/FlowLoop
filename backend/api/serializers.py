@@ -1,5 +1,6 @@
 import datetime
 from rest_framework import serializers
+from apps.chats.models import PrivateChat
 from apps.companies.models import Companies, WorkRequests, WorksOn
 from apps.models import Address
 from apps.posts.models import PostsPrivate, PostsPrivateComments, PostsPrivateLikes, PostsPublic, PostsPublicComments, PostsPublicLikes
@@ -501,7 +502,32 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
             print(str(e))
             return None
     
+class PrivateChatSerializer(serializers.ModelSerializer):
+    sender_info   = serializers.SerializerMethodField()    
+    receiver_info = serializers.SerializerMethodField()
+    class Meta:
+        model = PrivateChat
+        fields = (
+            "message_id",
+            "sender",
+            "sender_info",
+            "receiver",
+            "receiver_info",
+            "message",
+            "send_date"
+        )
 
-
-
-
+    def get_sender_info(self, obj):
+        return{
+            'id'  : obj.sender.person.user_id,
+            'name': str(obj.sender.person),
+            'slug': str(obj.sender.person.slug),
+            'image':str(obj.sender.person.image)
+        }
+    def get_receiver_info(self, obj):
+        return{
+            'id'  : obj.receiver.person.user_id,
+            'name': str(obj.receiver.person),
+            'slug': str(obj.receiver.person.slug),
+            'image':str(obj.receiver.person.image)
+        }

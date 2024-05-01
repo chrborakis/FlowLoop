@@ -52,8 +52,8 @@ const Post = ({post, url, setPosts}) => {
     }
 
     return(
-        <Card className="card-content">
-            <Card.Header>
+        <Card className="card-content card">
+            <Card.Header className="header">
 
             <Row className="align-items-center">
                 <Col className="d-flex justify-content-start">

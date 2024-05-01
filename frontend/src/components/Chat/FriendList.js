@@ -4,40 +4,47 @@ import { Col, Row, Card } from "react-bootstrap";
 import { User } from "../Profiles/Profile";
 import Avatar from '@mui/material/Avatar';
 
+import Chat from './Chat';
+
 const FriendList = ({user_id}) => {
     const [friends, setFriends] = useState([])
+    const [chat, setChat] = useState({user:'', friend:''})
 
     useEffect(()=>{
         if(user_id) getFriends(user_id, setFriends);
     },[user_id])
 
-    const openChat = (friend) => {
+    const handleChat = (friend) => {
         console.log("Starting convo w/: ", friend)
+        setChat({user:user_id, friend:friend})
     }
 
-    return(
+    return(<>
         <Card className="friends">
-        <Card.Header >
-            <p>Active Friends</p>
-        </Card.Header>
-        <Card.Body>
-            {friends ? (
-                <Col className="active-list">
-                    {friends.map( friend => 
-                        <div className="active-friend" onClick={() => openChat({friend:friend.friend, friend_info:friend.friend_info})}>
-                            <div style={{display:'flex', alignItems:'center'}}>
-                                <Avatar alt={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/>
-                                <p className='name'>{friend.friend_info.name}</p>
+            <Card.Header >
+                <p>Active Friends</p>
+            </Card.Header>
+            <Card.Body>
+                {friends ? (
+                    <Col className="active-list">
+                        {friends.map( friend => 
+                            <div className="active-friend" alt={friend.friend_info.name} onClick={() => handleChat({friend:friend.friend, friend_info:friend.friend_info})}>
+                                <div className="avatar-wrapper">
+                                    <Avatar alt={friend.friend_info.name} title={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/>
+                                    <div class="name-wrapper">
+                                        <p className='name'>{friend.friend_info.name}</p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </Col>
-            ) : (
-                <p>No friends online yet</p>
-            )}
-        </Card.Body>
-            </Card>
-    )
+                        )}
+                    </Col>
+                ) : (
+                    <p>No friends online yet</p>
+                )}
+            </Card.Body>
+        </Card>
+        { chat.user && chat.friend && <Chat chat={chat} setChat={setChat}/>}
+    </>)
 }
 
 export default FriendList;

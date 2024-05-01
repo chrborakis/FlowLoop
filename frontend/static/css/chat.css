@@ -1,0 +1,33 @@
+@import url(colors.css);
+
+.card.chat {
+    position: fixed;
+    bottom: 0;
+    right:  100px;
+    width: 450px;
+    height: 450px;
+    padding: 0;
+}
+
+.sender, .receiver{
+    margin-top: 5px;
+    padding: 5px;
+    border-radius: 25%;
+    margin: 2px;
+    max-width: 80%;
+    color: white;
+}
+
+.sender {
+    border-radius: 30px 5px;
+    text-align: right;
+    float: right;
+    background-color: var(--primary);
+  }
+  
+.receiver {
+    border-radius: 5px 30px;
+    text-align: left;
+    float: left;
+    background-color: var(--secondary);
+}
