@@ -8,7 +8,7 @@ import Chat from './Chat';
 
 const FriendList = ({user_id}) => {
     const [friends, setFriends] = useState([])
-    const [chat, setChat] = useState({user:'', friend:''})
+    const [chat, setChat] = useState({sender:{}, receiver:{}})
 
     useEffect(()=>{
         if(user_id) getFriends(user_id, setFriends);
@@ -16,7 +16,10 @@ const FriendList = ({user_id}) => {
 
     const handleChat = (friend) => {
         console.log("Starting convo w/: ", friend)
-        setChat({user:user_id, friend:friend})
+        setChat({
+            sender:{id: friend.id, user_id: friend.person, ...friend.person_info}, 
+            receiver:{id:friend.symmetric_id, user_id: friend.friend, ...friend.friend_info}
+        })
     }
 
     return(<>
@@ -28,7 +31,7 @@ const FriendList = ({user_id}) => {
                 {friends ? (
                     <Col className="active-list">
                         {friends.map( friend => 
-                            <div className="active-friend" alt={friend.friend_info.name} onClick={() => handleChat({friend:friend.friend, friend_info:friend.friend_info})}>
+                            <div className="active-friend" alt={friend.friend_info.name} onClick={() => handleChat(friend)}>
                                 <div className="avatar-wrapper">
                                     <Avatar alt={friend.friend_info.name} title={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/>
                                     <div class="name-wrapper">
@@ -43,7 +46,10 @@ const FriendList = ({user_id}) => {
                 )}
             </Card.Body>
         </Card>
-        { chat.user && chat.friend && <Chat chat={chat} setChat={setChat}/>}
+        {console.log('CHAT:',chat)}
+        { chat.receiver.id ? <Chat chat={chat} setChat={setChat}/> : (
+            () => {setChat(false)}
+        ) }
     </>)
 }
 

@@ -341,7 +341,8 @@ class ConversationView(APIView):
         except Http404:
             return Response({'error': 'Conversation instances not found.'}, status=404)    
     def post( self, request, user, friend):
-        serializer = FriendsRequestsSerializer(data = request.data)
+        print("IN API: ", request.data)
+        serializer = PrivateChatSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

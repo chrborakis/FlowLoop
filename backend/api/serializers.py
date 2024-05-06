@@ -143,13 +143,16 @@ class WorksOnSerializer(serializers.ModelSerializer):
 class FriendsSerializer(serializers.ModelSerializer):
     person_info = serializers.SerializerMethodField()
     friend_info = serializers.SerializerMethodField()
+    symmetric_id = serializers.SerializerMethodField()
     class Meta:
         model = Friends
         fields = (
+            'id',
             'person',
             'person_info',
             'friend',
             'friend_info',
+            'symmetric_id',
         )
     def get_person_info( self, obj):
         return{
@@ -164,6 +167,13 @@ class FriendsSerializer(serializers.ModelSerializer):
             'slug':  str(obj.friend.slug),
             'image': str(obj.friend.image)
         }
+    
+    def get_symmetric_id(self, obj):
+        opposite_entry = Friends.objects.filter(person=obj.friend, friend=obj.person).first()
+        if opposite_entry:
+            return opposite_entry.id
+        else:
+            return None
     
 class FriendsRequestsSerializer(serializers.ModelSerializer):
     sender_info = serializers.SerializerMethodField()

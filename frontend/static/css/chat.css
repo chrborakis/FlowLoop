@@ -9,6 +9,13 @@
     padding: 0;
 }
 
+.message-container{
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .sender, .receiver{
     margin-top: 5px;
     padding: 5px;
@@ -16,18 +23,20 @@
     margin: 2px;
     max-width: 80%;
     color: white;
+    /* display: inline-block;  */
 }
 
+
 .sender {
-    border-radius: 30px 5px;
+    border-radius: 20px 20px 5px;
     text-align: right;
-    float: right;
+    align-self: flex-end;
     background-color: var(--primary);
   }
   
 .receiver {
-    border-radius: 5px 30px;
+    border-radius: 5px 20px 50px;
     text-align: left;
-    float: left;
+    align-self: flex-start;
     background-color: var(--secondary);
 }
