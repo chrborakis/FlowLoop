@@ -6,34 +6,50 @@ import { getMessages, sendMessage } from "./Utils";
 import { TextField } from "@material-ui/core";
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
+import { dateFormat } from "../Extra/Date";
 
 import '../../../static/css/chat.css'
 import '../../../static/css/index.css'
 
 const Chat = ({chat, setChat}) => {
+    const [chatSocket, setSocket] = useState(new WebSocket(`ws://${window.location.host}/ws/socket-server/`));
+
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const {sender, receiver} = chat;
     const messageEndRef = useRef(null);
+ 
+    useEffect(()=>{
+        chatSocket.onmessage = function(e){
+            let data = JSON.parse(e.data)
+            console.log('Data: ', data)
+    
+            if(data.type ==='chat'){
+                setMessages(prevMessaged=>[...prevMessaged, data.message])
+            }
+        }
+    },[chatSocket])
+    
+
+    
+
+    const [hoveredMessageId, setHoveredMessageId] = useState(null);
+    const handleMouseEnter = (messageId) => setHoveredMessageId(messageId);
+    const handleMouseLeave = () => setHoveredMessageId(null);
 
     useEffect(()=>{
-        console.log('Chat: ' ,chat)
         setMessages([])
-        if(chat.receiver){
-            getMessages( sender.user_id, receiver.user_id, setMessages);
-        }
+        if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages);
     },[chat])
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    useEffect(() => {scrollToBottom();}, [messages]);
 
     const handleChange = (event) => setMessage(event.target.value);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('New Message: ', message)
-        sendMessage({sender:sender.id, receiver:receiver.id, message:message}, setMessages, setMessage)
+        sendMessage({sender:sender.id, receiver:receiver.id, message:message}, setMessages, setMessage, chatSocket)
     }
 
     const scrollToBottom = () => messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -48,12 +64,20 @@ const Chat = ({chat, setChat}) => {
             </Card.Header>
             <Card.Body className="message-container">
                 {messages ? messages.map(message => (
-                    <div key={message.message_id} className={`message ${message.sender_info.id === sender.user_id ? 'sender' : 'receiver'}`}>
-                        {message.message}
-                    </div>
-                )):(<p>Start conversation</p>)}
+                    <>
+                        <div key={message.message_id} className={`message ${message.sender_info.id === sender.user_id ? 'sender' : 'receiver'}`} onMouseEnter={() => handleMouseEnter(message.message_id)} onMouseLeave={handleMouseLeave}>
+                            {message.message}
+                        </div>
+                        {hoveredMessageId === message.message_id && (
+                            <span className={`message-date ${message.sender_info.id === sender.user_id ? 'sender-date' : 'receiver-date'}`}>
+                                {dateFormat(message.send_date)}
+                            </span>
+                        )}
+                    </>
+                    )):(<p>Start conversation</p>)
+                }
                 
-                <div ref={messageEndRef}/>
+                <div className='message-ref' ref={messageEndRef}/>
                 
             </Card.Body>
             <Card.Footer>

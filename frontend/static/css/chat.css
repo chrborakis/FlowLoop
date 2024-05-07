@@ -40,3 +40,17 @@
     align-self: flex-start;
     background-color: var(--secondary);
 }
+
+.sender-date{
+    text-align: right;
+    align-self: flex-end;
+}
+
+.receiver-date{
+    text-align: left;
+    align-self: flex-start;
+}
+
+.message-ref{
+    margin-top: 10px;
+}

@@ -26,13 +26,16 @@ export const getMessages = async( user, friend, setMessages) => {
 }
 
 
-export const sendMessage = async( data, setMessages, setMessage) => {
+export const sendMessage = async( data, setMessages, setMessage, chatSocket) => {
     const {sender, receiver, message} = data;
     await axios.post(`backend/chat/conversation/${sender}/${receiver}`, data,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
     }).then( res => {
         console.log(res.data)
         if(res.data.status===200) {
+            chatSocket.send(JSON.stringify({
+                'message': res.data.data
+            }))
             setMessages(prevMessaged=>[...prevMessaged, res.data.data])
             setMessage('')
         }

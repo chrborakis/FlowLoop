@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+ASGI_APPLICATION = 'flow_loop.asgi.application'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
@@ -114,15 +116,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "flow_loop.wsgi.application"
-ASGI_APPLICATION = "flow_loop.asgi.application"
+# WSGI_APPLICATION = "flow_loop.wsgi.application"
+# ASGI_APPLICATION = "flow_loop.asgi.application"
+
 # ASGI_APPLICATION = "flow_loop.asgi.application" #routing.py will handle the ASGI
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': "channels.layers.InMemoryChannelLayer",
-        'CONFIG': {
-            'hosts': [('127.0.0.1', 8000)],
-        },
+        # 'CONFIG': {
+        #     'hosts': [('127.0.0.1', 8000),('127.0.0.1', 56240)],
+        # },
     }
 }
 

@@ -46,7 +46,6 @@ const FriendList = ({user_id}) => {
                 )}
             </Card.Body>
         </Card>
-        {console.log('CHAT:',chat)}
         { chat.receiver.id ? <Chat chat={chat} setChat={setChat}/> : (
             () => {setChat(false)}
         ) }
