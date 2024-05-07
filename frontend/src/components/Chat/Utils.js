@@ -36,7 +36,7 @@ export const sendMessage = async( data, setMessages, setMessage, chatSocket) => 
             chatSocket.send(JSON.stringify({
                 'message': res.data.data
             }))
-            setMessages(prevMessaged=>[...prevMessaged, res.data.data])
+            // setMessages(prevMessaged=>[...prevMessaged, res.data.data])
             setMessage('')
         }
     }).catch(err => console.log(err))

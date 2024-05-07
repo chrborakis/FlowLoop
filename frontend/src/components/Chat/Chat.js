@@ -12,27 +12,34 @@ import '../../../static/css/chat.css'
 import '../../../static/css/index.css'
 
 const Chat = ({chat, setChat}) => {
-    const [chatSocket, setSocket] = useState(new WebSocket(`ws://${window.location.host}/ws/socket-server/`));
+    const [socket, setSocket] = useState(null);
+    const {sender, receiver} = chat;
+
+    useEffect(()=>{
+        if(sender && receiver){
+            // setSocket(new WebSocket(`ws://${window.location.host}/ws/socket-server/`))
+            setSocket(new WebSocket(`ws://${window.location.host}/ws/chat/${sender.id+receiver.id}/`))
+        }
+    },[sender,receiver])
 
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
-    const {sender, receiver} = chat;
+    
     const messageEndRef = useRef(null);
  
     useEffect(()=>{
-        chatSocket.onmessage = function(e){
-            let data = JSON.parse(e.data)
-            console.log('Data: ', data)
-    
-            if(data.type ==='chat'){
-                setMessages(prevMessaged=>[...prevMessaged, data.message])
+        if(socket !=null){
+            socket.onmessage = function(e){
+                let data = JSON.parse(e.data)
+                console.log('Data: ', data)
+        
+                if(data.type ==='chat'){
+                    setMessages(prevMessaged=>[...prevMessaged, data.message])
+                }
             }
         }
-    },[chatSocket])
+    },[socket])
     
-
-    
-
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     const handleMouseEnter = (messageId) => setHoveredMessageId(messageId);
     const handleMouseLeave = () => setHoveredMessageId(null);
@@ -49,7 +56,7 @@ const Chat = ({chat, setChat}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('New Message: ', message)
-        sendMessage({sender:sender.id, receiver:receiver.id, message:message}, setMessages, setMessage, chatSocket)
+        sendMessage({sender:sender.id, receiver:receiver.id, message:message}, setMessages, setMessage, socket)
     }
 
     const scrollToBottom = () => messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
