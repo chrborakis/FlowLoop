@@ -15,7 +15,6 @@ const FriendList = ({user_id}) => {
     },[user_id])
 
     const handleChat = (friend) => {
-        console.log("Starting convo w/: ", friend)
         setChat({
             sender:{id: friend.id, user_id: friend.person, ...friend.person_info}, 
             receiver:{id:friend.symmetric_id, user_id: friend.friend, ...friend.friend_info}
@@ -46,7 +45,7 @@ const FriendList = ({user_id}) => {
                 )}
             </Card.Body>
         </Card>
-        { chat.receiver.id ? <Chat chat={chat} setChat={setChat}/> : (
+        { chat?.receiver?.id ? <Chat chat={chat} setChat={setChat}/> : (
             () => {setChat(false)}
         ) }
     </>)

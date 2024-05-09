@@ -18,7 +18,10 @@ const WorkRequests = ({company, refresh}) => {
         console.log(requests)
     }
 
-    useEffect(() => {getRequests( setRequests, company)}, [ replyRequest, refresh]);
+    useEffect(() => {
+        if(refresh)getRequests( setRequests, company)
+    }, [ replyRequest, refresh]);
+
     useEffect(() => {
         if(user) checkRequest( user, updateUser)
     },[replyRequest]);

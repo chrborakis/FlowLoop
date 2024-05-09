@@ -27,7 +27,10 @@ urlpatterns = [
 
     path("active_friends/<int:user_id>", ActiveFriendsView.as_view()),
 
+    path("unread_messages_count/<int:user>", UnreadMessagesCountView.as_view()),
+    path("unread_messages/<int:user>/<int:friend>", UnreadMessagesView.as_view()),
     path("conversation/<int:user>/<int:friend>", ConversationView.as_view()),
+    path("conversations/<int:user>", ConversationsView.as_view()),
     path("chats/<int:user>",                     ChatsView.as_view()),
 
     # path("friends",             FriendsView.as_view()),

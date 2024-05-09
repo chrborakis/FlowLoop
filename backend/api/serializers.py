@@ -524,7 +524,8 @@ class PrivateChatSerializer(serializers.ModelSerializer):
             "receiver",
             "receiver_info",
             "message",
-            "send_date"
+            "send_date",
+            "read"
         )
 
     def get_sender_info(self, obj):

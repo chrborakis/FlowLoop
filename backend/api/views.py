@@ -5,7 +5,7 @@ from django.shortcuts import get_list_or_404, render
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.db.models import Max
 from apps.chats.models import PrivateChat
 from .serializers import *
 from apps.users.models import *
@@ -328,6 +328,45 @@ class ActiveFriendsView(APIView):
         except Http404:
             return Response({'error': 'Active Friends not found.'}, status=404) 
 
+class UnreadMessagesCountView(APIView):
+    def get( self, request, user):
+        try:
+            unread_message_count = PrivateChat.objects.filter(receiver__person=user, read=False).count()
+            return Response(unread_message_count)
+        except Http404:
+            return Response({'error': 'Conversation instances not found.'}, status=404)    
+    
+class UnreadMessagesView(APIView):
+    def get( self, request, user, friend):
+        try:
+            instances = get_list_or_404(PrivateChat.objects.filter(
+                ((Q(sender__person=user) & Q(receiver__person=friend)) |
+                (Q(sender__person=friend) & Q(receiver__person=user)))
+                & Q(read=False)
+            ))
+            serializers = PrivateChatSerializer(instances, many=True)      
+            print(serializers.data)  
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Conversation instances not found.'}, status=404)    
+    def patch(self, request, user, friend):
+        try:
+            chats = PrivateChat.objects.filter(sender__person=friend, receiver__person=user, read=False)
+            print(chats)
+        except Http404:
+            return Response({"error": "PrivateChat not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            for chat in chats:
+                chat.read = True
+                chat.save()
+            return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            print("EXCEPTION")
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# Chat PopUp
 class ConversationView(APIView):
     def get( self, request, user, friend):
         try:
@@ -348,6 +387,27 @@ class ConversationView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+# Chat Lists in NavBar
+class ConversationsView(APIView):
+    def get( self, request, user):
+        try:
+            instances = get_list_or_404(PrivateChat.objects.filter( Q(sender__person=user) | Q(receiver__person=user)))
+
+            unique_pairs = PrivateChat.objects.filter(
+                Q(sender__person=user) | Q(receiver__person=user)
+            ).values('sender', 'receiver').annotate(latest_message=Max('send_date'))
+
+            instances = PrivateChat.objects.filter(
+                Q(sender__person=user) | Q(receiver__person=user),
+                send_date__in=[pair['latest_message'] for pair in unique_pairs]
+            )
+
+            serializer = PrivateChatSerializer(instances, many=True)
+
+            return Response(serializer.data)
+        except Http404:
+            return Response({'error': 'Conversations List instances not found.'}, status=404)    
+    
 class ChatsView(APIView):
     def get( self, request, user):
         try:

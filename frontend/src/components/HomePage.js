@@ -24,9 +24,11 @@ const HomePage = ({user}) => {
             <Col md={10} className="d-flex flex-column justify-content-start">
             {
                     user?.company ? (
-                        <Link to={`/company/${user?.company.slug}`}>
-                            <Button variant="outline-primary">{user?.company.name}</Button>
-                        </Link>
+                            <Link to={`/company/${user?.company.slug}`}>
+                        <Button variant="outline-primary">
+                                {user?.company.name}
+                        </Button>
+                            </Link>
                     ) : <>
                         <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
                         <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>

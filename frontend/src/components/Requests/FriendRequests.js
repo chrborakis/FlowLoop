@@ -21,7 +21,7 @@ const FriendRequests = ({ refresh}) => {
     }
 
     useEffect(() => {
-        getRequests( setRequests, user?.id)
+        if(refresh)getRequests( setRequests, user?.id)
     }, [ replyRequest, refresh]);
 
     return(<>

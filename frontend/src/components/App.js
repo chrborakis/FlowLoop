@@ -11,10 +11,11 @@ import CompanyProfile from "./Profiles/Company/CompanyProfile";
 import LoginRegister from "./LoginRegister/LoginRegister";
 import NavBar from "./AppBar/NavBar";
 
-import { getUserInfo } from "./Extra/UserInfo";
+import { getUserInfo, getMessages} from "./Extra/UserInfo";
 
 const App = () => {
     const { user, updateUser } = useAuth();   
+    const [messages, setMessages] = useState(0)
     // const switchComponent = (
     //     <Switch>
     //         <Route path="/user/:slug">    <UserProfile /></Route>
@@ -24,7 +25,10 @@ const App = () => {
     // );
 
     useEffect(()=>{
-        if(user)getUserInfo(user?.id, updateUser)
+        if(user){
+            getUserInfo(user?.id, updateUser)
+            getMessages(user?.id, setMessages)
+        }
         console.log(user)
     },[user?.id])
 
@@ -32,7 +36,7 @@ const App = () => {
         <Router basename="/">
             <div className="body">
                     { user ? (
-                        <NavBar user={user} messages={0} notifications={0}/>
+                        <NavBar user={user} messages={messages} notifications={0}/>
                     ) : (
                         <div><h1>FlowLoop</h1>
                             <LoginRegister/>

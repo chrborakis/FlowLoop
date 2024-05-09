@@ -13,7 +13,7 @@ import UserProfile from '../Profiles/User/UserProfile'
 import HomePage from '../HomePage';
 import SearchBar from './SearchBar';
 import CompanyProfile from '../Profiles/Company/CompanyProfile';
-
+import Messages from '../Chat/Messages';
 import { Tabs, Tab } from '@material-ui/core';
 import TabPanel from '../Extra/TabPanel';
 
@@ -23,7 +23,8 @@ import '../../../static/css/NavBar.css'
 
 import { User, Company } from '../Profiles/Profile';
 
-function NavBar({user}) {
+
+function NavBar({user, messages, notifications}) {
     const { logout } = useAuth();
     const [reqTab, setReqTab] = useState(0);
     const handleReqTab = (event, newTab) => setReqTab(newTab);
@@ -38,10 +39,12 @@ function NavBar({user}) {
         // window.location.reload();
     }
 
-    const [refreshWorkRequests, setRefreshWorkRequests] = useState(false);
-    const handleWorkRequestsUpdate = () => {
-        setRefreshWorkRequests(prevRefresh => !prevRefresh);
-    };
+    const [refreshRequests, setRefreshRequests] = useState(false);
+    const toggleRequests = (isOpen) => setRefreshRequests(isOpen);
+
+    const [refreshChat, setRefreshChat] = useState(false);
+    const toggleMessages = (isOpen) => setRefreshChat(isOpen);
+
 
     
     return (<>
@@ -50,11 +53,10 @@ function NavBar({user}) {
             <Container fluid>
                 <Navbar.Brand href="/" className='nav-title'>FlowLoop</Navbar.Brand>
                 <SearchBar />
-                <NavDropdown title={
-                        <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit" >
+                <NavDropdown onClick={() => toggleRequests(!refreshRequests)} onToggle={toggleRequests} className='chat-list' title={
+                        <IconButton size="large"aria-haspopup="true" color="inherit">
                             <AddBusinessIcon />
                         </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
-
                         <Row>
                         <Col>
                             <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
@@ -62,20 +64,33 @@ function NavBar({user}) {
                                 {user.is_admin &&  <Tab label="Work Requests"/>}
                             </Tabs>
                             <TabPanel value={reqTab} index={0}>
-                                <FriendRequests refresh={refreshWorkRequests} />
+                                <FriendRequests refresh={refreshRequests} />
                             </TabPanel>
                             {user.is_admin &&
                                 <TabPanel value={reqTab} index={1}>
-                                    <WorkRequests company={user?.company?.id} refresh={refreshWorkRequests} />
+                                    <WorkRequests company={user?.company?.id} refresh={refreshRequests} />
                                 </TabPanel>
                             }
                         </Col>
                         </Row>
-                    {/* <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action5">
-                        Something else here
-                    </NavDropdown.Item> */}
                 </NavDropdown>
+
+                <NavDropdown onClick={() => toggleMessages(!refreshChat)} onToggle={toggleMessages}
+                    title={<IconButton size="large" aria-label="messages" color="inherit">
+                    <Badge badgeContent={messages} color="error">
+                        <MailIcon />
+                    </Badge>
+                    </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
+                    <Row>
+                        <Tabs value={0} indicatorColor="primary" textColor="primary" centered> 
+                            <Tab label="Messages"/>
+                        </Tabs>
+                        <TabPanel value={0} index={0}>
+                            <Messages user={user.id}  refresh={refreshChat} />
+                        </TabPanel>
+                    </Row>
+                </NavDropdown>
+
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
                 <Navbar.Offcanvas id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`} placement="end"
@@ -86,9 +101,6 @@ function NavBar({user}) {
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                            {/* <Nav.Link href="#action1">Home</Nav.Link>
-                            <Nav.Link href="#action2">Link</Nav.Link>
-                            <Nav.Link href="#action2">LogOut</Nav.Link> */}
                         <Col className="justify-content-start">
                             <Row>
                                 <Badge><User user={user} /></Badge>
@@ -107,11 +119,6 @@ function NavBar({user}) {
             </Container>
         </Navbar>
       ))}
-        {/* <Switch>
-            <Route path="/user/:slug">    <UserProfile /></Route>
-            <Route path="/company/:slug"> <CompanyProfile /></Route>
-            <Route path="/"><HomePage user={user}/></Route>   
-        </Switch> */}
     </>
   );
 }

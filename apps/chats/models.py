@@ -10,6 +10,7 @@ class PrivateChat(models.Model):
     receiver   = models.ForeignKey(Friends, related_name='receiver',on_delete=models.CASCADE)
     message    = models.TextField(null=False,blank=False)
     send_date  = models.DateTimeField(auto_now=True, null=True)
+    read       = models.BooleanField(default=False)
 
     def clean(self):
         if self.sender == self.receiver:

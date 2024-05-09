@@ -9,4 +9,5 @@ from backend.views import *
 
 urlpatterns = [
     path("conversation/<int:user>/<int:friend>",   views.conversation),
+    path("conversations/<int:user>",               views.conversations),
 ]

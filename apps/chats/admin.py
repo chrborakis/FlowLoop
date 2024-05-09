@@ -5,9 +5,9 @@ class PrivateChatAdmin(admin.ModelAdmin):
     def _sender(self, obj):   return obj.sender.person
     def _receiver(self, obj): return obj.receiver.person
 
-    list_display       = ('_sender', '_receiver', 'send_date', 'message')
+    list_display       = ('_sender', '_receiver', 'send_date', 'message', 'read')
     list_display_links = ('_sender', '_receiver', 'send_date', 'message')
-    list_filter = ('sender__person', 'receiver__person') 
+    list_filter = ('sender__person__user', 'receiver__person__user') 
         
     def get_queryset(self, request):
         qs = super().get_queryset(request)

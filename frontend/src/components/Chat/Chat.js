@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from "react";
 import { Card, Row, Col, Form } from "react-bootstrap";
 import CloseButton from 'react-bootstrap/CloseButton';
 import { User } from "../Profiles/Profile";
-import { getMessages, sendMessage } from "./Utils";
+import { getMessages, sendMessage, clearUnread } from "./Utils";
 import { TextField } from "@material-ui/core";
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
@@ -16,8 +16,9 @@ const Chat = ({chat, setChat}) => {
     const {sender, receiver} = chat;
 
     useEffect(()=>{
+        console.log("Starting convo w/: ", chat)
         if(sender && receiver){
-            // setSocket(new WebSocket(`ws://${window.location.host}/ws/socket-server/`))
+            clearUnread( sender.user_id, receiver.user_id)
             setSocket(new WebSocket(`ws://${window.location.host}/ws/chat/${sender.id+receiver.id}/`))
         }
     },[sender,receiver])
