@@ -1,33 +1,24 @@
 import React, { useState, useEffect } from "react";
 import {getComments} from "./CommentsUtils";
 import NewComment from "./NewComment";
-import {Card, Row,Col, Button} from 'react-bootstrap';
+import {Card, Row,Col} from 'react-bootstrap';
 import { Link } from "react-router-dom";
-
+import Button from '@mui/material/Button';
 import '../../../../static/css/Posts/Comment.css';
 import '../../../../static/css/index.css';
 
 import { scrollTop } from "../../Extra/LinkOnTop";
+import CommentIcon from '@mui/icons-material/Comment';
 
 // post: post_id
 // url: ../backend/postpubliccomments OR backend/postpubliccomments
-const Comments = ({post,url}) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const toggleExpand = () => setIsExpanded(prevState => !prevState);
-
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState();
-
-    useEffect( () => {
-        getComments( setComments, `${url}/${post}`);
-    }, [newComment]);
-
+const Comments = ({post,url,comments,exp,setNewComment }) => { 
     return (<>
         <div className="text-muted list-scroll" onClick={(event) => {
-            if (event.target === event.currentTarget && comments.length>0) toggleExpand();
+            if (event.target === event.currentTarget && comments.length>0) exp.toggleExpand();
         }}>
             {
-                isExpanded ? (
+                exp.isExpanded && (
                     comments ? (
                         comments.map( comment => 
                             <Row style={{ width: '90%', margin: '5%' }} className="comment align-items-start">
@@ -49,15 +40,12 @@ const Comments = ({post,url}) => {
                                 </Col>
                             </Row>               
                         )
-                    ): <p>No comments</p>
-                    
-                ) : (
-                    comments && comments.length > 0 ? (<>Comments: {comments.length}</>) : (<>No comments</>)
+                    ): <p>No comments</p>  
                 )
             }
             {comments.length > 0 && 
-                <Button variant="outline" onClick={toggleExpand}>
-                    {isExpanded ? <span>&#x25B2;</span> : <span>&#x25BC;</span>}
+                <Button variant="outline" onClick={exp.toggleExpand}>
+                    {exp.isExpanded ? <span>&#x25B2;</span> : <span>&#x25BC;</span>}
                 </Button>
             }
         </div>

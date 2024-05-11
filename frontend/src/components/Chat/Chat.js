@@ -15,6 +15,10 @@ const Chat = ({chat, setChat}) => {
     const [socket, setSocket] = useState(null);
     const {sender, receiver} = chat;
 
+    const [message, setMessage] = useState('')
+    const [messages, setMessages] = useState([]);
+    const messageEndRef = useRef(null);
+
     useEffect(()=>{
         console.log("Starting convo w/: ", chat)
         if(sender && receiver){
@@ -23,20 +27,12 @@ const Chat = ({chat, setChat}) => {
         }
     },[sender,receiver])
 
-    const [message, setMessage] = useState('')
-    const [messages, setMessages] = useState([]);
-    
-    const messageEndRef = useRef(null);
  
     useEffect(()=>{
         if(socket !=null){
             socket.onmessage = function(e){
-                let data = JSON.parse(e.data)
-                console.log('Data: ', data)
-        
-                if(data.type ==='chat'){
-                    setMessages(prevMessaged=>[...prevMessaged, data.message])
-                }
+                let data = JSON.parse(e.data)        
+                if(data.type ==='chat')setMessages(prevMessaged=>[...prevMessaged, data.message])
             }
         }
     },[socket])
@@ -71,7 +67,7 @@ const Chat = ({chat, setChat}) => {
                 </Row>
             </Card.Header>
             <Card.Body className="message-container">
-                {messages ? messages.map(message => (
+                {messages ? messages.sort((a, b) => new Date(a.send_date) - new Date(b.send_date)).map(message => (
                     <>
                         <div key={message.message_id} className={`message ${message.sender_info.id === sender.user_id ? 'sender' : 'receiver'}`} onMouseEnter={() => handleMouseEnter(message.message_id)} onMouseLeave={handleMouseLeave}>
                             {message.message}

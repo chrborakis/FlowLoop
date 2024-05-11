@@ -33,10 +33,9 @@ const NewComment = ({post, onComment, url}) => {
         <Form onSubmit={handleSubmit}>
             <Row>
                 <Col xs={10}>
-                    <TextField style={{ marginTop: '5%' }}
-                        className="textfield" variant="outlined"
+                    <TextField onKeyDown={(event) => {if (event.key === 'Enter') {event.preventDefault(); handleSubmit(event); }}}
+                        className="textfield" value={comment} onChange={handleChange}
                         placeholder="Type your comment" name="comment" label="What's your opinion?"
-                        value={comment} onChange={handleChange}
                         multiline fullWidth  
                     />
                 </Col>

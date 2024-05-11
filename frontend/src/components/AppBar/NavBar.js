@@ -13,7 +13,7 @@ import UserProfile from '../Profiles/User/UserProfile'
 import HomePage from '../HomePage';
 import SearchBar from './SearchBar';
 import CompanyProfile from '../Profiles/Company/CompanyProfile';
-import Messages from '../Chat/Messages';
+import MessageContainer from '../Chat/MessageContainer';
 import { Tabs, Tab } from '@material-ui/core';
 import TabPanel from '../Extra/TabPanel';
 
@@ -28,24 +28,14 @@ function NavBar({user, messages, notifications}) {
     const { logout } = useAuth();
     const [reqTab, setReqTab] = useState(0);
     const handleReqTab = (event, newTab) => setReqTab(newTab);
-    // const history = useHistory();
-    
-    // const notifications_label = `show ${notifications} new notifications`
-    // const messages_label = `show ${messages} new messages`
-    
-    const logOut = () => {
-        logout()
-        // history.push('/')
-        // window.location.reload();
-    }
+
+    const logOut = () => logout()
 
     const [refreshRequests, setRefreshRequests] = useState(false);
     const toggleRequests = (isOpen) => setRefreshRequests(isOpen);
 
     const [refreshChat, setRefreshChat] = useState(false);
     const toggleMessages = (isOpen) => setRefreshChat(isOpen);
-
-
     
     return (<>
       {[false].map((expand) => (
@@ -54,10 +44,10 @@ function NavBar({user, messages, notifications}) {
                 <Navbar.Brand href="/" className='nav-title'>FlowLoop</Navbar.Brand>
                 <SearchBar />
                 <NavDropdown onClick={() => toggleRequests(!refreshRequests)} onToggle={toggleRequests} className='chat-list' title={
-                        <IconButton size="large"aria-haspopup="true" color="inherit">
-                            <AddBusinessIcon />
-                        </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
-                        <Row>
+                    <IconButton size="large"aria-haspopup="true" color="inherit">
+                        <AddBusinessIcon />
+                    </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
+                    <Row>
                         <Col>
                             <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
                                 <Tab label="Friend Requests"/>
@@ -72,12 +62,12 @@ function NavBar({user, messages, notifications}) {
                                 </TabPanel>
                             }
                         </Col>
-                        </Row>
+                    </Row>
                 </NavDropdown>
 
                 <NavDropdown onClick={() => toggleMessages(!refreshChat)} onToggle={toggleMessages}
                     title={<IconButton size="large" aria-label="messages" color="inherit">
-                    <Badge badgeContent={messages} color="error">
+                    <Badge badgeContent={messages.messages} color="error">
                         <MailIcon />
                     </Badge>
                     </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
@@ -86,7 +76,8 @@ function NavBar({user, messages, notifications}) {
                             <Tab label="Messages"/>
                         </Tabs>
                         <TabPanel value={0} index={0}>
-                            <Messages user={user.id}  refresh={refreshChat} />
+                            {/* <Messages user={user.id} refresh={refreshChat} messages={messages}/> */}
+                            <MessageContainer  user={user.id} refresh={refreshChat} messages={messages}/>
                         </TabPanel>
                     </Row>
                 </NavDropdown>

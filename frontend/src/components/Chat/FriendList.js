@@ -30,10 +30,10 @@ const FriendList = ({user_id}) => {
                 {friends ? (
                     <Col className="active-list">
                         {friends.map( friend => 
-                            <div className="active-friend" alt={friend.friend_info.name} onClick={() => handleChat(friend)}>
+                            <div className="active-friend" key={friend.id} alt={friend.friend_info.name} onClick={() => handleChat(friend)}>
                                 <div className="avatar-wrapper">
                                     <Avatar alt={friend.friend_info.name} title={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/>
-                                    <div class="name-wrapper">
+                                    <div className="name-wrapper">
                                         <p className='name'>{friend.friend_info.name}</p>
                                     </div>
                                 </div>

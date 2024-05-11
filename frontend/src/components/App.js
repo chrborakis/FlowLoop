@@ -16,13 +16,10 @@ import { getUserInfo, getMessages} from "./Extra/UserInfo";
 const App = () => {
     const { user, updateUser } = useAuth();   
     const [messages, setMessages] = useState(0)
-    // const switchComponent = (
-    //     <Switch>
-    //         <Route path="/user/:slug">    <UserProfile /></Route>
-    //         <Route path="/company/:slug"> <CompanyProfile /></Route>
-    //         <Route path="/"><HomePage user={user}/></Route>   
-    //     </Switch>
-    // );
+
+    const updateUnread = (user_id, setMessages) => {
+        console.log("updateUnread")
+        getMessages(user_id, setMessages)}
 
     useEffect(()=>{
         if(user){
@@ -32,11 +29,15 @@ const App = () => {
         console.log(user)
     },[user?.id])
 
+    useEffect(()=>{
+        getMessages(user?.id, setMessages)
+    },[messages])
+
     return(
         <Router basename="/">
             <div className="body">
                     { user ? (
-                        <NavBar user={user} messages={messages} notifications={0}/>
+                        <NavBar user={user} messages={{messages, setMessages,updateUnread}} notifications={0}/>
                     ) : (
                         <div><h1>FlowLoop</h1>
                             <LoginRegister/>
@@ -46,12 +47,10 @@ const App = () => {
                         <Route path="/user/:slug">    <UserProfile /></Route>
                         <Route path="/company/:slug"> <CompanyProfile /></Route>
                         <div className="content">
-                        <Route path="/"><HomePage user={user}/></Route>   
+                            <Route   Route path="/"><HomePage user={user}/></Route>   
                         </div>
                     </Switch>
             </div>
-
-
         </Router> 
     )
 }
@@ -59,6 +58,6 @@ const App = () => {
 export default App; 
 render( 
     <AuthProvider>
-            <App />
+        <App />
     </AuthProvider> 
 , document.getElementById("app"));

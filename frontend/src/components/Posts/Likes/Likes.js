@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getLikes, postLike} from "./LikesUtils";
 import { useAuth } from "../../../store/AuthContext";
-import Button from 'react-bootstrap/Button';
-import { Provider, LikeButton } from "@lyket/react";
+// import Button from 'react-bootstrap/Button';
+import Button from '@mui/material/Button';
+// import { Provider, LikeButton } from "@lyket/react";
+import BeenhereIcon from '@mui/icons-material/Beenhere';
 
 const Likes = ({post, url}) => {
     const { user } = useAuth();
@@ -22,26 +24,9 @@ const Likes = ({post, url}) => {
     };
     
     return(
-        <div>
-            { likes && <>
-                <p>Likes: {likes.length}</p>
-                {/* Find if liked by current user */}
-                { likes.find(like => like.user.slug === user.slug) ? (
-                    <p>Liked</p>
-                ) : (<></>
-                )}
-            </>
-            }
-            {(likes === undefined || likes.length === 0 || !likes.find((like) => like.user.slug === user.slug)) && (
-                <Button onClick={handleLike}>Like</Button>
-            )}         
-            
-        {/* <Provider apiKey="acc0dbccce8e557db5ebbe6d605aaa">
-        <LikeButton namespace="my-blog-post" 
-            id="how-to-beat-me-at-chess" onPress={openSubscribeModal}
-        />
-        </Provider> */}
-        </div>
+        <Button onClick={handleLike} disabled={likes?.find((like) => like?.user.slug === user.slug)}>
+            <BeenhereIcon/> {likes?.length || 0}
+        </Button>         
     )
 }
 

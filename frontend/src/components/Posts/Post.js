@@ -15,6 +15,8 @@ import { deletePost, editPost } from "./PostUtils";
 import { Company } from "../Profiles/Profile";
 import IconButton from '@mui/material/IconButton';
 import '../../../static/css/index.css'
+import PostActions from "./PostActions";
+
 // import 'primeicons/primeicons.css';
 // import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
 // import 'primereact/resources/primereact.min.css';
@@ -144,11 +146,7 @@ const Post = ({post, url, setPosts}) => {
                 </Form>
             </Card.Body>
             <Card.Footer className="text-muted">
-            <div className="comments">
-                <Likes post={post.post_id} url={`${url}likes/${post.post_id}`}/>
-                <hr></hr>
-                <Comments post={post.post_id} url={`${url}comments`}/>
-            </div>
+                <PostActions url={url} post={post}/>
             </Card.Footer>
         </Card>
     )
