@@ -14,6 +14,7 @@ urlpatterns = [
     path('posts/',     include('backend.posts.urls')), 
     path('projects/',  include('backend.projects.urls')),
     path('chat/',      include('backend.chat.urls')),
+    path('groups/',include('backend.groups.urls')),
 
     # path('ws/test/', TextRoomConsumer.as_asgi()),
     # path('ws/',             include(websocket_urlpatterns)),

@@ -2,6 +2,7 @@ import datetime
 from rest_framework import serializers
 from apps.chats.models import PrivateChat
 from apps.companies.models import Companies, WorkRequests, WorksOn
+from apps.groups.models import GroupAdmins, GroupChat, GroupMembers, Groups
 from apps.models import Address
 from apps.posts.models import PostsPrivate, PostsPrivateComments, PostsPrivateLikes, PostsPublic, PostsPublicComments, PostsPublicLikes
 from apps.projects.models import ProjectDivision,ProjectAdmin, ProjectRequestAssign, Projects, ProjectAssign
@@ -541,4 +542,80 @@ class PrivateChatSerializer(serializers.ModelSerializer):
             'name': str(obj.receiver.person),
             'slug': str(obj.receiver.person.slug),
             'image':str(obj.receiver.person.image)
+        }
+
+class GroupsSerializer(serializers.ModelSerializer):
+    members = serializers.SerializerMethodField()
+    class Meta:
+        model = Groups
+        fields = (
+            "group_id",
+            "name",
+            "company",
+            "members",
+        )
+
+    def get_members(self, obj):
+        try:
+            members = GroupMembers.objects.filter(group=obj.group_id)
+            if members.exists():
+                members_list = []
+                for member in members:
+                    user = member.member
+                    members_list.append({
+                        'member': member.id,
+                        # 'work_id': user.employee.id,
+                        'name': str(user.employee.user),
+                        'slug': str(user.employee.user.slug),
+                        'image': str(user.employee.user.image),
+                    })
+                return members_list
+            else:
+                return None
+        except GroupMembers.DoesNotExist as e:
+            print(str(e))
+            return None
+        
+class GroupMembersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroupMembers
+        fields = (
+            "id",
+            "group",
+            "member",
+        )
+
+class GroupAdminsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroupAdmins
+        fields = (
+            "id",
+            "group",
+            "admin",
+        )
+    
+class GroupChatSerializer(serializers.ModelSerializer):
+    sender_info = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = GroupChat 
+        fields = (
+            "id",
+            "group",
+            "sender",
+            "message",
+            "file",
+            "send_date",
+            "sender_info"
+        )
+
+    def get_sender_info( self, obj):
+        user = obj.sender.member.employee
+        print(user)
+        return{
+            'id'  : user.user.user_id,
+            'name': str(user.user),
+            'slug': str(user.user.slug),
+            'image':str(user.user.image),
+            'work_id': str(user.id)
         }

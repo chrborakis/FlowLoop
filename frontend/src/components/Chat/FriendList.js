@@ -5,49 +5,52 @@ import { User } from "../Profiles/Profile";
 import Avatar from '@mui/material/Avatar';
 
 import Chat from './Chat';
+import Friends from "./List/Friends";
+import Groups from "./List/Groups";
+
+import GroupChat from './GroupChat';
 
 const FriendList = ({user_id}) => {
-    const [friends, setFriends] = useState([])
     const [chat, setChat] = useState({sender:{}, receiver:{}})
+    const [groupChat, setGroupChat] = useState({group:{}, user:{}})
+
+    const [activeChat, setActiveChat] = useState(null); 
 
     useEffect(()=>{
-        if(user_id) getFriends(user_id, setFriends);
-    },[user_id])
+        console.group("Chats");
+        console.log(chat);
+        console.log(groupChat);
+        console.groupEnd();
+    },[chat,groupChat])
 
     const handleChat = (friend) => {
         setChat({
             sender:{id: friend.id, user_id: friend.person, ...friend.person_info}, 
             receiver:{id:friend.symmetric_id, user_id: friend.friend, ...friend.friend_info}
         })
+        setActiveChat('chat');
+    }
+
+    const handleGroupChat = (group) => {
+        console.log(group)
+        setGroupChat({
+            group:{id:group.group_id, name:group.name},
+            user:{id:user_id}
+        })
+        setActiveChat('groupChat');
     }
 
     return(<>
         <Card className="friends">
-            <Card.Header >
-                <p>Active Friends</p>
-            </Card.Header>
-            <Card.Body>
-                {friends ? (
-                    <Col className="active-list">
-                        {friends.map( friend => 
-                            <div className="active-friend" key={friend.id} alt={friend.friend_info.name} onClick={() => handleChat(friend)}>
-                                <div className="avatar-wrapper">
-                                    <Avatar alt={friend.friend_info.name} title={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/>
-                                    <div className="name-wrapper">
-                                        <p className='name'>{friend.friend_info.name}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </Col>
-                ) : (
-                    <p>No friends online yet</p>
-                )}
-            </Card.Body>
+            <Friends user_id={user_id} handleChat={handleChat}/>
+            <Groups  user_id={user_id} handleChat={handleGroupChat}/>
         </Card>
-        { chat?.receiver?.id ? <Chat chat={chat} setChat={setChat}/> : (
-            () => {setChat(false)}
-        ) }
+        {activeChat === 'chat' && chat?.sender?.id &&(
+            <Chat chat={chat} setChat={setChat} />
+        )}
+        {activeChat === 'groupChat' && groupChat?.group?.id &&(
+            <GroupChat chat={groupChat} setChat={setGroupChat} />
+        )}
     </>)
 }
 

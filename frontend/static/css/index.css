@@ -9,6 +9,9 @@
     overflow-y: auto;
  }
 
+ .card{
+    padding: 0;
+ }
 
 .textfield {
     margin: 1em;

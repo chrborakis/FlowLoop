@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Max
 from apps.chats.models import PrivateChat
+from apps.groups.models import Groups
 from .serializers import *
 from apps.users.models import *
 from rest_framework import viewsets
@@ -422,7 +423,25 @@ class ChatsView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class GroupsView(APIView):
+    def get( self, request, user):
+        try:
+            group_member_instances = get_list_or_404(GroupMembers, member__employee__user_id=user)
+            group_instances = [group_member.group for group_member in group_member_instances]
+            serializer = GroupsSerializer(group_instances, many=True)
+            return Response(serializer.data)
+        except Http404:
+            return Response({'error': 'Chats instances not found.'}, status=404)    
         
+class GroupsChatView(APIView):
+    def get( self, request, group):
+        try:
+            instances = get_list_or_404(GroupChat.objects.filter(group=group).order_by('-send_date'))
+            serializers = GroupChatSerializer(instances, many=True)        
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Chats instances not found.'}, status=404)   
 
 class FriendRequestList(APIView):
     def get( self, request, id):

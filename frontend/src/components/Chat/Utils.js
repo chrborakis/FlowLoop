@@ -1,6 +1,18 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
+export const getGroups = async(user_id, setGroups) => {
+    await axios.get(`${window.location.origin}/backend/groups/${user_id}`,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
+    )
+    .then( res => {
+        if(res.data.status === 200){
+            setGroups(res.data.data)
+        }
+    })
+    .catch(err => console.log(err))
+}
+
 export const getFriends = async(user_id, setFriends) => {
     await axios.get(`${window.location.origin}/backend/active_friends/${user_id}`,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
@@ -12,6 +24,18 @@ export const getFriends = async(user_id, setFriends) => {
         }
     })
     .catch(err => console.log(err))
+}
+
+export const getGroupMessages = async( group, setMessages) => {
+    // window.location.host
+    await axios.get(`${window.location.origin}/backend/groups/conversation/${group}`,{
+        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
+    }).then( res => {
+        console.log(res.data)
+        if(res.data.status===200){
+            setMessages(res.data.data)
+        }
+    }).catch(err => console.log(err))
 }
 
 export const getMessages = async( user, friend, setMessages) => {
