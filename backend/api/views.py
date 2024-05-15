@@ -323,7 +323,8 @@ class Employees(APIView):
 class ActiveFriendsView(APIView):
     def get(self, request, user_id):
         try:
-            instances = get_list_or_404(Friends.objects.filter( person=user_id, friend__user__active=True).order_by('friend__slug'))
+            # instances = get_list_or_404(Friends.objects.filter( person=user_id, friend__user__active=True).order_by('friend__slug'))
+            instances = get_list_or_404(Friends.objects.filter( person=user_id).order_by('friend__slug'))
             serializers = FriendsSerializer(instances, many=True)
             return Response(serializers.data)
         except Http404:
