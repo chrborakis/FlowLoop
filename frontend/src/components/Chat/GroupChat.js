@@ -2,16 +2,17 @@ import React, {useState, useEffect, useRef} from "react";
 import { Card, Row, Col, Form } from "react-bootstrap";
 import CloseButton from 'react-bootstrap/CloseButton';
 import { User } from "../Profiles/Profile";
-import { getGroupMessages, sendMessage, clearUnread } from "./Utils";
+import { getGroupMessages, sendGroupMessage, clearUnread } from "./Utils";
 import { TextField } from "@material-ui/core";
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import { dateFormat } from "../Extra/Date";
+import Avatar from "@material-ui/core";
 
 import '../../../static/css/chat.css'
 import '../../../static/css/index.css'
 
-const GroupChat = ({chat, setChat}) => {
+const GroupChat = ({chat, setChat, room}) => {
     const [socket, setSocket] = useState(null);
     const {group, user} = chat;
 
@@ -25,15 +26,18 @@ const GroupChat = ({chat, setChat}) => {
             // clearUnread( sender.user_id, receiver.user_id)
             setSocket(new WebSocket(`ws://${window.location.host}/ws/group_chat/${group.id}/`))
         }
-    },[group,user])
-
+    },[room])
  
     useEffect(()=>{
-        if(socket !=null){
+        if(socket){
+            socket.onopen = () => console.log('WebSocket connection established: ', socket);
             socket.onmessage = function(e){
-                let data = JSON.parse(e.data)        
+                let data = JSON.parse(e.data)     
                 if(data.type ==='chat')setMessages(prevMessaged=>[...prevMessaged, data.message])
             }
+            socket.onclose = () => console.log('WebSocket connection closed: ', socket);
+            
+            return () => socket.close()
         }
     },[socket])
     
@@ -53,7 +57,7 @@ const GroupChat = ({chat, setChat}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('New Message: ', message)
-        // sendMessage({sender:sender.id, receiver:receiver.id, message:message}, setMessages, setMessage, socket)
+        sendGroupMessage({group:group.id, sender:user.member, message:message}, setMessages, setMessage, socket)
     }
 
     const scrollToBottom = () => messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -69,15 +73,18 @@ const GroupChat = ({chat, setChat}) => {
             <Card.Body className="message-container">
                 {messages ? messages.sort((a, b) => new Date(a.send_date) - new Date(b.send_date)).map(message => (
                     <>
-                    {console.log(messages)}
-                        {/* <div key={message.message_id} className={`message ${message.sender_info.id === sender.user_id ? 'sender' : 'receiver'}`} onMouseEnter={() => handleMouseEnter(message.message_id)} onMouseLeave={handleMouseLeave}>
+                        {message.sender_info.id !== user.id && (
+                            <img src={`/files/${message.sender_info?.image}`} width={45}/>
+                        )}
+                        <div key={message.id} className={`message ${message.sender_info.id === user.id ? 'sender' : 'receiver'}`}
+                            onMouseEnter={() => handleMouseEnter(message.id)} onMouseLeave={handleMouseLeave}>
                             {message.message}
                         </div>
-                        {hoveredMessageId === message.message_id && (
-                            <span className={`message-date ${message.sender_info.id === sender.user_id ? 'sender-date' : 'receiver-date'}`}>
+                        {hoveredMessageId === message.id && (
+                            <span className={`message-date ${message.sender_info.id === user.id ? 'sender-date' : 'receiver-date'}`}>
                                 {dateFormat(message.send_date)}
                             </span>
-                        )} */}
+                        )}
                     </>
                     )):(<p>Start conversation</p>)
                 }

@@ -37,19 +37,21 @@ const App = () => {
         <Router basename="/">
             <div className="body">
                     { user ? (
-                        <NavBar user={user} messages={{messages, setMessages,updateUnread}} notifications={0}/>
+                        <>
+                            <NavBar user={user} messages={{messages, setMessages,updateUnread}} notifications={0}/>
+                            <Switch>
+                                <Route path="/user/:slug">    <UserProfile /></Route>
+                                <Route path="/company/:slug"> <CompanyProfile /></Route>
+                                <div className="content">
+                                    <Route   Route path="/"><HomePage user={user}/></Route>   
+                                </div>
+                            </Switch>
+                        </>
                     ) : (
                         <div><h1>FlowLoop</h1>
                             <LoginRegister/>
                         </div>
                     )}
-                    <Switch>
-                        <Route path="/user/:slug">    <UserProfile /></Route>
-                        <Route path="/company/:slug"> <CompanyProfile /></Route>
-                        <div className="content">
-                            <Route   Route path="/"><HomePage user={user}/></Route>   
-                        </div>
-                    </Switch>
             </div>
         </Router> 
     )

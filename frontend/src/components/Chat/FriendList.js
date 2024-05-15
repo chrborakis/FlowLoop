@@ -1,8 +1,6 @@
 import React,{useState, useEffect} from "react";
 import { getFriends } from "./Utils";
 import { Col, Row, Card } from "react-bootstrap";
-import { User } from "../Profiles/Profile";
-import Avatar from '@mui/material/Avatar';
 
 import Chat from './Chat';
 import Friends from "./List/Friends";
@@ -16,12 +14,10 @@ const FriendList = ({user_id}) => {
 
     const [activeChat, setActiveChat] = useState(null); 
 
-    useEffect(()=>{
-        console.group("Chats");
-        console.log(chat);
-        console.log(groupChat);
-        console.groupEnd();
-    },[chat,groupChat])
+    function getMemberId(group, userId) {
+        const member = group.members.find(member => member.user_id === userId);
+        return member ? member.member : null;
+    }
 
     const handleChat = (friend) => {
         setChat({
@@ -35,7 +31,7 @@ const FriendList = ({user_id}) => {
         console.log(group)
         setGroupChat({
             group:{id:group.group_id, name:group.name},
-            user:{id:user_id}
+            user:{id:user_id, member:getMemberId(group, user_id)}
         })
         setActiveChat('groupChat');
     }
@@ -46,10 +42,10 @@ const FriendList = ({user_id}) => {
             <Groups  user_id={user_id} handleChat={handleGroupChat}/>
         </Card>
         {activeChat === 'chat' && chat?.sender?.id &&(
-            <Chat chat={chat} setChat={setChat} />
+            <Chat chat={chat} setChat={setChat} room={chat.sender.id+chat.receiver.id}/>
         )}
         {activeChat === 'groupChat' && groupChat?.group?.id &&(
-            <GroupChat chat={groupChat} setChat={setGroupChat} />
+            <GroupChat chat={groupChat} setChat={setGroupChat} room={groupChat.group.id}/>
         )}
     </>)
 }

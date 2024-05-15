@@ -53,7 +53,7 @@ const HomePage = ({user}) => {
                 </div>
             </Col>
             <Col className="friends-list d-flex flex-column justify-content-end">
-                <FriendList user_id={user?.id}/>
+                { user && <FriendList user_id={user?.id}/>}
             </Col>
         </>
     );

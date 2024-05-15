@@ -79,7 +79,7 @@ const Post = ({post, url, setPosts}) => {
                 </Col>
 
                 <Col className="d-flex justify-content-end">
-                    {parseInt(post.user?.user_id) === parseInt(user.id) && 
+                    {parseInt(post.user?.user_id) === parseInt(user?.id) && 
                         <Dropdown show={postOpts} onToggle={toggleDropdown}>
                             <Dropdown.Toggle style={{ backgroundColor: 'transparent',border: 'none'}}>
                                 <IconButton aria-label="Example">

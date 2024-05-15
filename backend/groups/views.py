@@ -52,3 +52,26 @@ def conversation(request, group):
                     })
             except Exception as e:
                 return JsonResponse({'error':str(e)}, status=400)
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))   
+        print(data)
+        try:
+            response = requests.post(base_url+'/backend/api/group_chat/'+str(group), json=data)
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': 'Message POST succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': 'Failed to POST Message',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })

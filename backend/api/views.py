@@ -441,7 +441,14 @@ class GroupsChatView(APIView):
             serializers = GroupChatSerializer(instances, many=True)        
             return Response(serializers.data)
         except Http404:
-            return Response({'error': 'Chats instances not found.'}, status=404)   
+            return Response({'error': 'GroupChats instances not found.'}, status=404)   
+    def post( self, request, group):
+        print("IN API: ", request.data)
+        serializer = GroupChatSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FriendRequestList(APIView):
     def get( self, request, id):

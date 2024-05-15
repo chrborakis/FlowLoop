@@ -11,7 +11,7 @@ import { dateFormat } from "../Extra/Date";
 import '../../../static/css/chat.css'
 import '../../../static/css/index.css'
 
-const Chat = ({chat, setChat}) => {
+const Chat = ({chat, setChat, room}) => {
     const [socket, setSocket] = useState(null);
     const {sender, receiver} = chat;
 
@@ -23,17 +23,20 @@ const Chat = ({chat, setChat}) => {
         console.log("Starting convo w/: ", chat)
         if(sender && receiver){
             clearUnread( sender.user_id, receiver.user_id)
-            setSocket(new WebSocket(`ws://${window.location.host}/ws/chat/${sender.id+receiver.id}/`))
+            setSocket(new WebSocket(`ws://${window.location.host}/ws/chat/${room}/`))
         }
-    },[sender,receiver])
-
- 
+    },[room])
+    
     useEffect(()=>{
-        if(socket !=null){
+        if(socket){
+            socket.onopen = () => console.log('WebSocket connection established: ', socket);
             socket.onmessage = function(e){
-                let data = JSON.parse(e.data)        
+                let data = JSON.parse(e.data)     
                 if(data.type ==='chat')setMessages(prevMessaged=>[...prevMessaged, data.message])
             }
+            socket.onclose = () => console.log('WebSocket connection closed: ', socket);
+            
+            return () => socket.close()
         }
     },[socket])
     

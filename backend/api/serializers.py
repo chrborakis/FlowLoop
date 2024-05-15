@@ -564,7 +564,7 @@ class GroupsSerializer(serializers.ModelSerializer):
                     user = member.member
                     members_list.append({
                         'member': member.id,
-                        # 'work_id': user.employee.id,
+                        'user_id': user.employee.user.user_id,
                         'name': str(user.employee.user),
                         'slug': str(user.employee.user.slug),
                         'image': str(user.employee.user.image),

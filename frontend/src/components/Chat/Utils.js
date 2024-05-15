@@ -26,6 +26,18 @@ export const getFriends = async(user_id, setFriends) => {
     .catch(err => console.log(err))
 }
 
+export const sendGroupMessage = async( data, setMessages, setMessage, socket) => {
+    await axios.post(`${window.location.origin}/backend/groups/conversation/${data.group}`, data,{
+        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
+    }).then( res => {
+        if(res.data.status===200) {
+            socket.send(JSON.stringify({'message': res.data.data}))
+            // setMessages(prevMessaged=>[...prevMessaged, res.data.data])
+            setMessage('')
+        }
+    }).catch(err => console.log(err))
+}
+
 export const getGroupMessages = async( group, setMessages) => {
     // window.location.host
     await axios.get(`${window.location.origin}/backend/groups/conversation/${group}`,{
@@ -88,16 +100,14 @@ export const clearUnread = async( user, friend) => {
     ).catch(err => console.log(err))
 }
 
-export const sendMessage = async( data, setMessages, setMessage, chatSocket) => {
+export const sendMessage = async( data, setMessages, setMessage, socket) => {
     const {sender, receiver, message} = data;
     await axios.post(`${window.location.origin}/backend/chat/conversation/${sender}/${receiver}`, data,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
     }).then( res => {
         console.log(res.data)
         if(res.data.status===200) {
-            chatSocket.send(JSON.stringify({
-                'message': res.data.data
-            }))
+            socket.send(JSON.stringify({'message': res.data.data}))
             // setMessages(prevMessaged=>[...prevMessaged, res.data.data])
             setMessage('')
         }

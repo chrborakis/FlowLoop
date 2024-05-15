@@ -7,7 +7,7 @@ class GroupChatConsumer(WebsocketConsumer):
         self.accept()
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = f"chat_{self.room_name}"
+        self.room_group_name = f"group_chat_{self.room_name}"
         print("ROOM NAME: ", self.room_group_name)
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -27,7 +27,7 @@ class GroupChatConsumer(WebsocketConsumer):
         )
 
     def chat_message(self,event):
-        print("chat_message: ", self.room_group_name)
+        print("group_chat_message: ", self.room_group_name)
         message = event['message']
         self.send(text_data=json.dumps({
             'type':'chat',
