@@ -19,12 +19,10 @@ const AdminInvite = (props) => {
     }
 
     return(<>
-        <Modal {...props} size="lg" centered
-            aria-labelledby="contained-modal-title-vcenter"   
-        >
+        <Modal {...props} size="lg" centered aria-labelledby="contained-modal-title-vcenter">
             <Form className='form' onSubmit={handleSubmit}>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
+                    <Modal.Title id="admin-inv-vcenter">
                         Assign Division
                     </Modal.Title>
                 </Modal.Header>

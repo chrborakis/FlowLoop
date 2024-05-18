@@ -33,7 +33,9 @@ urlpatterns = [
     path("conversations/<int:user>", ConversationsView.as_view()),
     path("chats/<int:user>",                     ChatsView.as_view()),
 
+    path("group/<int:group>", GroupView.as_view()),
     path("groups/<int:user>", GroupsView.as_view()),
+    path("group_members/<int:group>", GroupMembersView.as_view()),
     path("group_chat/<int:group>",  GroupsChatView.as_view()),
 
     # path("friends",             FriendsView.as_view()),

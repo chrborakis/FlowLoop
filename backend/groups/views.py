@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 import requests
 from django.views.decorators.csrf import csrf_exempt
+from apps.groups.models import GroupMembers
 from backend.util import get_base_url
 
 @csrf_exempt
@@ -29,6 +30,30 @@ def groups(request, user):
             except Exception as e:
                 return JsonResponse({'error':str(e)}, status=400)
         
+@csrf_exempt
+def group(request, group):
+    base_url = get_base_url(request)
+    if request.method == 'GET':
+        if group:
+            base_url = get_base_url(request)
+            try:
+                response = requests.get(base_url+'/backend/api/group/'+str(group))
+                if response.status_code == 200:
+
+                    return JsonResponse({
+                        'message': 'Group Fetched succesfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })  
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to fetch Group ' + str(group),
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'error':str(e)}, status=400)
+
 @csrf_exempt
 def conversation(request, group):
     base_url = get_base_url(request)
@@ -75,3 +100,38 @@ def conversation(request, group):
                 'data': response.json(),
                 'status': response.status_code
             })
+        
+@csrf_exempt
+def members(request, id):
+    base_url = get_base_url(request)
+    if request.method == 'GET':
+        if id:
+            group = id
+            try:
+                response = requests.get(base_url+'/backend/api/group_chat/'+str(group))
+                if response.status_code == 200:
+
+                    return JsonResponse({
+                        'message': 'GroupChats Fetched succesfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })  
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to fetch GroupChats ',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'error':str(e)}, status=400)
+    elif request.method == 'DELETE':
+        if id:
+            try:
+                member = id
+                item = GroupMembers.objects.get(id=member)
+                item.delete()
+                return JsonResponse({'message': '[DEL]GroupMember '+str(member)+' deleted','status': 200})
+            except GroupMembers.DoesNotExist:return JsonResponse({'message': 'GroupMember '+str(member)+' not found','status': 404})
+            except Exception as e: return JsonResponse({'message': str(e),'status': 500})
+        else: pass
+    

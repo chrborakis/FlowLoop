@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from "react";
-import { getGroups } from "../Utils";
+import { getGroups } from "../Groups/GroupUtils";
 import { Avatar } from "@material-ui/core";
 import { Card, Row,Col } from "react-bootstrap";
 import {Form} from 'react-bootstrap';

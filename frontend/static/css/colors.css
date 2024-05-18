@@ -1,6 +1,7 @@
 :root {
     --primary: #303F9F;
     --secondary: #6c757d;
+    --light_secondary: #F5F5F5;
     --success: #1a6c20;
     --error: #ae0d0d;
   }

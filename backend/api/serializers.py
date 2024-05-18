@@ -546,6 +546,7 @@ class PrivateChatSerializer(serializers.ModelSerializer):
 
 class GroupsSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
+    admins  = serializers.SerializerMethodField()
     class Meta:
         model = Groups
         fields = (
@@ -553,7 +554,28 @@ class GroupsSerializer(serializers.ModelSerializer):
             "name",
             "company",
             "members",
+            "admins"
         )
+
+    def get_admins(self, obj):
+        try:
+            admins = GroupAdmins.objects.filter(group=obj.group_id)
+            if admins.exists():
+                admins_list = []
+                for member in admins:
+                    user = member.admin
+                    admins_list.append({
+                        'admin_id': member.id,
+                        'user_id': user.employee.user.user_id,
+                        'name': str(user.employee.user),
+                        'slug': str(user.employee.user.slug),
+                    })
+                return admins_list
+            else:
+                return None
+        except GroupMembers.DoesNotExist as e:
+            print(str(e))
+            return None
 
     def get_members(self, obj):
         try:
@@ -568,6 +590,7 @@ class GroupsSerializer(serializers.ModelSerializer):
                         'name': str(user.employee.user),
                         'slug': str(user.employee.user.slug),
                         'image': str(user.employee.user.image),
+                        'occupation': str(user.employee.user.occupation), 
                     })
                 return members_list
             else:
@@ -577,13 +600,32 @@ class GroupsSerializer(serializers.ModelSerializer):
             return None
         
 class GroupMembersSerializer(serializers.ModelSerializer):
+    group_name = serializers.SerializerMethodField()
+    member_info = serializers.SerializerMethodField()
     class Meta:
         model = GroupMembers
         fields = (
             "id",
             "group",
+            "group_name",
             "member",
+            "member_info"
         )
+
+    def get_group_name(self,obj):
+        return str(obj.group.name)
+
+
+    def get_member_info(self, obj):
+        user = obj.member.employee.user
+        return{
+            'member': obj.id,
+            'user_id': user.user_id,
+            'name': str(user),
+            'slug': str(user.slug),
+            'image': str(user.image),
+            'occupation': str(user.occupation), 
+        }
 
 class GroupAdminsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -619,3 +661,19 @@ class GroupChatSerializer(serializers.ModelSerializer):
             'image':str(user.user.image),
             'work_id': str(user.id)
         }
+    
+    def get_sender_info(self, obj):
+        try:
+            user = obj.sender.member.employee
+            return {
+                'id': user.user.user_id,
+                'name': str(user.user),
+                'slug': str(user.user.slug),
+                'image': str(user.user.image),
+                'work_id': str(user.id)
+            }
+        except AttributeError: 
+            return {
+                'id': None,
+                'name': "Removed User",
+            }

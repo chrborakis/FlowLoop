@@ -1,12 +1,11 @@
 import React, {useState, useEffect, useRef} from "react";
-import { Card, Row, Col, Form } from "react-bootstrap";
+import { Card, Row, Col} from "react-bootstrap";
 import CloseButton from 'react-bootstrap/CloseButton';
 import { User } from "../Profiles/Profile";
-import { getMessages, sendMessage, clearUnread } from "./Utils";
-import { TextField } from "@material-ui/core";
-import SendIcon from '@mui/icons-material/Send';
-import Button from '@mui/material/Button';
 import { dateFormat } from "../Extra/Date";
+
+import NewMessage from "./NewMessage";
+import { getMessages, sendMessage, clearUnread } from "./ChatUtils";
 
 import '../../../static/css/chat.css'
 import '../../../static/css/index.css'
@@ -15,7 +14,6 @@ const Chat = ({chat, setChat, room}) => {
     const [socket, setSocket] = useState(null);
     const {sender, receiver} = chat;
 
-    const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const messageEndRef = useRef(null);
 
@@ -49,15 +47,7 @@ const Chat = ({chat, setChat, room}) => {
         if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages);
     },[chat])
 
-    useEffect(() => {scrollToBottom();}, [messages]);
-
-    const handleChange = (event) => setMessage(event.target.value);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('New Message: ', message)
-        sendMessage({sender:sender.id, receiver:receiver.id, message:message}, setMessages, setMessage, socket)
-    }
+    useEffect(() => scrollToBottom(), [messages]);
 
     const scrollToBottom = () => messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -82,30 +72,11 @@ const Chat = ({chat, setChat, room}) => {
                         )}
                     </>
                     )):(<p>Start conversation</p>)
-                }
-                
-                <div className='message-ref' ref={messageEndRef}/>
-                
+                }  
+                <div className='message-ref' ref={messageEndRef}/>   
             </Card.Body>
             <Card.Footer>
-                <Form onSubmit={handleSubmit}>
-                    <Row>
-                        <Col xs={10}>
-                            <TextField className="textfield" placeholder="Send a message" name="message"
-                                value={message} onChange={handleChange} multiline fullWidth  
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                        event.preventDefault(); 
-                                        handleSubmit(event); 
-                                    }
-                                }}
-                            />
-                        </Col>
-                        <Col xs={2} className="d-flex align-items-center justify-content-end">
-                            <Button variant="contained" className="btn-primary" type="submit" endIcon={<SendIcon />}/>
-                        </Col>
-                    </Row>
-                </Form>
+                <NewMessage chat={{sender:sender.id, receiver:receiver.id}} setMessages={setMessages} socket={socket} onSend={sendMessage}/>
             </Card.Footer>
         </Card>
     </>)

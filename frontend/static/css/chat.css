@@ -54,3 +54,13 @@
 .message-ref{
     margin-top: 10px;
 }
+
+.header.card-header a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+
+.header.card-header a:hover{
+    background: var(--light_secondary);
+}

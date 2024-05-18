@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getChats } from "./Utils";
+import { getChats } from "./ChatUtils";
 import { Row, Col } from "react-bootstrap";
 import { Card } from "react-bootstrap";
 import { User } from "../Profiles/Profile";

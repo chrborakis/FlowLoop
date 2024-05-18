@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
-import { getChats } from "./Utils";
-import { Row, Col } from "react-bootstrap";
-import { Card } from "react-bootstrap";
+import { getChats } from "./ChatUtils";
+import { Row, Col, Card } from "react-bootstrap";
 import { User } from "../Profiles/Profile";
 import { scrollTop } from "../Extra/LinkOnTop";
 import { Link } from "react-router-dom";
