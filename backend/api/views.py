@@ -452,6 +452,32 @@ class GroupMembersView(APIView):
             return Response(serializer.data)
         except Http404:
             return Response({'error': 'Chats instances not found.'}, status=404)   
+    def post( self, request, group):
+        print("IN API: ", request.data)
+        serializer = GroupMembersSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class GroupNotMembersView(APIView):
+    def get(self,request,group,company):
+        try:
+            group_members = GroupMembers.objects.filter(group=group).values_list('member', flat=True)
+            print(group_members)
+            # non_group = WorksOn.objects.exclude(employee__company__in=group_members).filter(employee__company=company).values_list('id', flat=True)
+            # print(non_group)
+            # serializer = WorksOnSerializer(non_group, many=True)
+
+            # print(non_group-group_members)
+
+            non_group_members = WorksOn.objects.exclude(id__in=group_members).filter(employee__company=company)            
+            serializer = WorksOnSerializer(non_group_members, many=True)
+        
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
         
 class GroupsChatView(APIView):
     def get( self, request, group):

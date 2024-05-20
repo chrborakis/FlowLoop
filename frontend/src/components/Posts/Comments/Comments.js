@@ -9,7 +9,7 @@ import '../../../../static/css/index.css';
 
 import { scrollTop } from "../../Extra/LinkOnTop";
 import CommentIcon from '@mui/icons-material/Comment';
-
+import { UserAvt } from "../../Profiles/Profile";
 // post: post_id
 // url: ../backend/postpubliccomments OR backend/postpubliccomments
 const Comments = ({post,url,comments,exp,setNewComment }) => { 
@@ -22,10 +22,12 @@ const Comments = ({post,url,comments,exp,setNewComment }) => {
                     comments ? (
                         comments.map( comment => 
                             <Row style={{ width: '90%', margin: '5%' }} className="comment align-items-start">
-                                <Col xs={2}>
-                                    <img src={`/files/${comment.user.image}`} style={{ width: '60px', height: '60px', borderRadius:'50%' }} />
+                                <Col xs={1}>
+                                    {/* <Avatar src={`/files/${comment.user.image}` || ...stringAvatar('Kent Dodds')} />
+                                    <img src={`/files/${comment.user.image}`} style={{ width: '40px', height: '40px', borderRadius:'50%' }} /> */}
+                                    <UserAvt user={{name:comment.user.name, image:null, slug:comment.user.slug}} circle/>
                                 </Col>
-                                <Col xs={10}>
+                                <Col xs={11}>
                                     <Row>
                                         <Col xs={12} className="d-flex justify-content-between align-items-start">
                                             <Link to={`/user/${comment.user.slug}`} onClick={scrollTop}>

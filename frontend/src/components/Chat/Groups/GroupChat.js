@@ -4,7 +4,7 @@ import CloseButton from 'react-bootstrap/CloseButton';
 
 import Messages from "./Messages";
 import NewMessage from "../NewMessage";
-import { getGroupMessages, removeMember, sendGroupMessage, updateGroupMembers } from "./GroupUtils";
+import { getGroupMessages, sendGroupMessage } from "./GroupUtils";
 import { Dropdown } from "react-bootstrap";
 
 import '../../../../static/css/chat.css'
@@ -36,26 +36,6 @@ const GroupChat = ({chat, setChat, room}) => {
         }
     },[room])
 
-    function getMemberId(group, userId) {
-        const member = group?.members?.find(member => member.user_id === userId);
-        return member ? member.member : null;
-    }
-
-    // useEffect(()=>{
-    //     if(members){
-    //         setChat(chat => ({
-    //             ...chat,
-    //             user: {
-    //                 ...chat.user,
-    //                 member: getMemberId(group, user.id)
-    //             }
-    //         }));
-    //         setIsAdmin(admins?.some(admin => admin.user_id === user.id));
-    //         console.log("Members: ", members)
-    //         console.log("Admins: ",admins)
-    //     }
-    // },[members])
- 
     useEffect(()=>{
         if(socket){
             socket.onopen = () => console.log('WebSocket connection established: ', socket);
@@ -68,7 +48,6 @@ const GroupChat = ({chat, setChat, room}) => {
             return () => socket.close()
         }
     },[socket]) 
-      
 
     return(<>
         <Card className="chat card">

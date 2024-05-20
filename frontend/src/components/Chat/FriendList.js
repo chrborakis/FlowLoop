@@ -1,17 +1,14 @@
-import React,{useState, useEffect} from "react";
-import { getFriends } from "./ChatUtils";
+import React,{useState} from "react";
 import { Col, Row, Card } from "react-bootstrap";
 
 import Chat from './Chat';
 import Friends from "./List/Friends";
 import Groups from "./List/Groups";
-
 import GroupChat from './Groups/GroupChat';
 
 const FriendList = ({user_id}) => {
     const [chat, setChat]           = useState({sender:{}, receiver:{}})
     const [groupChat, setGroupChat] = useState({group:{}, user:{}})
-
     const [activeChat, setActiveChat] = useState(null); 
 
     const handleChat = (friend) => {
@@ -24,8 +21,8 @@ const FriendList = ({user_id}) => {
 
     const handleGroupChat = (group) => {
         setGroupChat({
-            group:{id:group.group_id, name:group.name, members:group.members, admins:group.admins},
-            user:{id:user_id, member:null}
+            group:{id:group.group_id, name:group.name, company: group.company, members:group.members, admins:group.admins},
+            user:{id:user_id, member:group?.members?.find(member => member.user_id === user_id)?.member || null}
         })
         setActiveChat('groupChat');
     }

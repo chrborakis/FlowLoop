@@ -9,18 +9,21 @@ import Chat from "./Chat";
 
 import '../../../static/css/messages.css'
 
+import { UserAvt } from "../Profiles/Profile";
+
 const Messages = ({ user, refresh, messages, chats, setChat, handleChat }) => {
     return (
         <div className="chats-list">
             {chats && chats.length > 0 ? (
                 chats.map((chat, idx) => (
                     <div key={chat.message_id} onClick={() => handleChat(chat)}
-                    className={`chat ${!chat.read && user === chat.receiver_info.id ? "unread" : ""}`}
+                        className={`chat ${!chat.read && user === chat.receiver_info.id ? "unread" : ""}`}
                     >
                         <Col xs={10}>
                             <Row>
                                 <Col xs={2}>
-                                    <img src={ user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`} style={{width: "40px",height: "40px",borderRadius: "50%",}} />
+                                    <UserAvt user={{name:user === chat.sender_info.id ? chat.receiver_info.name : chat.sender_info.name, image:user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`}} width={40}/>
+                                    {/* <img src={ user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`} style={{width: "40px",height: "40px",borderRadius: "50%",}} /> */}
                                 </Col>
                                 <Col xs={10} className="d-flex justify-content-between align-items-start">
                                     <Link to={ user === chat.sender_info.id  ? `/user/${chat.receiver_info.slug}`  : `/user/${chat.sender_info.slug}`} onClick={scrollTop}>

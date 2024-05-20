@@ -12,4 +12,5 @@ urlpatterns = [
     path("group/<int:group>",   views.group),
     path("conversation/<int:group>", views.conversation),
     path("members/<int:id>", views.members),
+    path("not_members/<int:group>/<int:company>", views.not_members)
 ]

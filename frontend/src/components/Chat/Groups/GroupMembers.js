@@ -3,7 +3,6 @@ import { Modal,Dropdown,Form,Row,Col } from "react-bootstrap";
 import { Button } from "@material-ui/core";
 
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
-
 import { User } from "../../Profiles/Profile";
 import { TextField } from "@material-ui/core";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -12,40 +11,35 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { updateGroupMembers } from "./GroupUtils";
 import { removeMember } from "./GroupUtils";
+import { fetchStaff } from "../../Projects/Projects/ProjectUtils";
+
+import '../../../../static/css/index.css'
+import AddMember from "./AddMember";
 
 const GroupMembers = (props) => {
     const [members, setMembers] = useState(props.members)
     const [admins,  setAdmins ]  = useState(props.admins)
     const [filteredMembers, setFiltered] = useState(members)
+
     //Remove member
     const [memberToRemove, setMemberToRemove] = useState({id:null,name:''});
     const [visible,setVisible] = useState(false)
 
     useEffect(() => {
-        console.log("useEffect")
-        console.log("props: ", props)
         updateGroupMembers(props.group?.id, setMembers, setAdmins)
     }, []);
-
+        
     const onRemove = (member) => {
         setMemberToRemove({id:member.member,name:member.name});
         setVisible(true);
     };
-
-    // useEffect(() => {
-    //     if(memberToRemove?.id) {
-    //         removeMember(memberToRemove.id)
-    //             .then(() => updateGroupMembers(props.group?.id, props.setMembers, props.setAdmins)
-    //         );
-    //     }
-    // }, [memberToRemove]);
 
     const accept = () => {
         if(memberToRemove?.id)removeMember(memberToRemove.id, setMembers)
         setVisible(false);
     };
     const reject = () => setVisible(false); 
-    
+
     const handleSubmit = async(e) => {
         e.preventDefault()
     }
@@ -65,28 +59,14 @@ const GroupMembers = (props) => {
         setPage(0);
     };
 
-    const [selectedOption, setSelectedOption] = useState();
     const [searchQuery, setSearchQuery] = useState('');
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    } 
-
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+ 
     useEffect(()=>{
-        if(members){
-            console.log("members",members)
-            setFiltered( members?.filter(member => member.name.toLowerCase().includes(searchQuery.toLowerCase())))
+        if(members || searchQuery){
+            setFiltered( members?.filter(member => member?.name.toLowerCase().includes(searchQuery.toLowerCase())))
         }
-    },[members])
-
-    useEffect(()=>{
-        if(filteredMembers){
-            console.log("filteredMembers",filteredMembers)
-        }
-    },[filteredMembers])
-
-    // const filteredMembers = members?.filter(member => member.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+    },[members,searchQuery])  
 
     const isMemberAdmin = (member) => admins.some(admin => admin.user_id === member);
 
@@ -97,7 +77,7 @@ const GroupMembers = (props) => {
                     {props.group.name} Members
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{width:'100%'}}>
+            {/* <Modal.Body style={{width:'100%'}}> */}
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableContainer sx={{ maxHeight: 440, width: '100%', margin: 'auto' }}>
                     <Table stickyHeader aria-label="sticky table">
@@ -133,10 +113,10 @@ const GroupMembers = (props) => {
                 <Row>
                     <Col xs={5}>
                         <Form className='form' onSubmit={handleSubmit}>
-                        <TextField label="Search" variant="outlined" style={{width:'90%'}}
-                            value={searchQuery} onChange={handleSearchChange}
-                            fullWidth margin="normal" size="small"
-                        />
+                            <TextField label="Search" variant="outlined" style={{width:'90%'}}
+                                value={searchQuery} onChange={handleSearchChange}
+                                fullWidth margin="normal" size="small"
+                            />
                         </Form>
                     </Col>
                     <Col xs={7}>
@@ -147,9 +127,9 @@ const GroupMembers = (props) => {
                     </Col>
                 </Row>
                 </Paper>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="contained" color="primary" type="submit">Assign</Button>
+            {/* </Modal.Body> */}
+            <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
+                <AddMember company={props.group?.company} group={{id:props.group?.id, company:props.group?.company}} setMembers={setMembers}/>
             </Modal.Footer>
         </Modal>       
     </>)
