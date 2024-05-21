@@ -71,6 +71,30 @@ export const removeMember = async( memberToRemove, setMembers) => {
     }).catch(err => console.log(err))
 }
 
+export const removeAdmin = async( admin, setAdmins) => {
+    await axios.delete(`${window.location.origin}/backend/groups/admins/${admin}`,{
+        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
+    }).then( res => {
+        console.log(res.data)
+        if(res.data.status===200){
+            setAdmins((prevAdmins) =>
+                prevAdmins.filter((m) => m.member !== admin)
+            );
+        }
+    }).catch(err => console.log(err))
+}
+
+export const addAdmin = async( admin, setAdmins) => {
+    await axios.post(`${window.location.origin}/backend/groups/admins/${admin.admin}`, admin,{
+        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
+    }).then( res => {
+        if(res.data.status===200){
+            const {user,admin} = res.data.data
+            setAdmins((prevAdmins) => [...prevAdmins, {user_id:user, member:admin}]);
+        }
+    }).catch(err => console.log(err))
+}
+
 export const updateGroupMembers = async( group_id, setMembers, setAdmins) => {
     await axios.get(`${window.location.origin}/backend/groups/group/${group_id}`,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type':'application/json'}

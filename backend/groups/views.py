@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from apps.groups.models import GroupMembers
+from apps.groups.models import GroupAdmins, GroupMembers
 from backend.util import get_base_url
 
 @csrf_exempt
@@ -156,6 +156,44 @@ def members(request, id):
             except GroupMembers.DoesNotExist:return JsonResponse({'message': 'GroupMember '+str(member)+' not found','status': 404})
             except Exception as e: return JsonResponse({'message': str(e),'status': 500})
         else: pass
+
+@csrf_exempt
+def admins(request, id):
+    base_url = get_base_url(request)
+    if request.method == 'POST':
+        if id:
+            try:
+                data = json.loads(request.body.decode('utf-8'))   
+                print(data)
+                response = requests.post(base_url+'/backend/api/group_admins/'+str(id), json=data)
+                if response.status_code == 200:
+                    return JsonResponse({
+                        'message': 'Group Admin POST succesfully',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to POST Group Admin',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({
+                    'message': str(e),
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+    elif request.method == 'DELETE':
+        if id:
+            try:
+                item = GroupAdmins.objects.get(admin=id)
+                item.delete()
+                return JsonResponse({'message': '[DEL]GroupAdmin '+str(id)+' deleted','status': 200})
+            except GroupMembers.DoesNotExist:return JsonResponse({'message': 'GroupAdmin '+str(id)+' not found','status': 404})
+            except Exception as e: return JsonResponse({'message': str(e),'status': 500})
+        else: pass
+
 
 @csrf_exempt
 def not_members(request, group, company):

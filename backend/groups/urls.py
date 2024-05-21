@@ -8,9 +8,11 @@ from . import views
 from backend.views import *
 
 urlpatterns = [
-    path("<int:user>",   views.groups),
+    path("<int:user>",   views.groups), # get groups user is member
     path("group/<int:group>",   views.group),
     path("conversation/<int:group>", views.conversation),
+
     path("members/<int:id>", views.members),
+    path("admins/<int:id>",  views.admins),
     path("not_members/<int:group>/<int:company>", views.not_members)
 ]

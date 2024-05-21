@@ -75,7 +75,7 @@ const GroupChat = ({chat, setChat, room}) => {
                 <NewMessage chat={{group:group.id, sender:user.member}} setMessages={setMessages} socket={socket} onSend={sendGroupMessage}/>
             </Card.Footer>
         </Card>
-        <GroupMembers group={group} show={membersModal} onHide={() => setMembersModal(false)} isAdmin={isAdmin}/>
+        <GroupMembers chat={chat} show={membersModal} onHide={() => setMembersModal(false)} isAdmin={isAdmin}/>
     </>)
 }
 

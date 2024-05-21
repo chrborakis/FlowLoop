@@ -25,6 +25,7 @@ const FriendList = ({user_id}) => {
             user:{id:user_id, member:group?.members?.find(member => member.user_id === user_id)?.member || null}
         })
         setActiveChat('groupChat');
+        console.log(groupChat)
     }
 
     return(<>

@@ -26,17 +26,17 @@ const AddMember = ({company, group, setMembers}) => {
     
     useEffect( ()=>{ 
         getNotMembers(group, setWorkers)
-    },[addMember])
+    },[addMember,group?.id])
 
     return(<>
         <Form onSubmit={handleSubmit}>
-        <ButtonGroup aria-label="Basic button group">
+        <ButtonGroup>
             <Dropdown>
                 <Dropdown.Toggle variant="secondary">
                     {newMember ? newMember.name : 'Add Member'}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    <div style={{ maxHeight: '300px', overflowY: 'auto', minWidth: '300px' }}>
+                    <div style={{ maxHeight: '300px', overflowY: 'auto', minWidth: '300px' }} onClick={()=>getNotMembers(group, setWorkers)}>
                         {filteredWorkers?.map((worker, index) => (
                             <Dropdown.Item key={index} eventKey={worker} onClick={() => setNewMember({work_id:worker.id, name:worker.employee.name})}>
                                 <div className="d-flex align-items-center">

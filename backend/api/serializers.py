@@ -559,16 +559,14 @@ class GroupsSerializer(serializers.ModelSerializer):
 
     def get_admins(self, obj):
         try:
-            admins = GroupAdmins.objects.filter(group=obj.group_id)
+            admins = GroupAdmins.objects.filter(admin__group=obj.group_id)
             if admins.exists():
                 admins_list = []
                 for member in admins:
                     user = member.admin
                     admins_list.append({
-                        'admin_id': member.id,
-                        'user_id': user.employee.user.user_id,
-                        'name': str(user.employee.user),
-                        'slug': str(user.employee.user.slug),
+                        'user_id':   user.member.employee.user.user_id,
+                        'member': user.id,
                     })
                 return admins_list
             else:
@@ -628,13 +626,23 @@ class GroupMembersSerializer(serializers.ModelSerializer):
         }
 
 class GroupAdminsSerializer(serializers.ModelSerializer):
+    group    = serializers.SerializerMethodField()
+    user     = serializers.SerializerMethodField()
     class Meta:
         model = GroupAdmins
         fields = (
             "id",
-            "group",
             "admin",
+            "user",
+            "group"
         )
+    
+    def get_group(self, obj):
+        return obj.admin.group.group_id
+
+    def get_user(self, obj):
+        return obj.admin.member.employee.user_id
+        
     
 class GroupChatSerializer(serializers.ModelSerializer):
     sender_info = serializers.SerializerMethodField()

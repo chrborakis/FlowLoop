@@ -8,15 +8,18 @@ import { TextField } from "@material-ui/core";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import CheckIcon from '@mui/icons-material/Check';
 import { ConfirmDialog } from 'primereact/confirmdialog';
-
+import ClearIcon from '@mui/icons-material/Clear';
 import { updateGroupMembers } from "./GroupUtils";
 import { removeMember } from "./GroupUtils";
 import { fetchStaff } from "../../Projects/Projects/ProjectUtils";
 
 import '../../../../static/css/index.css'
 import AddMember from "./AddMember";
+import { addAdmin, removeAdmin } from "./GroupUtils";
 
 const GroupMembers = (props) => {
+    const {group, user} = props.chat;
+
     const [members, setMembers] = useState(props.members)
     const [admins,  setAdmins ]  = useState(props.admins)
     const [filteredMembers, setFiltered] = useState(members)
@@ -25,9 +28,12 @@ const GroupMembers = (props) => {
     const [memberToRemove, setMemberToRemove] = useState({id:null,name:''});
     const [visible,setVisible] = useState(false)
 
+    const [hoveredRow, setHoveredRow] = useState(null);
+    const [hoveredCell, setHoveredCell] = useState(null);
+    
     useEffect(() => {
-        updateGroupMembers(props.group?.id, setMembers, setAdmins)
-    }, []);
+        updateGroupMembers(group?.id, setMembers, setAdmins)
+    }, [group?.id]);
         
     const onRemove = (member) => {
         setMemberToRemove({id:member.member,name:member.name});
@@ -69,12 +75,22 @@ const GroupMembers = (props) => {
     },[members,searchQuery])  
 
     const isMemberAdmin = (member) => admins.some(admin => admin.user_id === member);
+    
+    const handleAdminClick = (member, isAdmin) => {
+        if(member.user_id!== user.id){
+            if(isAdmin){
+                removeAdmin( member.member, setAdmins)
+            }else{
+                addAdmin( {admin:member.member}, setAdmins)
+            }
+        }
+    };
 
     return(<>
         <Modal {...props} size="lg" centered aria-labelledby="contained-modal-title-vcenter">
             <Modal.Header closeButton>
                 <Modal.Title id="admin-inv-vcenter">
-                    {props.group.name} Members
+                    {group.name} Members
                 </Modal.Title>
             </Modal.Header>
             {/* <Modal.Body style={{width:'100%'}}> */}
@@ -93,10 +109,22 @@ const GroupMembers = (props) => {
                     <TableBody>
                         { filteredMembers!=null && filteredMembers?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((member, index) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={member.code}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={member.user_id} onMouseEnter={() => setHoveredRow(member.user_id)} onMouseLeave={() => setHoveredRow(null)}>
                                     <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
-                                    <TableCell> <User user={member} circle={true} width={50}/></TableCell>
-                                    <TableCell>{isMemberAdmin(member.user_id) && <CheckIcon />}</TableCell>
+                                    <TableCell><User user={member} circle={true} width={50}/></TableCell>
+                                    {/* <TableCell onClick={ () => handleAdminClick(member, isMemberAdmin(member.user_id))}>{isMemberAdmin(member.user_id) && <CheckIcon />}</TableCell> */}
+                                    <TableCell
+                                        onClick={() => handleAdminClick(member, isMemberAdmin(member.user_id))}
+                                        onMouseEnter={() => setHoveredCell(member.user_id)} onMouseLeave={() => setHoveredCell(null)}
+                                    >
+                                        {isMemberAdmin(member.user_id) && !(props.isAdmin && hoveredRow === member.user_id && hoveredCell === member.user_id && isMemberAdmin(member.user_id)
+                                            ) ? <CheckIcon /> : null}
+                                        {props.isAdmin && (
+                                            (hoveredRow === member.user_id && hoveredCell === member.user_id) &&
+                                            (isMemberAdmin(member.user_id) && member.user_id!== user.id ? <ClearIcon/> : <CheckIcon />) 
+                                        )}
+                                           
+                                    </TableCell>
                                     <TableCell>{member.occupation}</TableCell>
                                     
                                     {props.isAdmin && <TableCell><PersonRemoveIcon onClick={() => onRemove(member)}/></TableCell>}
@@ -129,7 +157,7 @@ const GroupMembers = (props) => {
                 </Paper>
             {/* </Modal.Body> */}
             <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-                <AddMember company={props.group?.company} group={{id:props.group?.id, company:props.group?.company}} setMembers={setMembers}/>
+                <AddMember company={group?.company} group={{id:group?.id, company:group?.company}} setMembers={setMembers}/>
             </Modal.Footer>
         </Modal>       
     </>)
