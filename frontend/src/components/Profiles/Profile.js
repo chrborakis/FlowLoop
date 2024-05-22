@@ -20,12 +20,16 @@ const stringToColor = (string) => {
     return color;
   }
   
-const stringAvatar = (name) => {
+  const stringAvatar = (name) => {
+    const initials = name.split(' ')
+        .map(word => word.charAt(0)) // Get the first character of each word
+        .join('') // Join the characters together
+
     return {
-        sx: {bgcolor: stringToColor(name),},
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+        sx: { bgcolor: stringToColor(name) },
+        children: initials,
     };
-  }
+};
 
 export const User = ({ user, circle, width}) => {
     console.log(user)
@@ -66,9 +70,9 @@ export const UserAvt = ({user, width, circle}) => {
     return( <>
         {imageUrl ? (
             circle ? (
-                imageUrl && <Avatar alt={name} src={imageUrl} width={width || 60}/>
+                imageUrl && <Avatar alt={name} title={name} src={imageUrl} width={width || 60}/>
             ) : (
-                imageUrl && <img alt={name} src={imageUrl} width={width || 60}/>
+                imageUrl && <img alt={name} title={name} src={imageUrl} width={width || 60}/>
             )
         ) : (
             <Avatar {...stringAvatar(name)} alt={name} width={width || 60}/>

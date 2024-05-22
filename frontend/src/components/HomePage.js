@@ -23,24 +23,24 @@ const HomePage = ({user}) => {
         <>
             <Col md={10} className="d-flex flex-column justify-content-start">
             {
-                    user?.company ? (
-                            <Link to={`/company/${user?.company.slug}`}>
-                        <Button variant="outline-primary">
-                                {user?.company.name}
-                        </Button>
-                            </Link>
-                    ) : <>
-                        <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
-                        <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
-                    </>
-                }
-                <Tabs value={value} onChange={handleChange}
-                    indicatorColor="primary" textColor="primary"
-                    scrollButtons="auto" centered
-                    aria-label="scrollable auto tabs example">
-                    <Tab label="Feed" />
-                    {user?.company?.name && <Tab label={user?.company?.name} />}
-                </Tabs>
+                user?.company ? (
+                        <Link to={`/company/${user?.company.slug}`}>
+                    <Button variant="outline-primary">
+                            {user?.company.name}
+                    </Button>
+                        </Link>
+                ) : <>
+                    <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
+                    <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
+                </>
+            }
+            <Tabs value={value} onChange={handleChange}
+                indicatorColor="primary" textColor="primary"
+                scrollButtons="auto" centered
+                aria-label="scrollable auto tabs example">
+                <Tab label="Feed" />
+                {user?.company?.name && <Tab label={user?.company?.name} />}
+            </Tabs>
                 <div className="scroll-posts">
                     <TabPanel value={value} index={0}>
                         <PostsPublic user={user} url='backend/posts/postpublic' slug='/0'/>
@@ -53,7 +53,7 @@ const HomePage = ({user}) => {
                 </div>
             </Col>
             <Col className="friends-list d-flex flex-column justify-content-end">
-                { user && <FriendList user_id={user?.id}/>}
+                { user && <FriendList user={{ user_id:user?.id, company_id:user?.company?.id, work_id:user?.work_id}} />}
             </Col>
         </>
     );

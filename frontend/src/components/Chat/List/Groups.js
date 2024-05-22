@@ -5,19 +5,26 @@ import { Card, Row,Col } from "react-bootstrap";
 import {Form} from 'react-bootstrap';
 import { TextField } from "@material-ui/core";
 
+import { Button } from "@material-ui/core";
+
 import { UserAvt } from "../../Profiles/Profile";
-const Groups = ({user_id, handleChat, onRemoveMember}) => {
+
+import "../../../../static/css/groups.css"
+import NewGroup from "../Groups/NewGroup";
+
+const Groups = ({user, handleChat, onRemoveMember}) => {
     const [groups, setGroups] = useState([]);
     const [filteredList, setFilteredList] = useState(groups);
 
     const [isEditing, setIsEditing] = useState(false);
 
     useEffect(()=>{
-        if(user_id) getGroups(user_id, setGroups);
-    },[user_id, onRemoveMember])
+        if(user.user_id) getGroups(user.user_id, setGroups);
+    },[user, onRemoveMember])
 
     useEffect(()=>{
         if(groups)setFilteredList(groups)
+        console.log(groups)
     },[groups])
 
     const [inputValue, setInputValue] = useState('');
@@ -31,6 +38,8 @@ const Groups = ({user_id, handleChat, onRemoveMember}) => {
     
     const toggleEditMode = () => setIsEditing(!isEditing);
 
+    const [newGroupModal, setNewGroupModal] = useState(false);
+
     return(<>
         <Card.Header onClick={toggleEditMode} style={{ cursor: 'pointer' }}>
             {isEditing ? (
@@ -42,7 +51,7 @@ const Groups = ({user_id, handleChat, onRemoveMember}) => {
               <>Groups ({groups?.length || 0})</>
             )}
         </Card.Header>
-        <Card.Body style={{ overflowY: 'auto', width: '100%', scrollbarWidth: 'thin' }}>
+        <Card.Body className="card-body-flex">
             {groups ? (
                 <Col className="active-list">                        
                     {filteredList.map( group => 
@@ -60,6 +69,10 @@ const Groups = ({user_id, handleChat, onRemoveMember}) => {
             ) : (
                 <p>No groups yet</p>
             )}
+            <div className="create_group">
+                <Button variant="contained" color="primary" onClick={() => setNewGroupModal(true)}>New Group</Button>
+                <NewGroup user={user} setGroups={setGroups} show={newGroupModal} onHide={() => setNewGroupModal(false)}/>  
+            </div>
         </Card.Body>
     </>)
 }

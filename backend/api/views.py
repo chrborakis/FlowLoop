@@ -433,6 +433,13 @@ class GroupView(APIView):
             return Response(serializer.data)
         except Http404:
             return Response({'error': 'Group not found.'}, status=404) 
+    def post( self, request, group):
+        print("IN API: ", request.data)
+        serializer = GroupsSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
           
 class GroupsView(APIView):
     def get( self, request, user):

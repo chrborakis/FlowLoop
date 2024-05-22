@@ -1,0 +1,19 @@
+.card-body-flex {
+    display: flex;
+    flex-direction: column;
+    overflow-y: 'auto';
+    width: '100%';
+    scrollbar-width: 'thin';
+}
+
+.active-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.create_group {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}

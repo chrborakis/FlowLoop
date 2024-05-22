@@ -53,6 +53,29 @@ def group(request, group):
                     })
             except Exception as e:
                 return JsonResponse({'error':str(e)}, status=400)
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))   
+        print(data)
+        try:
+            response = requests.post(base_url+'/backend/api/group/0', json=data)
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': 'New Group POST succesfully',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': 'Failed to POST New Group',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
 
 @csrf_exempt
 def conversation(request, group):
