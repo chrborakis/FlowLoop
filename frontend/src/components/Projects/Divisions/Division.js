@@ -62,7 +62,7 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
             <Row className="align-items-center">
                 {division?.assign ? (
                     <Col className="d-flex justify-content-start">
-                        <User user={division.assign}/>
+                        <User user={division.assign} circle/>
                         {console.log("division.assign: ",division.assign)}
                     </Col>
                 ) : (

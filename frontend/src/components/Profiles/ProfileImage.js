@@ -4,6 +4,7 @@ import { Container, Row, Col, Card ,Form} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css"; 
 import { changeImage } from './User/UserUtils';
 import { useAuth } from '../../store/AuthContext';
+import { UserAvt } from './Profile';
 
 const ProfileImage = ({ url, id, image, setImage}) => {
     const { user, updateUser} = useAuth(); 
@@ -32,7 +33,7 @@ const ProfileImage = ({ url, id, image, setImage}) => {
     return(<>
         <Col xs={3} onClick={handleClick}>
             <div className="image-container">
-                <img src={image} width={150}/>
+                <UserAvt user={{name:user.name, image:image}} width={150} />
                 <Form ref={formRef} >
                     <Form.Control type="file" accept="image/*" style={{ display: 'none' }} ref={fileInputRef}
                             onChange={handleImageChange} 

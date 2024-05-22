@@ -14,7 +14,7 @@ const Messages = ({messages, user_id}) => {
     useEffect(() => scrollToBottom(), [messages]);
     
     return(<>
-        {messages ? messages.sort((a, b) => new Date(a.send_date) - new Date(b.send_date)).map((message, index) => {
+        {messages?.length>0 ? messages.sort((a, b) => new Date(a.send_date) - new Date(b.send_date)).map((message, index) => {
             const isDifferentSender = index === 0 || messages[index - 1].sender_info.id !== message.sender_info.id;
             
             return (

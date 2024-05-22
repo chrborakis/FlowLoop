@@ -58,7 +58,7 @@ export const addMember = async( newMember, setMembers, setNewMember) => {
     }).catch(err => console.log(err))
 }
 
-export const removeMember = async( memberToRemove, setMembers) => {
+export const removeMember = async( memberToRemove, setMembers, setGroupChat) => {
     await axios.delete(`${window.location.origin}/backend/groups/members/${memberToRemove}`,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
     }).then( res => {
@@ -67,6 +67,9 @@ export const removeMember = async( memberToRemove, setMembers) => {
             setMembers((prevMembers) =>
                 prevMembers.filter((m) => m.member !== memberToRemove)
             );
+            if(setGroupChat){
+                setGroupChat(null)
+            }
         }
     }).catch(err => console.log(err))
 }
@@ -103,7 +106,7 @@ export const updateGroupMembers = async( group_id, setMembers, setAdmins) => {
         const { members, admins} = res.data.data
         if(res.data.status === 200){
             setMembers(members)
-            setAdmins( admins)
+            setAdmins( admins || [])
         }
     }).catch(err => console.log(err))
 }

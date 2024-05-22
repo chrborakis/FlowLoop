@@ -5,7 +5,8 @@ import { Card, Row,Col } from "react-bootstrap";
 import {Form} from 'react-bootstrap';
 import { TextField } from "@material-ui/core";
 
-const Groups = ({user_id, handleChat}) => {
+import { UserAvt } from "../../Profiles/Profile";
+const Groups = ({user_id, handleChat, onRemoveMember}) => {
     const [groups, setGroups] = useState([]);
     const [filteredList, setFilteredList] = useState(groups);
 
@@ -13,7 +14,7 @@ const Groups = ({user_id, handleChat}) => {
 
     useEffect(()=>{
         if(user_id) getGroups(user_id, setGroups);
-    },[user_id])
+    },[user_id, onRemoveMember])
 
     useEffect(()=>{
         if(groups)setFilteredList(groups)
@@ -47,7 +48,8 @@ const Groups = ({user_id, handleChat}) => {
                     {filteredList.map( group => 
                         <div className="active-friend" key={group.group_id} alt={group.name} onClick={() => handleChat(group)}>
                             <div className="avatar-wrapper">
-                                <Avatar alt={group.name} title={group.name} src={`/files/${group?.image}` || ''} width={60}/>
+                                {/* <Avatar alt={group.name} title={group.name} src={`/files/${group?.image}` || ''} width={60}/> */}
+                                <UserAvt user={{name:group.name}} width={60}/>
                                 <div className="name-wrapper">
                                     <p className='name'>{group.name}</p>
                                 </div>

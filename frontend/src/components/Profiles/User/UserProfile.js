@@ -60,32 +60,35 @@ const UserProfile = () => {
         <div className='profile'>
             { data ? (
                 <> 
-                    <Row className="d-flex justify-content-center">
-                        <Col className="d-flex justify-content-start">
-                            <ProfileImage url={'users'} id={user.id} image={image} setImage={setImage}/>
-                            <Col xs={9}>
-                                <Row>
-                                    <Col xs={12}className="d-flex justify-content-start">
+                    <div className="d-flex justify-content-center">
+                        <Card className="d-flex justify-content-center"style={{ borderRadius: '0.25rem', width:'450px'}}>
+                            <Row className="d-flex justify-content-center">
+                                <Col className="d-flex justify-content-start">
+                                    <ProfileImage url={'users'} id={user.id} image={image} setImage={setImage} />
+                                </Col>
+                                <Col>
+                                    <Row className="text-center d-flex justify-content-center">
                                         {data.firstname} {data.midname} {data.lastname}
-                                    </Col>
-                                    <Col xs={12} className="d-flex justify-content-start">
-                                        { work && 
+                                    </Row>
+                                    <Row className="text-center d-flex justify-content-center">
+                                        {work && 
                                             <Link to={`../company/${work.company.slug}`}>
                                                 {work.company.name}
                                             </Link>
                                         }
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Col>
-                    </Row>
+                                    </Row>
+                                    <Row className="text-center d-flex justify-content-center">
+                                            {user.id !== data?.user && (
+                                            <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply} />
+                                        )}
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Card>
+                    </div>
 
-                    <Row className="justify-content-center"> <Col xs="auto">
-                        {user.id!=data?.user && <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply}/>}
-                    </Col></Row> 
-                    <Container fluid className="mt-5"> 
-                        <Row className="justify-content-center"> 
-                            <Col md={4} className="left-div page-box order-lg-1 order-md-1 order-1">
+                    <div className="d-flex justify-content-center profile_data">
+                            <Col className="page-box order-lg-1 order-md-1 order-1">
                                 <Tabs value={tab} onChange={handleTab}
                                         indicatorColor="primary" textColor="primary" centered
                                         aria-label="scrollable auto tabs example">
@@ -102,14 +105,11 @@ const UserProfile = () => {
                                 <TabPanel value={tab} index={2}>
                                     { friends && <Friends friends={friends}/>}
                                 </TabPanel>
-
-
                             </Col> 
-                            <Col md={8} className="right-divpage-box order-lg-2 order-md-2 order-2">
+                            <Col className="page-box order-lg-2 order-md-2 order-2">
                                 <PostsPublic user={user} url='../backend/posts/postpublic' slug={`/${slug}`} displayNew={slug===user.slug}/>
                             </Col> 
-                        </Row> 
-                    </Container> 
+                    </div>
                 </>
             ) : (
                 <></>

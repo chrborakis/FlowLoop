@@ -6,10 +6,14 @@ import Friends from "./List/Friends";
 import Groups from "./List/Groups";
 import GroupChat from './Groups/GroupChat';
 
+import { removeMember } from "./Groups/GroupUtils";
+
 const FriendList = ({user_id}) => {
     const [chat, setChat]           = useState({sender:{}, receiver:{}})
     const [groupChat, setGroupChat] = useState({group:{}, user:{}})
     const [activeChat, setActiveChat] = useState(null); 
+
+    const onRemoveMember = (member,setMembers) => removeMember(member,setMembers,setGroupChat)
 
     const handleChat = (friend) => {
         setChat({
@@ -21,7 +25,7 @@ const FriendList = ({user_id}) => {
 
     const handleGroupChat = (group) => {
         setGroupChat({
-            group:{id:group.group_id, name:group.name, company: group.company, members:group.members, admins:group.admins},
+            group:{id:group.group_id, name:group.name, company: group.company, members:group.members, admins:group?.admins},
             user:{id:user_id, member:group?.members?.find(member => member.user_id === user_id)?.member || null}
         })
         setActiveChat('groupChat');
@@ -31,13 +35,13 @@ const FriendList = ({user_id}) => {
     return(<>
         <Card className="friends">
             <Friends user_id={user_id} handleChat={handleChat}/>
-            <Groups  user_id={user_id} handleChat={handleGroupChat}/>
+            <Groups  user_id={user_id} handleChat={handleGroupChat} onRemoveMember={onRemoveMember}/>
         </Card>
         {activeChat === 'chat' && chat?.sender?.id &&(
             <Chat chat={chat} setChat={setChat} room={chat.sender.id+chat.receiver.id}/>
         )}
         {activeChat === 'groupChat' && groupChat?.group?.id &&(
-            <GroupChat chat={groupChat} setChat={setGroupChat} room={groupChat.group.id}/>
+            <GroupChat chat={groupChat} setChat={setGroupChat} room={groupChat.group.id} onRemoveMember={onRemoveMember}/>
         )}
     </>)
 }

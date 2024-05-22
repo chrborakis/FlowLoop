@@ -2,7 +2,6 @@ import Button from 'react-bootstrap/Button';
 import React, {useState, useEffect} from 'react';
 
 import { send_request } from './UserUtils';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 const FriendButton = ({ user, profile, setRequested, requested, onReply}) => {
     // const [client, setClient] = useState(null);

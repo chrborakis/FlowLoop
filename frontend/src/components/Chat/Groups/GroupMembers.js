@@ -9,19 +9,16 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import CheckIcon from '@mui/icons-material/Check';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import ClearIcon from '@mui/icons-material/Clear';
-import { updateGroupMembers } from "./GroupUtils";
-import { removeMember } from "./GroupUtils";
-import { fetchStaff } from "../../Projects/Projects/ProjectUtils";
+import { updateGroupMembers, removeMember, addAdmin, removeAdmin } from "./GroupUtils";
+
+import AddMember from "./AddMember";
 
 import '../../../../static/css/index.css'
-import AddMember from "./AddMember";
-import { addAdmin, removeAdmin } from "./GroupUtils";
+import '../../../../static/css/group.css'
 
 const GroupMembers = (props) => {
     const {group, user} = props.chat;
-
-    const [members, setMembers] = useState(props.members)
-    const [admins,  setAdmins ]  = useState(props.admins)
+    const {setMembers, setAdmins, members, admins} = props
     const [filteredMembers, setFiltered] = useState(members)
 
     //Remove member
@@ -41,7 +38,7 @@ const GroupMembers = (props) => {
     };
 
     const accept = () => {
-        if(memberToRemove?.id)removeMember(memberToRemove.id, setMembers)
+        if(memberToRemove?.id)removeMember(memberToRemove.id, setMembers,null)
         setVisible(false);
     };
     const reject = () => setVisible(false); 
@@ -93,7 +90,6 @@ const GroupMembers = (props) => {
                     {group.name} Members
                 </Modal.Title>
             </Modal.Header>
-            {/* <Modal.Body style={{width:'100%'}}> */}
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableContainer sx={{ maxHeight: 440, width: '100%', margin: 'auto' }}>
                     <Table stickyHeader aria-label="sticky table">
@@ -127,7 +123,7 @@ const GroupMembers = (props) => {
                                     </TableCell>
                                     <TableCell>{member.occupation}</TableCell>
                                     
-                                    {props.isAdmin && <TableCell><PersonRemoveIcon onClick={() => onRemove(member)}/></TableCell>}
+                                    {props.isAdmin && member.user_id!== user.id && <TableCell><PersonRemoveIcon onClick={() => onRemove(member)}/></TableCell>}
                                 </TableRow>
                             );
                         })}
@@ -155,10 +151,11 @@ const GroupMembers = (props) => {
                     </Col>
                 </Row>
                 </Paper>
-            {/* </Modal.Body> */}
-            <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-                <AddMember company={group?.company} group={{id:group?.id, company:group?.company}} setMembers={setMembers}/>
-            </Modal.Footer>
+            { props?.isAdmin && (
+                <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
+                    <AddMember company={group?.company} group={{id:group?.id, company:group?.company}} setMembers={setMembers}/>
+                </Modal.Footer>
+            )}
         </Modal>       
     </>)
 }

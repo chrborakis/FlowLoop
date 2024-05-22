@@ -28,15 +28,22 @@ const stringAvatar = (name) => {
   }
 
 export const User = ({ user, circle, width}) => {
+    console.log(user)
     const { name, slug, image} = user
+    const imageUrl = image
+        ? (image.startsWith('/files\\') || image.startsWith('/files'))
+            ? image
+            : `/files/${image}`
+        : '';
+
     return( 
         <Link to={`/user/${slug}`} onClick={scrollTop}>
             <div style={{display:'flex', alignItems:'center'}}>
-            {image ? (
+            {imageUrl ? (
                 circle ? (
-                    image && <Avatar alt={name} src={`/files/${image}`} width={width || 60}/>
+                    imageUrl && <Avatar alt={name} src={imageUrl} width={width || 60}/>
                 ) : (
-                    image && <img alt={name} src={`/files/${image}`} width={width || 60}/>
+                    imageUrl && <img alt={name} src={imageUrl} width={width || 60}/>
                 )
             ) : (
                 <Avatar {...stringAvatar(name)} width={width || 60}/>
@@ -47,15 +54,21 @@ export const User = ({ user, circle, width}) => {
     )
 }
 
-export const UserAvt = ({user, circle, width}) => {
-    console.log(user)
+export const UserAvt = ({user, width, circle}) => {
     const { name, image} = user
+    const imageUrl = image
+        ? (image.startsWith('/files\\') || image.startsWith('/files'))
+            ? image
+            : `files\\${image}`
+        : '';
+
+    
     return( <>
-        {image ? (
+        {imageUrl ? (
             circle ? (
-                image && <Avatar alt={name} src={`/files/${image}`} width={width || 60}/>
+                imageUrl && <Avatar alt={name} src={imageUrl} width={width || 60}/>
             ) : (
-                image && <img alt={name} src={`/files/${image}`} width={width || 60}/>
+                imageUrl && <img alt={name} src={imageUrl} width={width || 60}/>
             )
         ) : (
             <Avatar {...stringAvatar(name)} alt={name} width={width || 60}/>

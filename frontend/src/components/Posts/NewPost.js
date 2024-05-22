@@ -44,12 +44,12 @@ const NewPost = (props) => {
 
     return (
         <Modal {...props} size="lg" centered aria-labelledby="contained-modal-title-vcenter">
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Create a Post
+                </Modal.Title>
+            </Modal.Header>
             <Form className='post-form' onSubmit={handleSubmit}>
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        Create a Post
-                    </Modal.Title>
-                </Modal.Header>
                 <Modal.Body>
                     <Col>
                         <Row>

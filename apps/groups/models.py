@@ -39,19 +39,10 @@ class GroupMembers(models.Model):
 class GroupAdmins(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.ForeignKey(GroupMembers, unique=True, on_delete = models.CASCADE)
-    # group = models.ForeignKey(Groups, on_delete = models.CASCADE)
-    # admin = models.ForeignKey(WorksOn,    on_delete = models.CASCADE)
 
     def __str__(self):
         return f'{self.admin.group} admins by {self.admin.member.employee.user}'
-
-    # def clean(self):
-    #     if self.group.company != self.admin.employee.company:
-    #         raise ValidationError("Different company admin!")
-    #     super().clean()
-
     class Meta:
-        # unique_together = ('group','admin')
         db_table = 'group_admins'        
 
 def get_upload_path(instance, filename):

@@ -9,11 +9,18 @@ import { Dropdown } from "react-bootstrap";
 
 import '../../../../static/css/chat.css'
 import '../../../../static/css/index.css'
+import '../../../../static/css/group.css'
+
 import GroupMembers from "./GroupMembers";
 
-const GroupChat = ({chat, setChat, room}) => {
+import { removeMember } from "./GroupUtils";
+
+const GroupChat = ({chat, setChat, room, onRemoveMember}) => {
     const [socket, setSocket] = useState(null);
     const {group, user} = chat;
+
+    const [members, setMembers] = useState(group?.members)
+    const [admins,  setAdmins ]  = useState(group?.admins || [])
 
     const [ messages, setMessages] = useState([]);
     const [isAdmin,setIsAdmin] = useState(false)
@@ -61,7 +68,7 @@ const GroupChat = ({chat, setChat, room}) => {
                             <Dropdown.Menu className="dropdown-menu-center">
                                 <Dropdown.Item onClick={() => setMembersModal(true)}>Members</Dropdown.Item>
                                 <hr/>
-                                <Dropdown.Item style={{color:"red"}}>Leave Group</Dropdown.Item>
+                                <Dropdown.Item style={{color:"red"}} onClick={ () => onRemoveMember(chat.user.member, setMembers)}>Leave Group</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Col>
@@ -75,7 +82,8 @@ const GroupChat = ({chat, setChat, room}) => {
                 <NewMessage chat={{group:group.id, sender:user.member}} setMessages={setMessages} socket={socket} onSend={sendGroupMessage}/>
             </Card.Footer>
         </Card>
-        <GroupMembers chat={chat} show={membersModal} onHide={() => setMembersModal(false)} isAdmin={isAdmin}/>
+        <GroupMembers chat={chat} show={membersModal} onHide={() => setMembersModal(false)} 
+            isAdmin={isAdmin} setMembers={setMembers} members={members} setAdmins={setAdmins} admins={admins}/>
     </>)
 }
 

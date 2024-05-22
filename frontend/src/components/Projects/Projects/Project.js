@@ -133,7 +133,7 @@ const Project = ({project, setProjects}) => {
             <Card.Header>
                 <Row className="align-items-center">
                     <Col className="d-flex justify-content-start">
-                        <User user={project.admin}/>
+                        <User user={project.admin} circle/>
                     </Col>
 
                     <Col xs={4} className="d-flex justify-content-end">

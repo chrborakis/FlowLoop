@@ -21,6 +21,8 @@ import PostActions from "./PostActions";
 // import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
 // import 'primereact/resources/primereact.min.css';
 import '../../../static/css/Posts/Post.css';
+
+import { UserAvt } from "../Profiles/Profile";
        
 const Post = ({post, url, setPosts}) => {
     const { user} = useAuth();
@@ -60,7 +62,7 @@ const Post = ({post, url, setPosts}) => {
             <Row className="align-items-center">
                 <Col className="d-flex justify-content-start">
                     <Col xs={3}>
-                        <img src={`/files/${post.user?.user_image}`} style={{ width: '60px', height: '60px', borderRadius:'50%' }} />
+                        <UserAvt user={{name: post.user?.user_name, image: post.user?.user_image, slug:post.user?.user_slug}} circle width={60}/>
                     </Col>
                     <Col xs={9}>
                         <Row>

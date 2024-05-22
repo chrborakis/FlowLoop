@@ -15,13 +15,10 @@ from backend.util import get_base_url, get_workson_instance
 
 @csrf_exempt
 def login_view(request):
-    print('in-------------------------')
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         email    = data.get('formData').get('email')
         password = data.get('formData').get('password')
-        print(email,password)
-
         try:
             user = UsersCredentials.objects.get(email=email)
             password_matches = check_password(password, user.password)
@@ -38,7 +35,8 @@ def login_view(request):
                         'id': user.user_id,
                         'name':  f"{user_dict['firstname']} {user_dict['lastname']}",
                         'slug':  user_dict['slug'],
-                        'image': user_dict['image'] or '/profile/user/dummy-user.png',
+                        'image': user_dict['image'],
+                        #   or '/profile/user/dummy-user.png',
                         'company': None,'work_id': None,'is_admin': None
                     }
 
@@ -47,7 +45,6 @@ def login_view(request):
 
                     try:
                         workOn = get_workson_instance(user_dict['user'])
-                        print("WORNON AUTH -> ", workOn)
 
                         user1['company'] = workOn['company']
                         user1['work_id'] = workOn['id']
@@ -123,7 +120,6 @@ def register_view(request):
                     print("ERROR USER")
                     instance = UsersCredentials.objects.get(pk=str(user_cred_data['user_id'])) 
                     instance.delete()
-                    # requests.delete(base_url+'/backend/api/userscredential' + str(user_cred_data['user_id']))
                     return JsonResponse({
                         'message': "User Register failed!",
                         'error': response_user.json(),

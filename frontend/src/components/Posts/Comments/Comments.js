@@ -23,9 +23,7 @@ const Comments = ({post,url,comments,exp,setNewComment }) => {
                         comments.map( comment => 
                             <Row style={{ width: '90%', margin: '5%' }} className="comment align-items-start">
                                 <Col xs={1}>
-                                    {/* <Avatar src={`/files/${comment.user.image}` || ...stringAvatar('Kent Dodds')} />
-                                    <img src={`/files/${comment.user.image}`} style={{ width: '40px', height: '40px', borderRadius:'50%' }} /> */}
-                                    <UserAvt user={{name:comment.user.name, image:null, slug:comment.user.slug}} circle/>
+                                    <UserAvt user={comment.user} circle/>
                                 </Col>
                                 <Col xs={11}>
                                     <Row>
