@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import IconButton from '@mui/material/IconButton';
 import '../../../static/css/Login.css';
 import {Form,Card,Row,Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,7 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormControl from '@mui/material/FormControl';
 
-import {Grid,TextField,Button } from '@material-ui/core'
+import {TextField,Button } from '@material-ui/core'
 import '../../../static/css/index.css';
 
 const Login = ({login}) => {
@@ -40,11 +39,9 @@ const Login = ({login}) => {
     }
 
     const doLogin = async(e) => {
-        console.log('Form: ', formData)
         axios.post('backend/authentication/login', { formData},
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
         ).then(res => {
-            console.log(res)
             if(res.data.authenticated){
                 let user = JSON.parse(res.data.user);
                 onLogin(user);
@@ -66,49 +63,47 @@ const Login = ({login}) => {
     };
 
     return(
-        // <div className='form'>
-            <Grid container justify="center" alignItems='center'
-            direction='column' spacing={5}>
-
-           
-            <Form className='' onSubmit={handleLogin}>
+        <div style={{display:'flex', justifyContent:'center'}}>           
                 <Card className="text-center">  
                     <Card.Header>Login</Card.Header>
-                    <Card.Body>
-                        <Grid item>
+                    <Form className='' onSubmit={handleLogin}>
 
-                        <TextField variant="outlined" className="textfield"
-                            placeholder="Enter your Email" name="email" type="email" 
-                            label="Email" required fullWidth 
-                            value={formData.email} onChange={handleInputChange}
-                            />
-                        {errors.email } 
-                        <span className="text-danger">{error.email}</span>
-                        </Grid>
-                        <Grid item>
-                        <FormControl variant="outlined" fullWidth style={{marginTop:'10%'}}>
-                            <TextField className="textfield"  variant="outlined" 
-                                label="Password" type={showPassword ? 'text' : 'password'}  placeholder="Enter your Password" 
-                                name="password" required  value={formData.password}  onChange={handleInputChange}
-                            />
-                            <Form.Text className="text-muted">
-                                {showPassword ? (
-                                <VisibilityOff onClick={handleClickShowPassword} />
-                                ) : (<Visibility onClick={handleClickShowPassword} />)}
-                            </Form.Text>
-                            {errors.password}
-                            <span className="text-danger">{error.password}</span>
-                        </FormControl>
-                        </Grid>
-                    </Card.Body>
-                    <Card.Footer className="text-muted">
-                        <Button variant="contained" color='primary' type="submit">
-                            Login
-                        </Button>
-                    </Card.Footer>
+                    <Card.Body>
+                        <Col>
+                            <Row>
+                            <TextField className="textfield"
+                                placeholder="Enter your Email" name="email" type="email" 
+                                label="Email" required fullWidth 
+                                value={formData.email} onChange={handleInputChange}
+                                />
+                            {errors.email } 
+                            <span className="text-danger">{error.email}</span>
+                            </Row>
+                            <Row>
+                            <FormControl fullWidth style={{marginTop:'10%'}}>
+                                <TextField className="textfield" 
+                                    label="Password" type={showPassword ? 'text' : 'password'}  placeholder="Enter your Password" 
+                                    name="password" required  value={formData.password}  onChange={handleInputChange}
+                                />
+                                <Form.Text className="text-muted">
+                                    {showPassword ? (
+                                    <VisibilityOff onClick={handleClickShowPassword} />
+                                    ) : (<Visibility onClick={handleClickShowPassword} />)}
+                                </Form.Text>
+                                {errors.password}
+                                <span className="text-danger">{error.password}</span>
+                            </FormControl>
+                            </Row>
+                        </Col>
+                        </Card.Body>
+                        <Card.Footer className="text-muted">
+                            <Button variant="contained" color='primary' type="submit">
+                                Login
+                            </Button>
+                        </Card.Footer>
+                    </Form>
                 </Card>
-            </Form>
-        </Grid>
+        </div>
     )
 }
 

@@ -14,6 +14,7 @@ import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 
 import '../../../../../static/css/index.css'
+import '../../../../../static/css/Profile/info.css'
 
 const Info = ({user, _user, updateUser, admin}) => {
     const [countries, setCountries] = useState([]);

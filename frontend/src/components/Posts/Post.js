@@ -17,9 +17,6 @@ import IconButton from '@mui/material/IconButton';
 import '../../../static/css/index.css'
 import PostActions from "./PostActions";
 
-// import 'primeicons/primeicons.css';
-// import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme accordingly
-// import 'primereact/resources/primereact.min.css';
 import '../../../static/css/Posts/Post.css';
 
 import { UserAvt } from "../Profiles/Profile";

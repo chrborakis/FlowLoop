@@ -7,7 +7,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { createCompany } from "../CompanyUtils";
 import { TextField} from '@material-ui/core'
 import '../../../../../static/css/index.css'
-// import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import Button from '@mui/material/Button';
 
@@ -48,7 +47,6 @@ const CreateCompany = ({onHide}) => {
             createCompany( user.id, data, image, setErrors)
             .then(res => {
                 updateUser({...user, 'company': res.data.company_info,'work_id': res.work.work_id,'is_admin': res.work.is_admin})
-                // if(next && res.status === 200)setForm(1)
             })
             .catch(error => console.error(error));
         }else{
@@ -59,6 +57,7 @@ const CreateCompany = ({onHide}) => {
 
     return(<>
         <Form className='form' onSubmit={handleSubmit}>
+        <Modal.Body>
             <Form.Group as={Row} className="mb-3">
                 <Form.Group as={Col} className="mb-3">
                     <TextField value={formData.company_name} onChange={handleInputChange} 
@@ -105,12 +104,10 @@ const CreateCompany = ({onHide}) => {
                     />
                 </Form.Group>
             </Form.Group>
-
-                {/* <ButtonGroup> */}
-                    <Button variant="contained" color="success" type="submit">Complete</Button>
-                    {/* <Button variant="secondary" color="primary" type="submit" onClick={() => setNext(true)}>Continue</Button> */}
-                {/* </ButtonGroup> */}
-
+            </Modal.Body>
+            <Modal.Footer style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Button variant="contained" color="success" type="submit">Create</Button>
+            </Modal.Footer>
         </Form> 
     </>)
 }

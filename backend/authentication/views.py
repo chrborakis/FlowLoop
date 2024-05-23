@@ -22,7 +22,7 @@ def login_view(request):
         try:
             user = UsersCredentials.objects.get(email=email)
             password_matches = check_password(password, user.password)
-
+            print(user, password, user.password, password_matches)
             if password_matches:
                 print("Authentication successful for user:", user.email)
                 # login(request, user)  //ERROR

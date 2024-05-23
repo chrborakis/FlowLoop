@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import {Button, Row, Col, Card} from 'react-bootstrap';
+import { Row, Col, Card} from 'react-bootstrap';
+import Button from '@mui/material/Button';
+
 import { Link } from "react-router-dom";
 import PostsPublic from "./Posts/PostsPublic";
 import PostsPrivate from "./Posts/PostsPrivate";
@@ -22,18 +24,20 @@ const HomePage = ({user}) => {
     return (
         <>
             <Col md={10} className="d-flex flex-column justify-content-start">
-            {
-                user?.company ? (
+                <Row md={6} className="d-flex justify-content-center align-items-center">
+                {
+                    user?.company ? (
                         <Link to={`/company/${user?.company.slug}`}>
-                    <Button variant="outline-primary">
-                            {user?.company.name}
-                    </Button>
+                            <Button variant="outlined">
+                                {user?.company.name}
+                            </Button>
                         </Link>
-                ) : <>
-                    <Button variant="outline-primary" onClick={() => setModalShow(true)}>Start your company!</Button>
-                    <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
-                </>
-            }
+                    ) :  <>
+                        <Button variant="outlined" onClick={() => setModalShow(true)}>Start your company</Button>
+                        <CompanyForm show={modalShow} onHide={() => setModalShow(false)}/>
+                    </>
+                }
+                </Row>
             <Tabs value={value} onChange={handleChange}
                 indicatorColor="primary" textColor="primary"
                 scrollButtons="auto" centered

@@ -21,9 +21,7 @@ const stringToColor = (string) => {
   }
   
   const stringAvatar = (name) => {
-    const initials = name.split(' ')
-        .map(word => word.charAt(0)) // Get the first character of each word
-        .join('') // Join the characters together
+    const initials = name.split(' ').map(word => word.charAt(0)).join('')
 
     return {
         sx: { bgcolor: stringToColor(name) },
@@ -32,7 +30,6 @@ const stringToColor = (string) => {
 };
 
 export const User = ({ user, circle, width}) => {
-    console.log(user)
     const { name, slug, image} = user
     const imageUrl = image
         ? (image.startsWith('/files\\') || image.startsWith('/files'))

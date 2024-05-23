@@ -119,7 +119,7 @@ const Register = ({login}) => {
                         </Form.Group>
                         <Form.Group as={Col} className="mb-3" controlId="password">
                             <FormControl variant="outlined" fullWidth style={{marginTop:'10%'}}>
-                                <TextField  id="outlined-adornment-password"  className="textfield"  variant="outlined" 
+                                <TextField  id="outlined-adornment-password"  className="textfield"
                                     label="Password" type={showPassword ? 'text' : 'password'}  placeholder="Enter your Password" 
                                     name="password" required  value={formData.password}  onChange={handleInputChange}
                                 />

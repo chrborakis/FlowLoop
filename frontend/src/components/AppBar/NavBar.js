@@ -1,10 +1,11 @@
-import {Button,Container,Form,Nav,Navbar,NavDropdown,Offcanvas,Row,Col,Dropdown } from 'react-bootstrap';
+import {Container,Form,Nav,Navbar,NavDropdown,Offcanvas,Row,Col,Dropdown } from 'react-bootstrap';
 import React, { useEffect, useState }  from 'react';
 
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import { Button } from "@material-ui/core";
 
 import { useAuth } from "../../store/AuthContext";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
@@ -20,6 +21,7 @@ import TabPanel from '../Extra/TabPanel';
 import WorkRequests from '../Requests/WorkRequests';
 import FriendRequests from '../Requests/FriendRequests';
 import '../../../static/css/NavBar.css'
+import '../../../static/css/index.css'
 
 import { User, Company } from '../Profiles/Profile';
 
@@ -91,8 +93,8 @@ function NavBar({user, messages, notifications}) {
                             Option
                         </Offcanvas.Title>
                     </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Col className="justify-content-start">
+                    <Offcanvas.Body className="d-flex flex-column">
+                        <Col>                        
                             <Row>
                                 <Badge><User user={user} /></Badge>
                             </Row>
@@ -101,10 +103,14 @@ function NavBar({user, messages, notifications}) {
                                     <Badge><Company company={user.company} /></Badge>
                                 </Row>
                             )}
-                            <Row>
-                                <Link to="/" onClick={logOut}>Log Out</Link>
-                            </Row>
                         </Col>
+
+                        <div className="log_out mt-auto">
+                            <Button variant="outlined" color="red">
+                                <Link to="/" onClick={logOut}>Log Out</Link>
+                            </Button>
+                        </div>
+
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>
             </Container>

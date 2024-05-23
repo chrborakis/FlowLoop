@@ -14,7 +14,7 @@ import { HiMiniCog6Tooth } from "react-icons/hi2";
 import Range from "../Range";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { TextField } from "@material-ui/core";
-import { User } from "../../Profiles/Profile";
+import { User, UserAvt } from "../../Profiles/Profile";
 import DateRange from "../../Extra/DateRange";
 import '../../../../static/css/HomePage.css'
 import '../../../../static/css/projects.css'
@@ -130,7 +130,7 @@ const Project = ({project, setProjects}) => {
 
     return(<>
         <Card className="card-content">
-            <Card.Header>
+            <Card.Header className="header">
                 <Row className="align-items-center">
                     <Col className="d-flex justify-content-start">
                         <User user={project.admin} circle/>

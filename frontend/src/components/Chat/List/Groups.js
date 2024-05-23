@@ -24,7 +24,6 @@ const Groups = ({user, handleChat, onRemoveMember}) => {
 
     useEffect(()=>{
         if(groups)setFilteredList(groups)
-        console.log(groups)
     },[groups])
 
     const [inputValue, setInputValue] = useState('');

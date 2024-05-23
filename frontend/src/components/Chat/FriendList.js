@@ -35,7 +35,7 @@ const FriendList = ({user}) => {
     return(<>
         <Card className="friends">
             <Friends user_id={user.user_id} handleChat={handleChat}/>
-            <Groups  user={user} handleChat={handleGroupChat} onRemoveMember={onRemoveMember}/>
+            { user?.work_id &&  <Groups  user={user} handleChat={handleGroupChat} onRemoveMember={onRemoveMember}/>}
         </Card>
         {activeChat === 'chat' && chat?.sender?.id &&(
             <Chat chat={chat} setChat={setChat} room={chat.sender.id+chat.receiver.id}/>

@@ -1,0 +1,14 @@
+
+.textfield input:disabled {
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+    background-color: inherit !important;
+}
+
+.textfield label:disabled {
+    color: black;
+}
+
+.textfield .MuiNativeSelect-root.Mui-disabled + .MuiNativeSelect-icon {
+    display: none;
+}

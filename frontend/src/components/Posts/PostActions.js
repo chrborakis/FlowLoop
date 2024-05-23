@@ -26,11 +26,11 @@ const PostActions = ({url,post}) => {
                     {<Button> <CommentIcon/> {comments?.length || 0}</Button>}
                 </Col>
             </Row>
-                    { comments ? (
-                        <Comments post={post.post_id} url={`${url}comments`} comments={comments} exp={{isExpanded,toggleExpand}} setNewComment={setNewComment}/>
-                    ) : (
-                        <p>No comments</p> 
-                    )}
+                { comments ? (
+                    <Comments post={post.post_id} url={`${url}comments`} comments={comments} exp={{isExpanded,toggleExpand}} setNewComment={setNewComment}/>
+                ) : (
+                    <p>No comments</p> 
+                )}
         </div>
     )
 }

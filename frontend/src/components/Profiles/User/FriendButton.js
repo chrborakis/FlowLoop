@@ -45,7 +45,7 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply}) => {
                 </>
             ) : (
                 <Button variant={buttonConfig.variant} disabled={requested=='P'} onClick={sendRequest}>
-                { buttonConfig.text }
+                    { buttonConfig.text }
                 </Button>
             )}
         </>
