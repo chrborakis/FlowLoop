@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # 'backend.posts',
 
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'corsheaders',
     "phonenumber_field",
     'postgres_composite_types',
@@ -52,6 +54,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+# AUTH_USER_MODEL = 'users.UsersCredentials'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_MODEL_TOKEN': 'users.CustomToken',
+}
 
 ASGI_APPLICATION = 'flow_loop.asgi.application'
 

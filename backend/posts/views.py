@@ -100,9 +100,7 @@ def post_public(request, user):
         print(data)
         base_url = get_base_url(request)
         try:                                  
-            response = requests.patch(base_url+'/backend/api/post_public/'+str(post_id), json=data)
-            print(response)
-           
+            response = requests.patch(base_url+'/backend/api/post_public/'+str(post_id), json=data)           
             if response.status_code == 200:
                 return JsonResponse({
                     'message': '[PATCH]PostPublic '+str(post_id)+' updated successfully',

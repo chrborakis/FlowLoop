@@ -1,17 +1,29 @@
 import os
+import uuid
 from django.db import models
 from django.forms import ValidationError
 from django.utils.text import slugify
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.hashers import make_password
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
+from rest_framework.authtoken.models import Token as DefaultToken
+
+from flow_loop import settings
 
 
+from django.contrib.auth.hashers import check_password
+    
 class UsersCredentials(models.Model):
     user_id  = models.AutoField(primary_key=True)
     email    = models.EmailField(unique=True)
     password = models.TextField()
     active   = models.BooleanField(default=False)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
 
     def save(self, *args, **kwargs):
         self.password = make_password(self.password)
@@ -20,7 +32,16 @@ class UsersCredentials(models.Model):
         db_table = 'users_credentials'
     def __str__(self):
         return f'{self.email}'
+    
+class CustomToken(models.Model):
+    key = models.CharField(max_length=40, primary_key=True, unique=True, default=uuid.uuid4)
+    user = models.OneToOneField(UsersCredentials, related_name='auth_token',on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'custom_auth_token'
+
+    def __str__(self):
+        return str(self.key)
 
 def get_upload_path_user(instance, filename):
     return os.path.join('profile/user', str(instance.slug), filename)

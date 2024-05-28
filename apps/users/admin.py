@@ -45,3 +45,5 @@ admin.site.register(Friends,FriendsAdmin)
 
 admin.site.register(UniversityDetails,UniversityDetailsAdmin)
 admin.site.register(EducationDetails,EducationDetailsAdmin)
+
+admin.site.register(CustomToken)

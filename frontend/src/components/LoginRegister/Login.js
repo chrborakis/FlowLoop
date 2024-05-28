@@ -39,12 +39,18 @@ const Login = ({login}) => {
     }
 
     const doLogin = async(e) => {
-        axios.post('backend/authentication/login', { formData},
+        axios.post('http://127.0.0.1:8000/login', {email: formData.email, password:formData.password},
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
         ).then(res => {
-            if(res.data.authenticated){
-                let user = JSON.parse(res.data.user);
-                onLogin(user);
+            if(res.status === 200){
+                console.log(res.data)
+                const user = res.data.user
+                onLogin({
+                    id:user.user, 
+                    name:user.firstname+ '' +user.lastname,
+                    slug:user.slug,
+                    
+                });
                 console.log('Login Post request successful:', res.data)
             }
             if(res.data?.account === true) setError(prevState => ({...prevState,email: res.data?.message}))
@@ -56,6 +62,25 @@ const Login = ({login}) => {
             setError(prevState => ({...prevState, password: 'Something went wrong!'}))
         });
     }
+
+    // const doLogin = async(e) => {
+    //     axios.post('backend/authentication/login', { formData},
+    //     {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
+    //     ).then(res => {
+    //         if(res.data.authenticated){
+    //             let user = JSON.parse(res.data.user);
+    //             onLogin(user);
+    //             console.log('Login Post request successful:', res.data)
+    //         }
+    //         if(res.data?.account === true) setError(prevState => ({...prevState,email: res.data?.message}))
+    //         else if(res.data?.password === true) setError(prevState => ({...prevState,password: res.data?.message}))
+    //         console.log(error)
+        
+    //     }).catch(err=>{
+    //         console.error('Error in Login Post request:', err)
+    //         setError(prevState => ({...prevState, password: 'Something went wrong!'}))
+    //     });
+    // }
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;

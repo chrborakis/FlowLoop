@@ -1,17 +1,21 @@
 import json
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import authenticate, login
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import JsonResponse
 import requests
-from apps.users.models import UsersCredentials,Users
-from apps.companies.models import WorksOn, WorkRequests
+from backend.api.serializers import UsersCredentialSerializer, UsersSerializer
+from apps.users.models import CustomToken, UsersCredentials,Users
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
-from backend.api.serializers import WorksOnSerializer
 
 from backend.util import get_base_url, get_workson_instance
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from rest_framework.authtoken.models import Token
+from rest_framework import status
 
 @csrf_exempt
 def login_view(request):
@@ -132,3 +136,36 @@ def register_view(request):
                 return JsonResponse({'error': response_cred.json()})
         except:
             return JsonResponse({'message': 'Error creating user credentials'})
+
+
+@api_view(['POST'])
+def login(request):
+    user = get_object_or_404(UsersCredentials, email=request.data['email'])
+    if not user.check_password(request.data['password']):
+        return Response({"detail":"Not found."}, status=status.HTTP_404_NOT_FOUND)
+    token, created = CustomToken.objects.get_or_create(user=user)
+    token_data = {'key': token.key}
+    serializer = UsersCredentialSerializer(instance=user)
+
+    print("USER ID -> ", user.user_id)
+    user_data = get_object_or_404(Users, user=user.user_id)
+    print(user_data)
+    ser_user = UsersSerializer(instance=user_data)
+    print(ser_user.data)
+
+    return Response({"token": token_data, "user": ser_user.data})
+
+@api_view(['POST'])
+def signup(request):
+    serializer = UsersCredentialSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        user = UsersCredentials.objects.get(email=request.data['email'])
+        token, created = CustomToken.objects.get_or_create(user=user)
+        token_data = {'key': token.key}
+        return Response({'token': token_data, 'user': serializer.data})
+    return Response(serializer.errors, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def test_token(request):
+    return Response({})

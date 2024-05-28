@@ -1,4 +1,3 @@
-import cgi
 import json
 from django.http import JsonResponse
 import requests
@@ -8,12 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from backend.util import get_base_url, get_workson_instance
-from PIL import Image
-from io import BytesIO
-from urllib.parse import urljoin
-from django.conf import settings
-from django.db import IntegrityError
-# Create your views here.
+
 def staff(request, company):
     print("company: ", company)
     if request.method == 'GET':

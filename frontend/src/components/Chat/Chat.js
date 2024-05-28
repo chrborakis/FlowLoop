@@ -3,19 +3,26 @@ import { Card, Row, Col} from "react-bootstrap";
 import CloseButton from 'react-bootstrap/CloseButton';
 import { User } from "../Profiles/Profile";
 import { dateFormat } from "../Extra/Date";
-
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { CircleLoader } from 'react-spinners';
 import NewMessage from "./NewMessage";
 import { getMessages, sendMessage, clearUnread } from "./ChatUtils";
 
 import '../../../static/css/chat.css'
 import '../../../static/css/index.css'
 
+import Messages from "./Messages";
+
 const Chat = ({chat, setChat, room}) => {
     const [socket, setSocket] = useState(null);
     const {sender, receiver} = chat;
 
+    // const [ loading, setLoading] = useState(false);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const [hasNextPage, setHasNextPage] = useState(true);
+
     const [messages, setMessages] = useState([]);
-    const messageEndRef = useRef(null);
+
 
     useEffect(()=>{
         console.log("Starting convo w/: ", chat)
@@ -38,18 +45,31 @@ const Chat = ({chat, setChat, room}) => {
         }
     },[socket])
     
-    const [hoveredMessageId, setHoveredMessageId] = useState(null);
-    const handleMouseEnter = (messageId) => setHoveredMessageId(messageId);
-    const handleMouseLeave = () => setHoveredMessageId(null);
+
 
     useEffect(()=>{
         setMessages([])
-        if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages);
+        // if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages, setLoading, setHasNextPage, currentPage)
+        if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages)
     },[chat])
 
-    useEffect(() => scrollToBottom(), [messages]);
+    // useEffect(()=>{
+    //     if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages, setLoading, setHasNextPage, currentPage)
+    // },[currentPage])
 
+
+    // const loadMore = () => {
+    //     if (hasNextPage && !loading) {
+    //         setCurrentPage(prevPage => prevPage + 1);
+    //     }
+    // };
+
+    const [hoveredMessageId, setHoveredMessageId] = useState(null);
+    const handleMouseEnter = (messageId) => setHoveredMessageId(messageId);
+    const handleMouseLeave = () => setHoveredMessageId(null);
+    const messageEndRef = useRef(null);
     const scrollToBottom = () => messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    useEffect(() => scrollToBottom(), [messages]);
 
     return(<>
         <Card className="chat card">
@@ -60,20 +80,19 @@ const Chat = ({chat, setChat, room}) => {
                 </Row>
             </Card.Header>
             <Card.Body className="message-container">
-                {messages ? messages.sort((a, b) => new Date(a.send_date) - new Date(b.send_date)).map(message => (
-                    <>
-                        <div key={message.message_id} className={`message ${message.sender_info.id === sender.user_id ? 'sender' : 'receiver'}`} onMouseEnter={() => handleMouseEnter(message.message_id)} onMouseLeave={handleMouseLeave}>
+                {messages.length > 0 ? (
+                    messages?.sort((a, b) => new Date(a.send_date) - new Date(b.send_date)).map(message => (<>
+                        <div key={message.message_id} className={`message ${message?.sender_info.id === sender?.user_id ? 'sender' : 'receiver'}`} onMouseEnter={() => handleMouseEnter(message.message_id)} onMouseLeave={handleMouseLeave}>
                             {message.message}
                         </div>
                         {hoveredMessageId === message.message_id && (
-                            <span className={`message-date ${message.sender_info.id === sender.user_id ? 'sender-date' : 'receiver-date'}`}>
+                            <span className={`message-date ${message?.sender_info.id === sender?.user_id ? 'sender-date' : 'receiver-date'}`}>
                                 {dateFormat(message.send_date)}
                             </span>
                         )}
-                    </>
-                    )):(<p>Start conversation</p>)
-                }  
-                <div className='message-ref' ref={messageEndRef}/>   
+                    </>)   
+                )):(<p>Start conversation</p>)}  
+                <div className='message-ref' ref={messageEndRef}/>
             </Card.Body>
             <Card.Footer>
                 <NewMessage chat={{sender:sender.id, receiver:receiver.id}} setMessages={setMessages} socket={socket} onSend={sendMessage}/>

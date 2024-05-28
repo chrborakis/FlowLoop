@@ -1,0 +1,22 @@
+POST http://127.0.0.1:8000/login
+Content-Type: application/json
+
+{"email":"1Cus2tT24ok21@gmail.com", "password":"1Cus2t2T2o4k1@gmail.com"}
+
+# {"email":"EmilyJohnson@gmail.com", "password":"EmilyJohnson@gmail.com"}
+
+###
+
+POST http://127.0.0.1:8000/signup
+Content-Type: application/json
+
+{"email":"TestRest@gmail.com", "password":"TestRest@gmail.com"}
+
+
+###
+
+GET http://127.0.0.1:8000/test_token
+Content-Type: application/json
+
+{}
+

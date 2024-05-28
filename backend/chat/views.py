@@ -7,6 +7,7 @@ from apps.users.models import *
 from django.views.decorators.csrf import csrf_exempt
 from backend.util import get_base_url, get_workson_instance
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 @csrf_exempt
 def conversation(request, user, friend):
@@ -37,7 +38,6 @@ def conversation(request, user, friend):
 
     elif request.method == 'GET':
         if user and friend:
-            base_url = get_base_url(request)
             try:
                 response = requests.get(base_url+'/backend/api/conversation/'+str(user)+'/'+str(friend))
                 if response.status_code == 200:
@@ -55,7 +55,7 @@ def conversation(request, user, friend):
                     })
             except Exception as e:
                 return JsonResponse({'error':str(e)}, status=400)
-    if request.method == 'PATCH':
+    elif request.method == 'PATCH':
         try:
             response = requests.patch(base_url+'/backend/api/unread_messages/'+str(user)+'/'+str(friend))
             if response.status_code == 200:

@@ -115,6 +115,7 @@ export const get_request = async ( user, user_id, company_id, setRequested) => {
     if( company_id){
         axios.get(`/backend/companies/id_workrequests/${user_id}/${company_id}`)
         .then(  res => {
+            console.log(res)
             // if visited page = requested page
             if( company_id!=res.data.data.company) {setRequested('No')}
             if( company_id == res.data.data.company && res.data.data.status==='P'){setRequested('P')}

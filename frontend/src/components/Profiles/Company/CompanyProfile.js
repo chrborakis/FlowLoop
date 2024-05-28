@@ -37,7 +37,7 @@ const CompanyProfile = () => {
 
     const [requested, setRequested] = useState(false);
 
-    const unemployed = user?.company?.name === null
+    const unemployed = user?.company === null
         
 
     useEffect( () => {
@@ -70,6 +70,7 @@ const CompanyProfile = () => {
     const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success' });
     
     useEffect(() => {
+        console.log(requested, unemployed)
         if (requested === 'P') {
             setButtonConfig({ text: 'Already requested!', variant: 'secondary' });
         }else if( requested === 'No' && !unemployed){
