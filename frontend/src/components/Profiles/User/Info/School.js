@@ -45,11 +45,6 @@ const School = ({ user, education, admin}) => {
             graduation: new Date(selectedDate).toISOString().split('T')[0]
         }
 
-        console.group("Dates")
-        console.log(selectedDate)
-        console.log(updatedData.graduation)
-        console.groupEnd()
-
         if(updatedData.id){
             editEducation( updatedData, setEdit, setAlert)
         }else{
@@ -72,21 +67,22 @@ const School = ({ user, education, admin}) => {
                                 className="textfield" 
                             />
 
-                            { editMode ? (<>
-                                <p style={{ textAlign:'left'}} className="textfield">Graduation</p>
-                                <DatePicker name="graduation"  required 
-                                    disabled={!editMode} selected={selectedDate} onChange={handleDateChange}
-                                    dateFormat="yyyy-MM-dd" minDate={minDate} maxDate={today} 
-                                    isClearable={true} showYearDropdown={true} scrollableYearDropdown={true}
-                                />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', margin: '1em 0' }}>
+                                {editMode ? (
+                                    <>
+                                    <p style={{ margin: 0 }}>Graduation</p>
+                                    <DatePicker name="graduation" required disabled={!editMode}
+                                        selected={selectedDate} onChange={handleDateChange}
+                                        dateFormat="yyyy-MM-dd" minDate={minDate} maxDate={today} isClearable={true} showYearDropdown={true} scrollableYearDropdown={true}
+                                        />
                                     </>
-                                ) : (<>
-                                <TextField  label="Graduation Date" variant="standard" 
-                                    disabled={!editMode} InputProps={{ readOnly: true }}
-                                    className="textfield" value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : 'None'}
-                                />
-                                </>)
-                            }
+                                ) : (
+                                    <TextField label="Graduation Date" variant="standard" disabled={!editMode}
+                                        InputProps={{ readOnly: true }} className='textfield'
+                                        value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : 'None'} style={{ margin: 0 }}
+                                    />
+                                )}
+                            </div>
                         </>
                     ) : (
                         <div>No education information available</div>

@@ -77,10 +77,9 @@ const University = ({user, university, admin}) => {
                 <Card.Header>University</Card.Header>
                 <Card.Body>
                     {
-                        data ? (
+                        data?.length > 0 ? (
                             data.map(uni => (
                                 <Card key={uni.id} style={{ width: '95%' }}>
-                                {/* <div key={uni.id}> */}
                                     <TextField disabled={!editMode} variant="standard"
                                         placeholder="Enter University Name" name="name"
                                         label="University Name" required multiline fullWidth 
@@ -88,24 +87,23 @@ const University = ({user, university, admin}) => {
                                         className='textfield' 
                                     />
 
-                                    { editMode ? (<>
-                                        <p style={{ textAlign:'left', margin: '1em', width: '95%', maxHeight: '15em', overflow: 'auto' }}>Graduation</p>
-                                        <DatePicker  name="graduation" required  disabled={!editMode}
-                                            selected={uni?.graduation} onChange={(e) => handleInputChange(e, uni?.id)}
-                                            dateFormat="yyyy-MM-dd" minDate={minDate} maxDate={today} 
-                                            isClearable={true} showYearDropdown={true} scrollableYearDropdown={true}
-                                            />
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', margin: '1em 0' }}>
+                                        {editMode ? (
+                                            <>
+                                            <p style={{ margin: 0 }}>Graduation</p>
+                                            <DatePicker name="graduation" required disabled={!editMode}
+                                                selected={uni?.graduation} onChange={(e) => handleInputChange(e, uni?.id)}
+                                                dateFormat="yyyy-MM-dd" minDate={minDate} maxDate={today} isClearable={true} showYearDropdown={true} scrollableYearDropdown={true}
+                                                />
                                             </>
-                                        ) : (<>
-                                        {/* {new Date(uni?.graduation).toISOString().split('T')[0]} */}
-                                        <TextField  label="Graduation Date" variant="standard" 
-                                            disabled={!editMode} InputProps={{ readOnly: true }}
-                                            className='textfield'
-                                            value={uni?.graduation ? uni?.graduation : 'None'}
-                                        />
-                                        </>)
-                                    }
-                                    
+                                        ) : (
+                                            <TextField label="Graduation Date" variant="standard" disabled={!editMode}
+                                                InputProps={{ readOnly: true }} className='textfield'
+                                                value={uni?.graduation ? uni?.graduation : 'None'} style={{ margin: 0 }}
+                                            />
+                                        )}
+                                    </div>
+
                                     <TextField disabled={!editMode} variant="standard"
                                         placeholder="Enter your graduation degree" name="degree"
                                         label="Degree" required multiline fullWidth 
@@ -119,7 +117,6 @@ const University = ({user, university, admin}) => {
                                             </Button>
                                         </Card.Footer>
                                     }             
-                                {/* </div> */}
                                 </Card>
                             ))
                         ) : (

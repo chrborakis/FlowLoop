@@ -46,10 +46,10 @@ const Login = ({login}) => {
                 console.log(res.data)
                 const user = res.data.user
                 onLogin({
+                    token: res.data.token,
                     id:user.user, 
                     name:user.firstname+ '' +user.lastname,
                     slug:user.slug,
-                    
                 });
                 console.log('Login Post request successful:', res.data)
             }

@@ -147,9 +147,7 @@ def login(request):
     token_data = {'key': token.key}
     serializer = UsersCredentialSerializer(instance=user)
 
-    print("USER ID -> ", user.user_id)
     user_data = get_object_or_404(Users, user=user.user_id)
-    print(user_data)
     ser_user = UsersSerializer(instance=user_data)
     print(ser_user.data)
 
