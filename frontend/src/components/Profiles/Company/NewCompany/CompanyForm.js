@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Tabs, Tab, Button, TextField} from '@mui/material';
 import { Modal } from "react-bootstrap";
-import TabPanel from "../../../Extra/TabPanel";
 
 import CreateCompany from "./CreateCompany";
 

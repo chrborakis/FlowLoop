@@ -10,7 +10,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from '../components/Extra/TabPanel'
 import FriendList from "./Chat/FriendList";
-import NewCompany from "./Profiles/Company/NewCompany";
 import CompanyForm from "./Profiles/Company/NewCompany/CompanyForm";
 
 import '../../static/css/HomePage.css'

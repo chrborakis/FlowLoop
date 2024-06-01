@@ -98,7 +98,22 @@ class UsersCredentialView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserCredentialView(APIView):
+    def get(self, request, user):
+        user_data = get_object_or_404(UsersCredentials, user_id=user)
+        serializer = UsersCredentialSerializer(user_data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
         
+    def patch(self, request, user):
+        user_data = get_object_or_404(UsersCredentials, user_id=user)
+        serializer = UsersCredentialSerializer(user_data, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class AddressView(APIView):
     def get(self, request, id):
         try:

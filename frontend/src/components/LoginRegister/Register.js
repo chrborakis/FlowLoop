@@ -38,7 +38,11 @@ const Register = ({login}) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormData({...formData,[name]: value,});
+        const trimmedValue = name === 'password' ? value.trim() : value;
+        setFormData({
+            ...formData,
+            [name]: trimmedValue,
+        });
     };
     
     const [showPassword, setShowPassword] = useState(false);
@@ -70,22 +74,46 @@ const Register = ({login}) => {
         }
     }
 
-    const register = async() => {
+    const register = async(e) => {
         formData.gender = gender;
-        console.log(formData);
 
-        axios.post('backend/authentication/register', { formData }
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
+        axios.post('http://127.0.0.1:8000/signup', formData,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
         ).then(res => {
-            console.log(res.data.error)
-            setErrors(res.data.error)
-            if(res.data.authenticated){
-                console.log(JSON.parse(res.data.user))
-                onLogin(JSON.parse(res.data.user));
-                console.log('Register request successful:', res.data)
-            }
-        }).catch(err=>console.error('Error in Register Post request:', err));
+            console.log(res)
+            if(res.status === 200){
+                const user = res.data.user
+                onLogin({
+                    token: res.data.token,
+                    id:user.user, 
+                    name:user.firstname+ ' ' +user.lastname,
+                    slug:user.slug,
+                });
+                console.log('Register Post request successful:', res.data)
+            }else setErrors(res.data.error)
+            
+        }).catch(err=>{
+            console.error('Error in Register Post request:', err.response)
+            setErrors(err.response.data)
+        });
     }
+
+    // const register = async() => {
+    //     formData.gender = gender;
+    //     console.log(formData);
+
+    //     axios.post('backend/authentication/register', { formData }
+    //     ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }
+    //     ).then(res => {
+    //         console.log(res.data.error)
+    //         setErrors(res.data.error)
+    //         if(res.data.authenticated){
+    //             console.log(JSON.parse(res.data.user))
+    //             onLogin(JSON.parse(res.data.user));
+    //             console.log('Register request successful:', res.data)
+    //         }
+    //     }).catch(err=>console.error('Error in Register Post request:', err));
+    // }
 
     return(
         <div className='form'>
@@ -180,6 +208,7 @@ const Register = ({login}) => {
                                 <TextField value={formData.phone} onChange={handleInputChange}
                                     id="outlined-textarea" label="Phone" placeholder="Enter your Phone"
                                     multiline type='text' name='phone'
+                                    helperText="Provide number with +code, e.g., +1234567890"
                                 />
                                     {errors?.phone && <span className="text-danger">{errors?.phone}</span>}
                             </Form.Group>

@@ -24,7 +24,6 @@ const Login = ({login}) => {
     const handleLogin = (e) => {
         e.preventDefault()
         setError({email:"", password:""})
-        console.log(formData)
 
         const newErrors = {};
         Object.keys(formData).forEach( field => {
@@ -58,8 +57,8 @@ const Login = ({login}) => {
             console.log(error)
         
         }).catch(err=>{
-            console.error('Error in Login Post request:', err)
-            setError(prevState => ({...prevState, password: 'Something went wrong!'}))
+            console.log('Error in Login Post request:', err.response)
+            setError(prevState => ({...prevState, password: err.response.data.detail}))
         });
     }
 
@@ -84,7 +83,11 @@ const Login = ({login}) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormData({...formData,[name]: value,});
+        const trimmedValue = name === 'password' ? value.trim() : value;
+        setFormData({
+            ...formData,
+            [name]: trimmedValue,
+        });
     };
 
     return(

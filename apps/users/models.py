@@ -23,11 +23,14 @@ class UsersCredentials(models.Model):
     active   = models.BooleanField(default=False)
 
     def check_password(self, raw_password):
+        print(self.password,raw_password)
+        print(check_password(raw_password, self.password))
         return check_password(raw_password, self.password)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):    
         self.password = make_password(self.password)
         super().save(*args, **kwargs)
+
     class Meta:
         db_table = 'users_credentials'
     def __str__(self):
@@ -64,7 +67,13 @@ class Users(models.Model):
     create_date = models.DateTimeField(default=now, editable=False)
 
     def save(self, *args, **kwargs):
-        self.slug = '-'.join((slugify(self.firstname), slugify(self.lastname)))
+        base_slug = '-'.join((slugify(self.firstname), slugify(self.lastname)))
+        unique_slug = base_slug
+        counter = 1
+        while Users.objects.filter(slug=unique_slug).exists():
+            unique_slug = f"{base_slug}-{self.user.user_id}"
+            counter += 1
+        self.slug = unique_slug
         super(Users, self).save(*args, **kwargs)
 
 

@@ -1,7 +1,7 @@
 POST http://127.0.0.1:8000/login
 Content-Type: application/json
 
-{"email":"1Cus2tT24ok21@gmail.com", "password":"1Cus2t2T2o4k1@gmail.com"}
+{"email":"TestLogin@gmail.com", "password":"TestLogin@gmail.com"}
 
 # {"email":"EmilyJohnson@gmail.com", "password":"EmilyJohnson@gmail.com"}
 

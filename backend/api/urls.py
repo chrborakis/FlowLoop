@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path("userscredential",  UsersCredentialView.as_view()),
+    path("usercredentials/<int:user>",   UserCredentialView.as_view()),
     path("users",            UsersView.as_view()),
     path("users/<slug:user>",   UserView.as_view()),
     

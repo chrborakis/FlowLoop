@@ -22,9 +22,10 @@ import WorkRequests from '../Requests/WorkRequests';
 import FriendRequests from '../Requests/FriendRequests';
 import '../../../static/css/NavBar.css'
 import '../../../static/css/index.css'
-
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { User, Company } from '../Profiles/Profile';
 
+import Settings from './Settings';
 
 function NavBar({user, messages, notifications}) {
     const { logout } = useAuth();
@@ -106,11 +107,13 @@ function NavBar({user, messages, notifications}) {
                         </Col>
 
                         <div className="log_out mt-auto">
-                            <Button variant="outlined" color="red">
-                                <Link to="/" onClick={logOut}>Log Out</Link>
-                            </Button>
+                            <ButtonGroup orientation="vertical" aria-label="Vertical button group" variant="contained">
+                                <Settings user_id={user.id}/>
+                                <Button variant="outlined" color="red">
+                                    <Link to="/" onClick={logOut}>Log Out</Link>
+                                </Button>
+                            </ButtonGroup>
                         </div>
-
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>
             </Container>

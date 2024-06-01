@@ -18,62 +18,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 
 @csrf_exempt
-def login_view(request):
-    if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        email    = data.get('formData').get('email')
-        password = data.get('formData').get('password')
-        try:
-            user = UsersCredentials.objects.get(email=email)
-            password_matches = check_password(password, user.password)
-            print(user, password, user.password, password_matches)
-            if password_matches:
-                print("Authentication successful for user:", user.email)
-                # login(request, user)  //ERROR
-                try:
-                    fields_to_select = ['user','firstname', 'lastname', 'image', 'slug']
-                    user_data = Users.objects.values(*fields_to_select).get(user=user)
-                    user_dict = {key: str(value) for key, value in user_data.items()}
-
-                    user1 = {
-                        'id': user.user_id,
-                        'name':  f"{user_dict['firstname']} {user_dict['lastname']}",
-                        'slug':  user_dict['slug'],
-                        'image': user_dict['image'],
-                        #   or '/profile/user/dummy-user.png',
-                        'company': None,'work_id': None,'is_admin': None
-                    }
-
-                    user.active = True
-                    user.save()
-
-                    try:
-                        workOn = get_workson_instance(user_dict['user'])
-
-                        user1['company'] = workOn['company']
-                        user1['work_id'] = workOn['id']
-                        user1['is_admin'] = workOn['is_admin']
-                    except:
-                        return JsonResponse({'message': 'Login Successful','user': json.dumps(user1),'authenticated': True})
-                    return JsonResponse({'message': 'Login Successful','user': json.dumps(user1),'authenticated': True})
-                except:
-                    return JsonResponse({'message': 'User Data not Found'})
-            else:
-                print("Invalid password for user:", user.email, password)
-                return JsonResponse({
-                    'password': True,
-                    'message': 'Invalid credentials'
-                })
-
-        except UsersCredentials.DoesNotExist:
-            print("Account not found!")            
-            return JsonResponse({
-                'account': True,
-                'message': 'Account not found!'
-            })
-    return JsonResponse({'error': 'Only POST requests are allowed'})
-
-@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
@@ -137,33 +81,118 @@ def register_view(request):
         except:
             return JsonResponse({'message': 'Error creating user credentials'})
 
-
+from django.contrib.auth.hashers import make_password
 @api_view(['POST'])
 def login(request):
-    user = get_object_or_404(UsersCredentials, email=request.data['email'])
+    try:
+        user = UsersCredentials.objects.get(email=request.data['email'])
+        print(user)
+        # user.active = True
+        # user.save()
+    except UsersCredentials.DoesNotExist:
+        return Response({"detail": "Account not found!"}, status=status.HTTP_404_NOT_FOUND)
+    
     if not user.check_password(request.data['password']):
-        return Response({"detail":"Not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail":"Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST)
+
     token, created = CustomToken.objects.get_or_create(user=user)
     token_data = {'key': token.key}
-    serializer = UsersCredentialSerializer(instance=user)
 
     user_data = get_object_or_404(Users, user=user.user_id)
     ser_user = UsersSerializer(instance=user_data)
-    print(ser_user.data)
 
-    return Response({"token": token_data, "user": ser_user.data})
+    return Response({"token": token_data, "user": ser_user.data}, status=status.HTTP_200_OK)
+
+# @api_view(['POST'])
+# def signup(request):
+#     serializer = UsersCredentialSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         user = UsersCredentials.objects.get(email=request.data['email'])
+#         token, created = CustomToken.objects.get_or_create(user=user)
+#         token_data = {'key': token.key}
+#         return Response({'token': token_data, 'user': serializer.data})
+#     return Response(serializer.errors, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def signup(request):
-    serializer = UsersCredentialSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        user = UsersCredentials.objects.get(email=request.data['email'])
-        token, created = CustomToken.objects.get_or_create(user=user)
-        token_data = {'key': token.key}
-        return Response({'token': token_data, 'user': serializer.data})
-    return Response(serializer.errors, status=status.HTTP_200_OK)
+    cred_data = {'email': request.data.get('email'),'password': request.data.get('password')}
 
-@api_view(['GET'])
-def test_token(request):
-    return Response({})
+    serializer_cred = UsersCredentialSerializer(data=cred_data)
+    errors = {}
+
+    if serializer_cred.is_valid():
+        serializer_cred.save()
+
+        user = UsersCredentials.objects.get(email=request.data['email'])
+        user_data = { 'user': user.user_id,
+            'firstname': request.data.get('firstname'),   'lastname': request.data.get('lastname'),
+            'occupation': request.data.get('occupation'), 'gender': request.data.get('gender'),
+            'phone': request.data.get('phone'),           'country': request.data.get('country')
+        }
+
+        serializer_user = UsersSerializer(data=user_data)
+        if serializer_user.is_valid():
+            serializer_user.save()
+            token, created = CustomToken.objects.get_or_create(user=user)
+            token_data = {'key': token.key}
+            return Response({'token': token_data, 'user': serializer_user.data}, status=status.HTTP_200_OK)
+        else:
+            errors.update(serializer_user.errors)
+            user.delete()
+    else:
+        errors.update(serializer_cred.errors)
+
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # if serializer_cred.is_valid() and serializer_user.is_valid():
+    #     serializer_cred.save()
+    #     serializer_user.save()
+
+    #     user = UsersCredentials.objects.get(email=request.data['email'])
+    #     token, created = CustomToken.objects.get_or_create(user=user)
+    #     token_data = {'key': token.key}
+    #     return Response({'token': token_data, 'user': serializer_user.data}, status=status.HTTP_200_OK)
+    # else:
+    #     errors = {}
+    #     # if not serializer_cred.is_valid(): errors = serializer_cred.errors
+    #     # if not serializer_user.is_valid(): errors = serializer_user.errors
+    #     if not serializer_cred.is_valid():
+    #         for key, value in serializer_cred.errors.items():
+    #             if key in errors: errors[key].extend(value)
+    #             else: errors[key] = value
+    #     if not serializer_user.is_valid():
+    #         for key, value in serializer_user.errors.items():
+    #             if key in errors: errors[key].extend(value)
+    #             else: errors[key] = value
+    #     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def update_email(request):
+    try:
+        user = get_object_or_404(UsersCredentials, email=request.data['email'])
+    except UsersCredentials.DoesNotExist:
+        return Response({"detail": "Account not found!"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update email
+    user.email = request.data['new_email']
+    user.save()
+
+    return Response({"detail": "Email updated successfully."}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def update_password(request):
+    try:
+        user = get_object_or_404(UsersCredentials, email=request.data['email'])
+    except UsersCredentials.DoesNotExist:
+        return Response({"detail": "Account not found!"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # # Check if the old password matches
+    # if not user.check_password(request.data['old_password']):
+    #     return Response({"detail": "Incorrect old password."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update password
+    user.set_password(request.data['new_password'])
+    user.save()
+
+    return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
