@@ -26,7 +26,7 @@ const NewComment = ({post, onComment, url}) => {
         }
         const commentor = url.includes('public') ? user.id : user.work_id;
         const data = {post:post, commentor, comment: comment}
-        postComment(data, url, onComment, comment, setComment);
+        postComment(data, url, onComment, comment, setComment, user?.token);
     }
 
     return(

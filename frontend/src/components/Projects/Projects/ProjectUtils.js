@@ -1,12 +1,12 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-export const getProjects = async(company,setProjects, setLoading, setHasNextPage) => {
+export const getProjects = async(company,setProjects, setLoading, setHasNextPage,currentPage) => {
     setLoading(true);
-    await axios.get(`../backend/projects/projects/${company}`)
+    await axios.get(`../backend/projects/projects/${company}`,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}})
     .then(  res => {
         if( res.data.status === 200){
-            console.log(res.data)
             setProjects(prevProjects => [...prevProjects, ...res.data.data]);
             setHasNextPage(res.data.has_next);
         }})
@@ -16,9 +16,9 @@ export const getProjects = async(company,setProjects, setLoading, setHasNextPage
     .finally( err => setLoading(false))
 }
 
-export const deleteProject = async(project_id,setProjects) => {
+export const deleteProject = async(project_id,setProjects,token) => {
     await axios.delete(`../backend/projects/projects/${project_id}`,
-    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Authorization': token}})
     .then( res => {
         console.log(res.data)
         if(res.data.status === 200){
@@ -28,9 +28,9 @@ export const deleteProject = async(project_id,setProjects) => {
     .catch( err => console.log(err))
 }
 
-export const updateProject = async(project_id, data, setEdit, setProjects, setErrors) => {
+export const updateProject = async(project_id, data, setEdit, setProjects, setErrors, token) => {
     await axios.patch(`../backend/projects/projects/${project_id}`, data,
-    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log(res.data)
         if(res.data.status === 200){
@@ -50,12 +50,9 @@ export const updateProject = async(project_id, data, setEdit, setProjects, setEr
     .catch( err => console.log(err))
 }
 
-export const postProject = async( url, data, newProject, setIsContentVisible) => {
-    await axios.post(url, data,{
-        headers: {
-            'X-CSRFToken': Cookies.get('csrftoken'),
-            'Content-Type': 'multipart/form-data'
-    }})
+export const postProject = async( url, data, newProject, setIsContentVisible, token) => {
+    await axios.post(url, data,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then(  res => {
         console.log("New Project res.data: ", res.data)
         newProject(res.data);
@@ -72,9 +69,9 @@ export const fetchStaff = async(company, setWorkers) => {
     .catch( err => console.log(err))
 }
 
-export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, project, setFormData) => {
+export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, project, setFormData, token) => {
     await axios.post(`../backend/projects/admin`, {project:project_id, admin:work_on},
-    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status === 200){
             setNewProject({...project, admin: res.data.data.admin_info})
@@ -85,14 +82,13 @@ export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, 
     .catch( err => console.log(err.response.data))
 }
 
-export const addProject = async( data, hide, setNewProject, work_id, setProjectError, setProject, setFormData) => {
+export const addProject = async( data, hide, setNewProject, work_id, setProjectError, setProject, setFormData, token) => {
     await axios.post(`../backend/projects/projects/0`, data,
-    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log(res.data)
         if(res.data.status === 200){
-            console.log(res.data)
-            setProjectAdmin(res.data?.data?.project_id, work_id, hide, setNewProject, res.data.data, setFormData)
+            setProjectAdmin(res.data?.data?.project_id, work_id, hide, setNewProject, res.data.data, setFormData, token)
             setProject(res.data?.data?.project_id)
         }else if(res.data.status===400){
             setProjectError("This title arleady exists")

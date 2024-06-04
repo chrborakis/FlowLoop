@@ -65,7 +65,7 @@ const CompanyProfile = () => {
             "company": data?.company_id,
             "status": "P"
         }
-        sendWorkRequest( user_data, setRequested)
+        sendWorkRequest( user_data, setRequested, user?.token)
     };
     const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success' });
     
@@ -86,80 +86,75 @@ const CompanyProfile = () => {
         <div>
         { data ? (
             <> 
-                    <div className="d-flex justify-content-center">
-                        <Card className="d-flex justify-content-center"style={{ borderRadius: '0.25rem', width:'450px'}}>
-                            <Row className="d-flex justify-content-center">
-                                <Col className="d-flex justify-content-start">
-                                    <ProfileImage url={'companies'} id={data?.company_id} image={image} setImage={setImage}/>
-                                </Col>
-                                <Col>
-                                    <Row className="text-center d-flex justify-content-center">
-                                        {data.company_name}
-                                    </Row>
-                                    <Row className="text-center d-flex justify-content-center">
-                                        {
-                                            requested !== 'A' && (
-                                                // <Button disabled={!unemployed || requested==='P'} 
-                                                //     onClick={sendRequest}>
-                                                // {requested === 'P' && 'Already requested!'}
-                                                // {requested === 'No' && !unemployed && 'You can only be employee on one company'}
-                                                // {requested === 'No' && unemployed && 'Send Request'}
-                                                // </Button>
-                                                <Button variant={buttonConfig.variant} disabled={!unemployed || requested==='P'}  onClick={sendRequest}>
-                                                    { buttonConfig.text }
-                                                </Button>
-                                            )
-                                        }
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </Card>
-                    </div>
+                <div className="d-flex justify-content-center">
+                    <Card className="d-flex justify-content-center"style={{ borderRadius: '0.25rem', width:'450px'}}>
+                        <Row className="d-flex justify-content-center">
+                            <Col className="d-flex justify-content-start">
+                                <ProfileImage url={'companies'} id={data?.company_id} image={image} setImage={setImage}/>
+                            </Col>
+                            <Col>
+                                <Row className="text-center d-flex justify-content-center">
+                                    {data.company_name}
+                                </Row>
+                                <Row className="text-center d-flex justify-content-center">
+                                    {
+                                        requested !== 'A' && (
+                                            // <Button disabled={!unemployed || requested==='P'} 
+                                            //     onClick={sendRequest}>
+                                            // {requested === 'P' && 'Already requested!'}
+                                            // {requested === 'No' && !unemployed && 'You can only be employee on one company'}
+                                            // {requested === 'No' && unemployed && 'Send Request'}
+                                            // </Button>
+                                            <Button variant={buttonConfig.variant} disabled={!unemployed || requested==='P'}  onClick={sendRequest}>
+                                                { buttonConfig.text }
+                                            </Button>
+                                        )
+                                    }
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Card>
+                </div>
 
-                    <div className="d-flex justify-content-center profile_data">
-                            <Col className="page-box order-lg-1 order-md-1 order-1">
-                                <Tabs value={tabInfo} onChange={handleTabInfo}
-                                            indicatorColor="primary" textColor="primary" centered
-                                            aria-label="scrollable auto tabs example">
-                                        <Tab label="Information"/>
-                                        <Tab label="Address"/>
-                                        <Tab label={`Staff (${staff.length})`}/>
-                                </Tabs>
-                                <TabPanel value={tabInfo} index={0}>
-                                    { data    && <Info company={data} admin={data?.company_id===user?.company?.id && user.is_admin}/>}
-                                </TabPanel>
-                                <TabPanel value={tabInfo} index={1}>
-                                    <Address company_id={data?.company_id} address={address} admin={data.company_id===user?.company?.id && user.is_admin}/>
-                                </TabPanel>
-                                <TabPanel value={tabInfo} index={2}>
-                                    { staff && <Staff staff={staff}/>}
-                                </TabPanel>
+                <div className="d-flex justify-content-center profile_data">
+                        <Col className="page-box order-lg-1 order-md-1 order-1">
+                            <Tabs value={tabInfo} onChange={handleTabInfo}
+                                        indicatorColor="primary" textColor="primary" centered
+                                        aria-label="scrollable auto tabs example">
+                                    <Tab label="Information"/>
+                                    <Tab label="Address"/>
+                                    <Tab label={`Staff (${staff.length})`}/>
+                            </Tabs>
+                            <TabPanel value={tabInfo} index={0}>
+                                { data    && <Info company={data} admin={data?.company_id===user?.company?.id && user.is_admin} token={user?.token}/>}
+                            </TabPanel>
+                            <TabPanel value={tabInfo} index={1}>
+                                <Address company_id={data?.company_id} address={address} admin={data.company_id===user?.company?.id && user.is_admin} token={user?.token}/>
+                            </TabPanel>
+                            <TabPanel value={tabInfo} index={2}>
+                                { staff && <Staff staff={staff}/>}
+                            </TabPanel>
+                        </Col> 
+                        <Col className="page-box order-lg-2 order-md-2 order-2">
+                            {user?.company?.id == data?.company_id ? (
+                                <>
+                                    <Tabs value={tabContent} onChange={handleTabContent}indicatorColor="primary" textColor="primary"scrollButtons="auto" centeredaria-label="scrollable auto tabs example">
+                                        <Tab label="Posts"/>
+                                        <Tab label="Projects"/>
+                                    </Tabs>
+                                    <TabPanel value={tabContent} index={0}>
+                                        <PostsPrivate user={user} url='../backend/posts/postprivate' slug={slug} displayNew={true}/>
+                                    </TabPanel>
+                                    <TabPanel value={tabContent} index={1}>
+                                        <ProjectsList company={data?.company_id}/>
+                                    </TabPanel>
+                                </>
+
+                            ) : ( <p>You should grant access to view content!</p>)}
+
+                            {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
                             </Col> 
-                            <Col className="page-box order-lg-2 order-md-2 order-2">
-                                {user?.company?.id == data?.company_id ? (
-                                    <>
-                                        <Tabs value={tabContent} onChange={handleTabContent}
-                                                indicatorColor="primary" textColor="primary"
-                                                scrollButtons="auto" centered
-                                                aria-label="scrollable auto tabs example">
-                                            <Tab label="Posts"/>
-                                            <Tab label="Projects"/>
-                                        </Tabs>
-                                        <TabPanel value={tabContent} index={0}>
-                                            <PostsPrivate user={user} url='../backend/posts/postprivate' slug={slug} displayNew={true}/>
-                                        </TabPanel>
-                                        <TabPanel value={tabContent} index={1}>
-                                            <ProjectsList company={data?.company_id}/>
-                                        </TabPanel>
-                                    </>
-
-                                ) : ( <p>You should grant access to view content!</p>)}
-
-                                {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
-                                </Col> 
-                    </div>
-
-
+                </div>
             </>
         ) : (<>Page Not Found!</>)}
         </div>

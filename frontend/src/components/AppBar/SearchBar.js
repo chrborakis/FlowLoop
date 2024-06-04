@@ -14,28 +14,20 @@ const SearchBar = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (cardRef.current && !cardRef.current.contains(event.target)) {
-                setIsFocused(false);
-            }
+            if (cardRef.current && !cardRef.current.contains(event.target)) setIsFocused(false);
         };
     
         document.addEventListener("click", handleClickOutside);
-    
         return () => {document.removeEventListener("click", handleClickOutside);};
       }, []);
 
-    const handleFocus = () => {
-        setIsFocused(true);
-    };
+    const handleFocus = () => setIsFocused(true);
 
     const handleBlur = (event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-            setIsFocused(false);
-        }
+        if (!event.currentTarget.contains(event.relatedTarget)) setIsFocused(false);
     };
     const handleSearch = (event) => setSearch(event.target.value);
  
-
     const [users, setUsers] = useState([])
     const [companies, setCompanies] = useState([])
 
@@ -57,28 +49,27 @@ const SearchBar = () => {
                         <Card.Header>Users</Card.Header>
                         {users?.length > 0 ? (
                             <div className="search-results">
-                                    <ListGroup variant="flush">
-                                        {users?.map((result) => (<ListGroup.Item key={result.id}>
-                                            <User user={{ ...result, name: result.firstname + ' ' + result.lastname }} />
-                                        </ListGroup.Item>))}
-                                    </ListGroup>
+                                <ListGroup variant="flush">
+                                    {users?.map((result) => (<ListGroup.Item key={result.id}>
+                                        <User user={{ ...result, name: result.firstname + ' ' + result.lastname }} circle/>
+                                    </ListGroup.Item>))}
+                                </ListGroup>
                             </div>
                         ):(<p>No users found</p>)}
-                                    <Card.Header>Companies</Card.Header>
+                        
+                        <Card.Header>Companies</Card.Header>
                         {companies?.length > 0 ? (
                             <div className="search-results">
-                                    <ListGroup variant="flush">
-                                        {companies?.map((result) => (<ListGroup.Item key={result}>   
-                                            <Company company={result}/>
-                                        </ListGroup.Item>))}
-                                    </ListGroup>
+                                <ListGroup variant="flush">
+                                    {companies?.map((result) => (<ListGroup.Item key={result.id}>   
+                                        <Company company={result} circle/>
+                                    </ListGroup.Item>))}
+                                </ListGroup>
                             </div>
                         ):(<p>No companies found</p>)}
                     </Card>
                 )
             }
-                
-            
         </Form> 
     </>)
 }

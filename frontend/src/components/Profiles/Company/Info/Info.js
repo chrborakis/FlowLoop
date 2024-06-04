@@ -14,7 +14,7 @@ import { useAuth } from '../../../../store/AuthContext';
 
 import '../../../../../static/css/index.css'
 
-const Info = ({company, admin}) => {
+const Info = ({company, admin, token}) => {
     const [editMode, setEdit] = useState(false);
     const { user, updateUser } = useAuth();
 
@@ -48,10 +48,9 @@ const Info = ({company, admin}) => {
             phone: data.phone.startsWith('+') ? data.phone : '+' + data.phone,
             establishment_date: new Date(selectedDate).toISOString().split('T')[0]
         }
-        console.log("DATA",_data)
 
         axios.patch(`../backend/api/companies/${company.slug}`, _data
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
+            ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}).
         then( res => {
             if(res.status === 200) {
                 setEdit(false);

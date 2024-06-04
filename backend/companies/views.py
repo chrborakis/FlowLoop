@@ -6,10 +6,10 @@ from apps.users.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from backend.util import get_base_url, get_workson_instance
+from backend.util import get_base_url, get_workson_instance,verify_token
+from rest_framework import status
 
 def staff(request, company):
-    print("company: ", company)
     if request.method == 'GET':
         if company:
             base_url = get_base_url(request)
@@ -36,30 +36,31 @@ def staff(request, company):
 def address(request, pk):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        company_id = pk
-        data = json.loads(request.body.decode('utf-8'))
-        base_url = get_base_url(request)
-        try:
-            response = requests.post(base_url+'/backend/api/address/0', json=data)
-            print(response)
-            new_address = response.json()
-            new_address_id = new_address.get('id') 
-
-            address_instance = Address.objects.get(pk=new_address_id)
-            company = Companies.objects.get(pk=company_id)
-            company.address = address_instance
-            company.save()
- 
-            if response.status_code == 200:
-                return JsonResponse({'message': 'Address created successfully','data': new_address_id,'status': response.status_code})
-            else:
-                return JsonResponse({'message': 'Failed to create address','data': response.json(),'status': response.status_code})
-        except Exception as e:
-            return JsonResponse({
-                'message': str(e),
-                'data': response.json(),
-                'status': response.status_code
-            })
+        token = request.headers.get('Authorization')
+        if(verify_token(token)):
+            company_id = pk
+            data = json.loads(request.body.decode('utf-8'))
+            base_url = get_base_url(request)
+            try:
+                response = requests.post(base_url+'/backend/api/address/0', json=data)
+                print(response)
+                new_address = response.json()
+                new_address_id = new_address.get('id') 
+    
+                address_instance = Address.objects.get(pk=new_address_id)
+                company = Companies.objects.get(pk=company_id)
+                company.address = address_instance
+                company.save()
+    
+                if response.status_code == 200:
+                    return JsonResponse({'message': 'Address created successfully','data': new_address_id,'status': response.status_code})
+                else:
+                    return JsonResponse({'message': 'Failed to create address','data': response.json(),'status': response.status_code})
+            except Exception as e:
+                return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+        else:
+            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
+    
     elif request.method == 'GET':
         base_url = get_base_url(request)
         try:
@@ -86,19 +87,24 @@ def address(request, pk):
 def company(request, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        print(data)
-        base_url = get_base_url(request)
-        try:
-            response = requests.post(base_url+'/backend/api/companies/0', json=data)
-            print(response)
- 
-            if response.status_code == 200:
-                return JsonResponse({'message': 'Company created successfully','data': response.json(), 'status': response.status_code})
-            else:
-                return JsonResponse({'message': 'Failed to create Company','data': response.json(), 'status': response.status_code})
-        except Exception as e:
-            return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+        token = request.headers.get('Authorization')
+        if(verify_token(token)):
+            data = json.loads(request.body.decode('utf-8'))
+            print(data)
+            base_url = get_base_url(request)
+            try:
+                response = requests.post(base_url+'/backend/api/companies/0', json=data)
+                print(response)
+    
+                if response.status_code == 200:
+                    return JsonResponse({'message': 'Company created successfully','data': response.json(), 'status': response.status_code})
+                else:
+                    return JsonResponse({'message': 'Failed to create Company','data': response.json(), 'status': response.status_code})
+            except Exception as e:
+                return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+        else:
+            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
+
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/companies/'+str(company))
         print(response.json())
@@ -122,63 +128,69 @@ def workrequests(request, id):
             'status': response.status_code
         })    
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        status = data.get('status')
-        
-        instance = WorkRequests.objects.get(pk=id)     #work_request id
-        if status=='A':
-            instance.status = status
-            instance.save()
-        elif status=='D':
-            instance.delete()
-        
-        return JsonResponse({'message': "Work Request: " + str(id) + "set to "+str(status)})
-    else:
-        return JsonResponse({'error': '[WORKREQ]Invalid request method'})
-    
+        token = request.headers.get('Authorization')
+        if(verify_token(token)):
+            data = json.loads(request.body.decode('utf-8'))
+            status = data.get('status')
+
+            instance = WorkRequests.objects.get(pk=id)     #work_request id
+            if status=='A':
+                instance.status = status
+                instance.save()
+            elif status=='D':
+                instance.delete()
+
+            return JsonResponse({'message': "Work Request: " + str(id) + "set to "+str(status)})
+        else:
+            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
+
 # FOR POST/GET ACTIONS BASED ON WORK_ID 
 # for users
 @csrf_exempt
 def id_workrequests(request, user, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))   
-        try:
-            response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
-            if response.status_code == 200:
-                result = response.json()
-                if(data.get('is_admin')):
-                    set_admin(result.get("id"))
-                status = result.get("status")
+        token = request.headers.get('Authorization')
+        if(verify_token(token)):
+            data = json.loads(request.body.decode('utf-8'))   
+            try:
+                response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
+                if response.status_code == 200:
+                    result = response.json()
+                    if(data.get('is_admin')):
+                        set_admin(result.get("id"))
+                    status = result.get("status")
 
-                work = None
-                if( status == 'A'):
-                    workOn = get_workson_instance(data.get('user'))
-                    print('POST WORK ON', workOn)
-                    work = {
-                        "company": workOn.get("company"), 
-                        "work_id": workOn.get("id"), 
-                        "is_admin": workOn.get("is_admin"), 
-                    }
-               
+                    work = None
+                    if( status == 'A'):
+                        workOn = get_workson_instance(data.get('user'))
+                        print('POST WORK ON', workOn)
+                        work = {
+                            "company": workOn.get("company"), 
+                            "work_id": workOn.get("id"), 
+                            "is_admin": workOn.get("is_admin"), 
+                        }
+
+                    return JsonResponse({
+                        'message': 'Work Request POST succesfully',
+                        'work': work,
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to POST Work Request',
+                        'data': response.json(),
+                        'status': response.status_code
+                    })
+            except Exception as e:
                 return JsonResponse({
-                    'message': 'Work Request POST succesfully',
-                    'work': work,
+                    'message': str(e),
                     'data': response.json(),
                     'status': response.status_code
                 })
-            else:
-                return JsonResponse({
-                    'message': 'Failed to POST Work Request',
-                    'data': response.json(),
-                    'status': response.status_code
-                })
-        except Exception as e:
-            return JsonResponse({
-                'message': str(e),
-                'data': response.json(),
-                'status': response.status_code
-            })
+        else:
+            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
 
     elif request.method == 'GET':
         if user and company:

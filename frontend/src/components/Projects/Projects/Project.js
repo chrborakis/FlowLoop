@@ -22,10 +22,11 @@ import 'primereact/resources/themes/saga-blue/theme.css'; // Change the theme ac
 import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
 import { setDate } from "date-fns";
-
 import '../../../../static/css/index.css'
 
 const Project = ({project, setProjects}) => {
+    const {user:user_} = useAuth();
+
     const [dateRange, setDateRange] = useState([{
         startDate: project?.start_date,
         endDate: project?.finish_date,
@@ -35,7 +36,6 @@ const Project = ({project, setProjects}) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const toggleExpand = () => setIsExpanded(prevState => !prevState);
 
-    const { user} = useAuth();
     const [phase, setPhase] = useState({ name: "", state: "" });
     const [divisions,setDivisions] = useState([])
 
@@ -53,7 +53,7 @@ const Project = ({project, setProjects}) => {
     const [errors, setErrors] = useState({title:'', description:'', start_date:'', finish_date:''})
 
     const accept = () => {
-        deleteProject(project.project_id, setProjects)
+        deleteProject(project.project_id, setProjects, user_?.token)
         setVisible(false)
     }
     const reject = () => setVisible(false);    
@@ -124,8 +124,7 @@ const Project = ({project, setProjects}) => {
             finish_date: finish_date,
             phase: phase.name[0]
         }
-        console.log(editedProject)
-        updateProject(project.project_id, editedProject, setEdit, setProjects, setErrors)
+        updateProject(project.project_id, editedProject, setEdit, setProjects, setErrors, user_?.token)
     }
 
     return(<>
@@ -133,11 +132,11 @@ const Project = ({project, setProjects}) => {
             <Card.Header className="header">
                 <Row className="align-items-center">
                     <Col className="d-flex justify-content-start">
-                        <User user={project.admin} circle/>
+                        <User user={project?.admin} circle/>
                     </Col>
 
                     <Col xs={4} className="d-flex justify-content-end">
-                        {project?.admin?.slug === user.slug && 
+                        {project?.admin?.slug === user_?.slug && 
                             <Dropdown show={projectOpts} onToggle={toggleDropdown}>
                                 <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                                 <Dropdown.Menu >
@@ -182,10 +181,10 @@ const Project = ({project, setProjects}) => {
                                         {phase.name}
                                     </Dropdown.Toggle>
                                 
-                                    <Dropdown.Menu>
+                                    <Dropdown.Menu style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                         {options.map((option, index) => (
                                             <Dropdown.Item key={index} eventKey={option.value} className="textfield" 
-                                                onClick={(ev)=>handleSelect(ev.target)} active={phase.state === option.value}
+                                                onClick={(ev) => handleSelect(ev.target)} active={phase.state === option.value}
                                             >
                                                 <Badge bg={option.bgColor}>{option.label}</Badge>
                                             </Dropdown.Item>
@@ -228,7 +227,7 @@ const Project = ({project, setProjects}) => {
                 if (event.target === event.currentTarget) toggleExpand();
             }}>
                 {isExpanded ? (<>
-                    <NewDivision admin_slug={project?.admin?.slug} user_slug={user.slug} setDivisions={setDivisions} project_id={project.project_id}/>
+                    <NewDivision admin_slug={project?.admin?.slug} user={user_} setDivisions={setDivisions} project_id={project.project_id}/>
                     <DivisionsList company={project.company} admin_slug={project?.admin?.slug} divisions={divisions} setDivisions={setDivisions}/>
                 </>) : (<>
                     {divisions && divisions.length > 0 ? (<>Divisions: {divisions.length}</>) : (<>No divisions</>)}

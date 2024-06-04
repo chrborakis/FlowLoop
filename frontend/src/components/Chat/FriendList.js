@@ -13,7 +13,7 @@ const FriendList = ({user}) => {
     const [groupChat, setGroupChat] = useState({group:{}, user:{}})
     const [activeChat, setActiveChat] = useState(null); 
 
-    const onRemoveMember = (member,setMembers) => removeMember(member,setMembers,setGroupChat)
+    const onRemoveMember = (member,setMembers,token) => removeMember(member,setMembers,setGroupChat,token)
 
     const handleChat = (friend) => {
         setChat({

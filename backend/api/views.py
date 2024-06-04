@@ -956,6 +956,12 @@ class ProjectRequestAssignView(APIView):
         instances = get_list_or_404(ProjectRequestAssign)
         serializers = ProjectRequestAssignSerializer(instances, many=True)        
         return Response(serializers.data)
+    def post( self, request, request_id):
+        serializer = ProjectRequestAssignSerializer( data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def patch( self, request, request_id):
         try:
             req_inst = ProjectRequestAssign.objects.get(pk=request_id)

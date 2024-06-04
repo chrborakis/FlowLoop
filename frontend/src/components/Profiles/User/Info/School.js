@@ -12,7 +12,7 @@ import AlertMessage from '../../../Extra/AlertMessage';
 
 import '../../../../../static/css/index.css'
 
-const School = ({ user, education, admin}) => {
+const School = ({ user, education, admin, token}) => {
     const [editMode, setEdit] = useState(false);
     const today = new Date()
     const minDate = new Date(today.getFullYear() - 50, today.getMonth(), today.getDate());
@@ -46,9 +46,9 @@ const School = ({ user, education, admin}) => {
         }
 
         if(updatedData.id){
-            editEducation( updatedData, setEdit, setAlert)
+            editEducation( updatedData, setEdit, setAlert, token)
         }else{
-            postEducation( updatedData, setEdit, setAlert)
+            postEducation( updatedData, setEdit, setAlert, token)
         }
         return
     }

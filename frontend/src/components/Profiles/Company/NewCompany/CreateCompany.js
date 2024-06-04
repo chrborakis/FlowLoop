@@ -44,7 +44,7 @@ const CreateCompany = ({onHide}) => {
         if(selectedDate){
             const date = new Date(selectedDate).toISOString().split('T')[0];
             const data = { ...formData, establishment_date:date}
-            createCompany( user.id, data, image, setErrors)
+            createCompany( user.id, data, image, setErrors, user?.token)
             .then(res => {
                 updateUser({...user, 'company': res.data.company_info,'work_id': res.work.work_id,'is_admin': res.work.is_admin})
             })

@@ -5,7 +5,6 @@ import { getProjects } from "./ProjectUtils";
 import Project from './Project';
 import Button from '@mui/material/Button';
 
-
 import NewProject from "./NewProject";
 
 const ProjectsList = ({company}) => {

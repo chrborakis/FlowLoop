@@ -29,7 +29,7 @@ const Post = ({post, url, setPosts}) => {
 
     //Dropdown on delete confirm message
     const accept = () => {
-        deletePost( url, post.post_id, setPosts)
+        deletePost( url, post.post_id, setPosts, user?.token)
         setVisible(false);
     };
     const reject = () => setVisible(false); 
@@ -49,7 +49,7 @@ const Post = ({post, url, setPosts}) => {
     const saveEdited = (e) => {
         e.preventDefault()
         console.log(data)
-        editPost( url, data, setPosts, setEditMode)
+        editPost( url, data, setPosts, setEditMode, user?.token)
     }
 
     return(

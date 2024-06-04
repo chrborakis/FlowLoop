@@ -42,7 +42,6 @@ const Login = ({login}) => {
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
         ).then(res => {
             if(res.status === 200){
-                console.log(res.data)
                 const user = res.data.user
                 onLogin({
                     token: res.data.token,

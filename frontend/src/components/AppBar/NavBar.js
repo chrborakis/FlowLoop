@@ -80,7 +80,7 @@ function NavBar({user, messages, notifications}) {
                         </Tabs>
                         <TabPanel value={0} index={0}>
                             {/* <Messages user={user.id} refresh={refreshChat} messages={messages}/> */}
-                            <MessageContainer  user={user.id} refresh={refreshChat} messages={messages}/>
+                            <MessageContainer  user={user} refresh={refreshChat} messages={messages}/>
                         </TabPanel>
                     </Row>
                 </NavDropdown>
@@ -108,7 +108,7 @@ function NavBar({user, messages, notifications}) {
 
                         <div className="log_out mt-auto">
                             <ButtonGroup orientation="vertical" aria-label="Vertical button group" variant="contained">
-                                <Settings user_id={user.id}/>
+                                <Settings user={user}/>
                                 <Button variant="outlined" color="red">
                                     <Link to="/" onClick={logOut}>Log Out</Link>
                                 </Button>

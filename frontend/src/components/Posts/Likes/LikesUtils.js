@@ -7,14 +7,12 @@ export const getLikes = async( setLikes, url) => {
     .catch( err => console.log(err))
 };
 
-export const postLike = async( url, post, like, setLiked) => {
+export const postLike = async( url, post, like, setLiked, token) => {
     const post_url = url.replace( post, "0")
     const data = { "post": post, "like": like}
-    console.log("PostLike -> ", post_url)
     // url={`${url}likes/${post.post_id}`}
     await axios.post(post_url, data,{
-        headers: {'X-CSRFToken': Cookies.get('csrftoken'),
-        'Content-Type': 'application/json'}
+        headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}
     })
     .then(  res => setLiked((prevValue) => !prevValue))
     .catch( err => console.log(err.data))

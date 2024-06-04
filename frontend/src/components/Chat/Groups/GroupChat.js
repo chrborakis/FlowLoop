@@ -7,15 +7,16 @@ import NewMessage from "../NewMessage";
 import { getGroupMessages, sendGroupMessage } from "./GroupUtils";
 import { Dropdown } from "react-bootstrap";
 
+import GroupMembers from "./GroupMembers";
+import { useAuth } from "../../../store/AuthContext";
+
 import '../../../../static/css/chat.css'
 import '../../../../static/css/index.css'
 import '../../../../static/css/group.css'
 
-import GroupMembers from "./GroupMembers";
-
-import { removeMember } from "./GroupUtils";
-
 const GroupChat = ({chat, setChat, room, onRemoveMember}) => {
+    const {user: user_} = useAuth();
+
     const [socket, setSocket] = useState(null);
     const {group, user} = chat;
 
@@ -68,7 +69,7 @@ const GroupChat = ({chat, setChat, room, onRemoveMember}) => {
                             <Dropdown.Menu className="dropdown-menu-center">
                                 <Dropdown.Item onClick={() => setMembersModal(true)}>Members</Dropdown.Item>
                                 <hr/>
-                                <Dropdown.Item style={{color:"red"}} onClick={ () => onRemoveMember(chat.user.member, setMembers)}>Leave Group</Dropdown.Item>
+                                <Dropdown.Item style={{color:"red"}} onClick={ () => onRemoveMember(chat.user.member, setMembers,user_?.token)}>Leave Group</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Col>
@@ -79,11 +80,11 @@ const GroupChat = ({chat, setChat, room, onRemoveMember}) => {
                 <Messages messages={messages} user_id={user?.id}/>
             </Card.Body>
             <Card.Footer>
-                <NewMessage chat={{group:group.id, sender:user.member}} setMessages={setMessages} socket={socket} onSend={sendGroupMessage}/>
+                <NewMessage chat={{group:group.id, sender:user.member}} setMessages={setMessages} socket={socket} onSend={sendGroupMessage} token={user_?.token}/>
             </Card.Footer>
         </Card>
         <GroupMembers chat={chat} show={membersModal} onHide={() => setMembersModal(false)} 
-            isAdmin={isAdmin} setMembers={setMembers} members={members} setAdmins={setAdmins} admins={admins}/>
+            isAdmin={isAdmin} setMembers={setMembers} members={members} setAdmins={setAdmins} admins={admins} token={user_?.token}/>
     </>)
 }
 

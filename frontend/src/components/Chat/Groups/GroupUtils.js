@@ -22,10 +22,10 @@ export const getGroups = async(user_id, setGroups) => {
     .catch(err => console.log(err))
 }
 
-export const sendGroupMessage = async( data, setMessages, setMessage, socket) => {
-    await axios.post(`${window.location.origin}/backend/groups/conversation/${data.group}`, data,{
-        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
-    }).then( res => {
+export const sendGroupMessage = async( data, setMessages, setMessage, socket, token) => {
+    await axios.post(`${window.location.origin}/backend/groups/conversation/${data.group}`, data,
+        {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+    ).then( res => {
         if(res.data.status===200) {
             socket.send(JSON.stringify({'message': res.data.data}))
             // setMessages(prevMessaged=>[...prevMessaged, res.data.data])
@@ -59,11 +59,11 @@ export const updateGroupMembers = async( group_id, setMembers, setAdmins) => {
     }).catch(err => console.log(err))
 }
 
-export const addMember = async (newMember, setMembers, setNewMember) => {
+export const addMember = async (newMember, setMembers, setNewMember, token) => {
     try {
-        const response = await axios.post(`${window.location.origin}/backend/groups/members/${newMember.member}`, newMember, {
-            headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}
-        });
+        const response = await axios.post(`${window.location.origin}/backend/groups/members/${newMember.member}`, newMember, 
+            {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}} 
+        );
 
         if (response.data.status === 200) {
             const memberInfo = response.data.data.member_info;
@@ -78,11 +78,11 @@ export const addMember = async (newMember, setMembers, setNewMember) => {
     }
 };
 
-export const addAdmin = async (admin, setAdmins) => {
+export const addAdmin = async (admin, setAdmins, token) => {
     try {
-        const response = await axios.post(`${window.location.origin}/backend/groups/admins/${admin.admin}`, admin,{
-            headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}
-        });
+        const response = await axios.post(`${window.location.origin}/backend/groups/admins/${admin.admin}`, admin,
+        {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+        );
 
         if(response.data.status===200){
             const {user,admin} = response.data.data
@@ -95,10 +95,10 @@ export const addAdmin = async (admin, setAdmins) => {
     }
 };
 
-export const removeMember = async( memberToRemove, setMembers, setGroupChat) => {
-    await axios.delete(`${window.location.origin}/backend/groups/members/${memberToRemove}`,{
-        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
-    }).then( res => {
+export const removeMember = async( memberToRemove, setMembers, setGroupChat, token) => {
+    await axios.delete(`${window.location.origin}/backend/groups/members/${memberToRemove}`,
+        {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+    ).then( res => {
         console.log(res.data)
         if(res.data.status===200){
             setMembers((prevMembers) =>prevMembers.filter((m) => m.member !== memberToRemove));
@@ -107,10 +107,10 @@ export const removeMember = async( memberToRemove, setMembers, setGroupChat) => 
     }).catch(err => console.log(err))
 }
 
-export const removeAdmin = async( admin, setAdmins) => {
-    await axios.delete(`${window.location.origin}/backend/groups/admins/${admin}`,{
-        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
-    }).then( res => {
+export const removeAdmin = async( admin, setAdmins, token) => {
+    await axios.delete(`${window.location.origin}/backend/groups/admins/${admin}`,
+        {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+    ).then( res => {
         console.log(res.data)
         if(res.data.status===200){
             setAdmins((prevAdmins) =>
@@ -120,15 +120,15 @@ export const removeAdmin = async( admin, setAdmins) => {
     }).catch(err => console.log(err))
 }
 
-export const newGroup = async (group, work_id, setGroups, onHide) => {
+export const newGroup = async (group, work_id, setGroups, onHide, token) => {
     try {
-        const response = await axios.post(`${window.location.origin}/backend/groups/group/0`, group, {
-            headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json',},
-        });
+        const response = await axios.post(`${window.location.origin}/backend/groups/group/0`, group, 
+            {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+        );
 
         if(response.data.status === 200) {
-            const member = await addMember({ group: response.data.data.group_id, member: work_id });
-            const admin  = await addAdmin( { admin:member.member});
+            const member = await addMember({ group: response.data.data.group_id, member: work_id }, null, null, token);
+            const admin  = await addAdmin( { admin:member.member}, null, token);
             setGroups((prevGroups) => [...prevGroups, {...response.data.data, members:[member], admins:[admin]}]);
             onHide()
             return response.data.data.group_id;

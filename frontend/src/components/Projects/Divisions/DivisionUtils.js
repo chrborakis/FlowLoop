@@ -2,7 +2,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const getDivisions = async( company, setDivisions) => {
-    await axios.get(`../backend/projects/divisions/${company}`)
+    await axios.get(`../backend/projects/divisions/${company}`,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}})
     .then(  res => {
         if( res.data.status === 200){
             setDivisions(res.data.data)
@@ -10,9 +11,9 @@ export const getDivisions = async( company, setDivisions) => {
     .catch( err => console.log(err))
 }
 
-export const addDivision = async( project_id, newDivision, setDivisions, setNewDivision, setError, setNewDivState) => {
+export const addDivision = async( project_id, newDivision, setDivisions, setNewDivision, setError, setNewDivState, token) => {
     await axios.post(`../backend/projects/divisions/${project_id}`, newDivision, 
-        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),}}
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
     )
     .then( res => {
         if(res.data.status===200){
@@ -25,32 +26,33 @@ export const addDivision = async( project_id, newDivision, setDivisions, setNewD
     })
     .catch( err => {
         console.log(err)
-        // setError(res.data.data.title)
     })
 }
 
-export const uploadDivision = async( division, setDivisions, file) => {
-    await axios.patch(`../backend/api/project_divisions/${division}`, {file},{
-        headers: {
-            'X-CSRFToken': Cookies.get('csrftoken'),
-            'Content-Type': 'multipart/form-data'
-    }})
+export const uploadDivision = async( division, setDivisions, formData, setErrors) => {
+    console.log(formData)
+    await axios.patch(`../backend/api/project_divisions/${division}`, formData,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'multipart/form-data'}})
     .then(  res => {
         if( res.status === 200){
-            console.log(res.data)
             setDivisions(prevDivs => {
                 return prevDivs.map(obj => {
                     if (obj.division === res.data.division) return res.data;
                     else return obj;
                 });
             });
+        }else{
+            setErrors("Error uploading the file")
         }})
-    .catch( err => console.log(err))
+    .catch( err => {    
+        setErrors("Wrong file format")
+        console.log(err.response)
+    })
 }
 
-export const deleteDivision = async( division_id, setDivisions) => {
+export const deleteDivision = async( division_id, setDivisions, token) => {
     await axios.delete(`../backend/projects/divisions/${division_id}`,
-    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token}})
     .then( res => {
         console.log(res.data)
         if(res.data.status === 200){
@@ -60,21 +62,12 @@ export const deleteDivision = async( division_id, setDivisions) => {
     .catch( err => console.log(err))
 }
 
-export const replyRequest = async(request, data, division, setDivisions, onHide) => {
+export const replyRequest = async(request, data, division, setDivisions, onHide, token) => {
     await axios.patch(`../backend/projects/assign_request/${request}`, data, 
-    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( async res => {
         if(res.data.status === 200){
-            console.log(res.data)
-
             const assignResponse = await getAssign(division);
-
-            // setDivisions(prevData =>
-            //     prevData.map(obj =>
-            //         obj.division === division ? { ...obj, assign: assignResponse } : obj
-            //     )
-            // );
-
             setDivisions(prevData =>
                 prevData.map(obj => {
                     if (obj.division === division) {
@@ -84,11 +77,21 @@ export const replyRequest = async(request, data, division, setDivisions, onHide)
                     return obj;
                 })
             );
-
             onHide();
         }
     })
     .catch( err => console.log(err))
+}
+
+export const requestAssign = async(request, setRequested, token) => {
+    await axios.post(`../backend/projects/assign_request/0`, request, 
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
+    .then( res => {
+        if(res.data.status===200){
+            setRequested(true)
+        }
+    })
+    .catch( err => console.log(err.response))
 }
 
 export const getAssign = async(division) => {
@@ -104,9 +107,9 @@ export const getAssign = async(division) => {
     }
 }
 
-export const addAssign = async(division, work_on, setDivisions, onHide) => {
+export const addAssign = async(division, work_on, setDivisions, onHide, token) => {
     await axios.post(`../backend/projects/assign/${division}`, work_on, 
-    {headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log(res.data.data)
         setDivisions(prevData =>
@@ -119,9 +122,9 @@ export const addAssign = async(division, work_on, setDivisions, onHide) => {
     .catch( err => console.log(err))
 }
 
-export const removeAssign = async(divToDel, participant_id, setDivisions) => {
+export const removeAssign = async(divToDel, participant_id, setDivisions, token) => {
     await axios.delete(`../backend/projects/assign/${participant_id}`,
-    {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken')}})
+        {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token}})
     .then( res => {
         if(res.data.status === 200){
             setDivisions(prevData =>

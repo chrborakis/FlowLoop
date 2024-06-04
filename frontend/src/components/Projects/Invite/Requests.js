@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Modal, Form,Dropdown } from "react-bootstrap"
 import Button from '@material-ui/core/Button';
 import { replyRequest } from "../Divisions/DivisionUtils";
+
 const Requests = (props) => {
     const [selectedOption, setSelectedOption] = useState({id:'',work_on:'',name:''});
 
@@ -9,7 +10,7 @@ const Requests = (props) => {
         e.preventDefault()
         if(selectedOption.work_on){
             const data = {"division": props.division.division,"employee": selectedOption.work_on, "status": "A"}
-            replyRequest( selectedOption.id, data, props.division.division, props.setDivisions, props.onHide)
+            replyRequest( selectedOption.id, data, props.division.division, props.setDivisions, props.onHide, props.token)
         }
     }
 

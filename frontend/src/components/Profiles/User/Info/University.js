@@ -11,7 +11,7 @@ import AlertMessage from '../../../Extra/AlertMessage';
 
 import '../../../../../static/css/index.css'
 
-const University = ({user, university, admin}) => {   
+const University = ({user, university, admin, token}) => {   
     const [editMode, setEdit] = useState(false);
     const today = new Date()
     const minDate = new Date(today.getFullYear() - 50, today.getMonth(), today.getDate());
@@ -67,7 +67,7 @@ const University = ({user, university, admin}) => {
             return updatedItem; 
         });
 
-        postUniversity( user, updatedData, setEdit, setAlert)
+        postUniversity( user, updatedData, setEdit, setAlert, token)
         return
     }
     

@@ -47,7 +47,7 @@ const NewProject = (props) => {
         if(start_date < finish_date){
             const data = { ...formData, company:props.company, phase:"I", start_date, finish_date}
             console.log(data)
-            addProject( data, props.onHide, props.setNewProject, user.work_id, setProjectError, setProject, setFormData)
+            addProject( data, props.onHide, props.setNewProject, user?.work_id, setProjectError, setProject, setFormData, user?.token)
         }else{
             setProjectError("Start date must be before finish date...")
         }
@@ -81,42 +81,9 @@ const NewProject = (props) => {
                     onChange={handleInputChange}
                 />
   
-{/* 
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField label="Start Date" variant="outlined"
-                            required type="date" value={startDate}
-                            onChange={(e) => handleStartDateChange(e.target.value)}
-                            InputLabelProps={{shrink: true,}}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField label="Finish Date" variant="outlined"
-                            required type="date" value={finishDate}
-                            onChange={(e) => handleFinishDateChange(e.target.value)}
-                            InputLabelProps={{shrink: true,}}
-                        />
-                    </Grid>
-                </Grid> */}
+
 
                 <DateRange dateRange={dateRange} setDateRange={setDateRange}/>
-{/*                 
-                    <Form.Group as={Col} className="mb-3" controlId="Started">
-                    <Form.Label>Start Date</Form.Label>
-                        <DatePicker  required
-                            selected={startDate} onChange={handleStartDateChange}
-                            dateFormat="yyyy-MM-dd" minDate={today} isClearable ={true}
-                            showYearDropdown={true} scrollableYearDropdown={true}
-                        />
-                    </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="Started">
-                    <Form.Label>Finish Date</Form.Label>
-                        <DatePicker  required
-                            selected={finishDate} onChange={handleFinishDateChange}
-                            dateFormat="yyyy-MM-dd" minDate={today} isClearable ={true}
-                            showYearDropdown={true} scrollableYearDropdown={true}
-                        />
-                    </Form.Group> */}
                     {projectError && <span className="text-danger">{projectError}</span>}
                 </Modal.Body>
                 <Modal.Footer style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

@@ -5,36 +5,34 @@ import requests
 from backend.api.serializers import *
 from apps.users.models import *
 from django.views.decorators.csrf import csrf_exempt
-from backend.util import get_base_url, get_workson_instance
+from backend.util import get_base_url, get_workson_instance, verify_token
 from django.db.models import Q
 from django.core.paginator import Paginator
+from rest_framework import status
+
 
 @csrf_exempt
 def conversation(request, user, friend):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))   
-        print(data)
-        try:
-            response = requests.post(base_url+'/backend/api/conversation/'+str(user)+'/'+str(friend), json=data)
-            if response.status_code == 200:
-                return JsonResponse({
-                    'message': 'Message POST succesfully',
-                    'data': response.json(),
-                    'status': response.status_code
-                })
-            else:
-                return JsonResponse({
-                    'message': 'Failed to POST Message',
-                    'data': response.json(),
-                    'status': response.status_code
-                })
-        except Exception as e:
-            return JsonResponse({
-                'message': str(e),
-                'data': response.json(),
-                'status': response.status_code
-            })
+        if(verify_token(request.headers.get('Authorization'))):
+            data = json.loads(request.body.decode('utf-8'))   
+            try:
+                response = requests.post(base_url+'/backend/api/conversation/'+str(user)+'/'+str(friend), json=data)
+                if response.status_code == 200:
+                    return JsonResponse({
+                        'message': 'Message POST succesfully',
+                        'data': response.json(),'status': response.status_code
+                    })
+                else:
+                    return JsonResponse({
+                        'message': 'Failed to POST Message',
+                        'data': response.json(),'status': response.status_code
+                    })
+            except Exception as e:
+                return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+        else:
+            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
 
     elif request.method == 'GET':
         if user and friend:
@@ -85,14 +83,12 @@ def conversations(request, user):
                 if response.status_code == 200:
                     return JsonResponse({
                         'message': 'Conversations List Fetched succesfully',
-                        'data': response.json(),
-                        'status': response.status_code
+                        'data': response.json(),'status': response.status_code
                     })  
                 else:
                     return JsonResponse({
                         'message': 'Failed to fetch Conversations List ',
-                        'data': response.json(),
-                        'status': response.status_code
+                        'data': response.json(),'status': response.status_code
                     })
             except Exception as e:
                 return JsonResponse({'error':str(e)}, status=400)

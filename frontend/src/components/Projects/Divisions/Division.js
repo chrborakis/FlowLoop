@@ -17,43 +17,30 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 import { User } from "../../Profiles/Profile";
 
 const Division = ({ company, admin_slug,division,setDivisions}) => {
+    const {user} = useAuth();
     const [assignOptsOpen, setAssignOptOpen] = useState(false);
     const toggleDropdown = () => setAssignOptOpen(!assignOptsOpen);
 
     const fileInputRef = useRef(null);
-    const handleButtonClick = () => {
-        fileInputRef.current.click();
-    };
-
-    const { user} = useAuth();
+    const handleButtonClick = () => fileInputRef.current.click();
     const [ file, setFile] = useState(null);
+    const [errors,setErrors] = useState("")
 
     const [visible,setVisible] = useState(false)
     const accept = () => {
-        deleteDivision(division.division, setDivisions)
+        deleteDivision(division.division, setDivisions, user?.token)
         setVisible(false)
     }
     const reject = () => setVisible(false);    
 
-
     const handleFileChange = (event) => {
+        setErrors("")
         setFile(event.target.files[0]);
         if( event.target.files[0]){
-            uploadDivision( division.division, setDivisions, event.target.files[0])
+            const formData = new FormData();
+            formData.append('file', event.target.files[0]);
+            uploadDivision( division.division, setDivisions, formData, setErrors)
         }
-    };
-
-    const handleSubmit = (event, division_id) => {
-        event.preventDefault();
-        if (!file) {
-            const inputField = document.querySelector('.form-control'); // Select the input field
-            inputField.classList.add('shake'); // Add the shake class to trigger the animation
-            setTimeout(() => {
-                inputField.classList.remove('shake'); // Remove the shake class after the animation finishes
-            }, 1000); // Adjust the duration to match the animation duration
-        } else {
-            
-        }  
     };
 
     return(<>
@@ -63,24 +50,22 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
                 {division?.assign ? (
                     <Col className="d-flex justify-content-start">
                         <User user={division.assign} circle/>
-                        {console.log("division.assign: ",division.assign)}
                     </Col>
                 ) : (
                     <Col xs={8} className="d-flex justify-content-start">
-                        <DivisionInvite division={division} company={company} admin_slug={admin_slug} user_slug={user.slug} setDivisions={setDivisions}/>
+                        <DivisionInvite division={division} company={company} admin_slug={admin_slug} user={user} setDivisions={setDivisions}/>
                     </Col>
                 )}
 
-                {admin_slug === user.slug && (
+                {admin_slug === user?.slug && (
                     <Col xs={4} className="d-flex justify-content-end">
                         <Dropdown show={assignOptsOpen} onToggle={toggleDropdown}>
                             <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                             <Dropdown.Menu>
-                            <ButtonGroup variant="outlined" color="error" orientation="vertical" aria-label="Vertical button group">
-                                {division?.assign && <Button onClick={() => removeAssign(division.division, division.assign.participant_id,setDivisions)}>Remove Assign</Button>}
-                                <Button icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>Delete Division</Button>
-                            </ButtonGroup>
-                                
+                                <ButtonGroup variant="outlined" color="error" orientation="vertical" aria-label="Vertical button group">
+                                    {division?.assign && <Button onClick={() => removeAssign(division.division, division.assign.participant_id,setDivisions, user?.token)}>Remove Assign</Button>}
+                                    <Button icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>Delete Division</Button>
+                                </ButtonGroup>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Col>
@@ -103,7 +88,7 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
                 }
                 {
                     parseInt(user?.work_id) === parseInt(division.assign?.work_id) && (
-                        <Form onSubmit={ (event) => handleSubmit( event, division.division)}>
+                        <Form>
                             <Button onClick={handleButtonClick} className="button" type="submit" startIcon={<CloudUploadIcon/>}>
                                 {division.file ? "Replace File" : "Upload File"}
                                 <Form.Control  ref={fileInputRef}
@@ -112,6 +97,7 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
                                     style={{ display: 'none' }}
                                 />
                             </Button>
+                            <span className="text-danger">{errors}</span>
                         </Form>
                     )
                 }

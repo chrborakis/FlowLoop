@@ -19,8 +19,8 @@ const MessageContainer = ({ user, refresh, messages }) => {
     useEffect(() => {
         if (refresh) {
             setChats([]);
-            getChats(user, setChats);
-            messages.updateUnread(user, messages.setMessages);
+            getChats( user, setChats);
+            messages.updateUnread(user.id, messages.setMessages);
         }
     }, [refresh]);
 
@@ -64,7 +64,7 @@ const MessageContainer = ({ user, refresh, messages }) => {
     };
 
     return (<>
-        <Messages user={user} refresh={refresh} handleChat={handleChat}
+        <Messages user={user.id} refresh={refresh} handleChat={handleChat}
             messages={messages} chats={chats} setChat={setChat}
         />
         { isChatOpen && chat && <Chat chat={chat} setChat={setChat} />}

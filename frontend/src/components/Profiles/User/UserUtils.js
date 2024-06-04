@@ -12,9 +12,9 @@ export const getUser = async( setData, setWork, slug) => {
     .catch( err => console.log(err))
 };
 
-export const updateUser = async( company_slug, data, setEdit, setError) => {
+export const updateUser = async( company_slug, data, setEdit, setError, token) => {
     axios.patch(`../backend/api/companies/${company_slug}`, data
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}).
         then( res => {
             if(res.status === 200) {
                 setEdit(false);
@@ -63,7 +63,6 @@ export const getFriends = async( user, setFriends) => {
 }
 
 export const get_request = async ( sender, receiver, setRequested) => {
-    console.log(sender, receiver)
     axios.get('/backend/users/friend_requests/', {params: { sender, receiver}}
     ).then(  res => {
         console.log(res.data)
@@ -76,10 +75,10 @@ export const get_request = async ( sender, receiver, setRequested) => {
     .catch( err => console.log(err))
 };  
 
-export const send_request = async( sender, receiver, setRequested, status) => {
+export const send_request = async( sender, receiver, setRequested, status, token) => {
     console.log("Friend request...", sender, " to " , receiver, status)
     axios.post('/backend/users/friend_requests/', { sender, receiver, status}
-    ,{headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
+    ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
     ).then(  res => {
         console.log(res.data)
         if(res.data.status === 200){
@@ -101,8 +100,9 @@ export const getEducation = async( user, setEducation) => {
     .catch( err => console.log(err))
 }
 
-export const postEducation = async( data, setEdit, setAlert) => {
-    axios.post("/backend/users/education/0", data)
+export const postEducation = async( data, setEdit, setAlert, token) => {
+    axios.post("/backend/users/education/0", data,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then(  res => {
         if(res.data.status === 200){
             setEdit(false)
@@ -114,10 +114,10 @@ export const postEducation = async( data, setEdit, setAlert) => {
     .catch( err => console.log(err))
 }
 
-export const editEducation = async( data, setEdit, setAlert) => {
-    axios.patch(`/backend/users/education/${data.id}`, data)
+export const editEducation = async( data, setEdit, setAlert, token) => {
+    axios.patch(`/backend/users/education/${data.id}`, data,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then(  res => {
-        console.log(res.data)
         if(res.data.status === 200){ 
             setEdit(false)
             setAlert({state: true, info:"success", text:"Education updated successfully!"})
@@ -137,8 +137,9 @@ export const getUniversity = async( user, setUniversity) => {
     .catch( err => console.log(err))
 }
 
-export const postUniversity = async( user, data, setEdit, setAlert) => {
-    axios.post(`/backend/users/university/${user}`, data)
+export const postUniversity = async( user, data, setEdit, setAlert, token) => {
+    axios.post(`/backend/users/university/${user}`, data,
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then(  res => {
         if(res.status === 200){
             setEdit(false)

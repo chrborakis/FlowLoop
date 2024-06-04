@@ -24,10 +24,9 @@ export const getStaff = async( company, setStaff) => {
     .catch( err => console.log("ERROR", err))
 }
 
-export const updateAddress = async( company, address, setEdit, setError) => {
-    console.log("company", company)
+export const updateAddress = async( company, address, setEdit, setError, token) => {
     axios.put(`../backend/api/address/${company}`, address
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} })
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log("RES", res)
         if(res.status === 200) setEdit(false);
@@ -47,9 +46,9 @@ export const getCompany = async( setData, slug) => {
     .catch( err => console.log(err))
 };
 
-export const updateCompany = async( company_slug, data, setEdit, setError) => {
+export const updateCompany = async( company_slug, data, setEdit, setError, token) => {
     axios.patch(`../backend/api/companies/${company_slug}`, data
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'} }).
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}).
         then( res => {
             if(res.status === 200) {
                 if(setEdit)setEdit(false);
@@ -69,11 +68,10 @@ export const updateCompany = async( company_slug, data, setEdit, setError) => {
         }) 
 }
 
-export const createCompany = async( user_id, data, image, setErrors) => {
-    console.log('next: ', next)
+export const createCompany = async( user_id, data, image, setErrors, token) => {
     try{
         const res = await axios.post('/backend/companies/company/0', data, 
-            {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}
+            {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}
         });
         if(res.data.status === 200) {
             const user_data = {"user": user_id,"company": res.data.data.company_id ,"status": "A","is_admin": true};
@@ -95,10 +93,9 @@ export const createCompany = async( user_id, data, image, setErrors) => {
 }
 
 // CREATE ADDRESS
-export const createAddress = async( company_id, address, setEdit, setErrors) => {
-    console.log("address", address)
+export const createAddress = async( company_id, address, setEdit, setErrors, token) => {
     axios.post(`/backend/companies/address/${company_id}`, address, 
-    {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}})
+        {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status === 200)
             console.log(res.data);
@@ -128,10 +125,10 @@ export const get_request = async ( user, user_id, company_id, setRequested) => {
     }
 };  
 
-export const sendWorkRequest = async ( data, setRequested) => {
+export const sendWorkRequest = async ( data, setRequested, token) => {
     try {
         const res = await axios.post('/backend/companies/id_workrequests/0/0', data,
-            {headers: {'X-CSRFToken': Cookies.get('csrftoken')}}
+            {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
         );
         if(setRequested != null) setRequested(true);
         console.log("sendWorkRequest -> ", res.data);

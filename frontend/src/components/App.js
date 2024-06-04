@@ -18,7 +18,6 @@ const App = () => {
     const [messages, setMessages] = useState(0)
 
     const updateUnread = (user_id, setMessages) => {
-        console.log("updateUnread")
         getMessages(user_id, setMessages)}
 
     useEffect(()=>{
@@ -26,7 +25,6 @@ const App = () => {
             getUserInfo(user?.id, updateUser)
             getMessages(user?.id, setMessages)
         }
-        console.log(user)
     },[user?.id])
 
     useEffect(()=>{

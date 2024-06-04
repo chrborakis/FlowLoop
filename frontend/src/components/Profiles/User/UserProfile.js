@@ -32,7 +32,7 @@ const UserProfile = () => {
     
     const reply = ( status) => {
         console.log("Reply Friend Request -> ", user, data?.user, status)
-        replyRequestProfile( user, data?.user, status, setRequested)
+        replyRequestProfile( user, data?.user, status, setRequested, user?.token)
     }
     
     const [ image, setImage] = useState(data?.image);
@@ -79,7 +79,7 @@ const UserProfile = () => {
                                     </Row>
                                     <Row className="text-center d-flex justify-content-center">
                                             {user.id !== data?.user && (
-                                            <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply} />
+                                            <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply} token={user?.token}/>
                                         )}
                                     </Row>
                                 </Col>
@@ -97,10 +97,10 @@ const UserProfile = () => {
                                     <Tab label={`Friends (${friends.length})`}/>
                                 </Tabs>
                                 <TabPanel value={tab} index={0}>
-                                    <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user}/>
+                                    <Info user={data} _user={user} updateUser={updateUser} admin={user.id===data?.user} token={user?.token}/>
                                 </TabPanel>
                                 <TabPanel value={tab} index={1}>
-                                    <Education user={data.user} admin={user.id===data?.user}/>
+                                    <Education user={data.user} admin={user.id===data?.user} token={user?.token}/>
                                 </TabPanel>
                                 <TabPanel value={tab} index={2}>
                                     { friends && <Friends friends={friends}/>}

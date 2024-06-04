@@ -13,8 +13,7 @@ const AdminInvite = (props) => {
     const handleSubmit = async(e) => {
         e.preventDefault()
         if(selectedOption.work_on){
-            console.log( props.division.division, selectedOption)
-            addAssign(props.division.division, selectedOption.work_on, props.setDivisions, props.onHide)
+            addAssign(props.division.division, selectedOption.work_on, props.setDivisions, props.onHide, props.token)
         }
     }
 

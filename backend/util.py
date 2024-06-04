@@ -3,6 +3,19 @@ from django.shortcuts import get_object_or_404
 from apps.companies.models import WorksOn
 from backend.api.serializers import WorksOnSerializer
 
+from rest_framework.exceptions import AuthenticationFailed
+from apps.users.models import CustomToken 
+
+def verify_token(token):
+    print(token)
+    if not token: raise AuthenticationFailed('Token is missing')
+    try:
+        instance = CustomToken.objects.get(key=token)
+        return True
+    except CustomToken.DoesNotExist:
+        raise AuthenticationFailed('Invalid token')
+
+
 def get_base_url(request: HttpRequest) -> str:
     protocol = 'https' if request.is_secure() else 'http'
     domain = request.get_host()

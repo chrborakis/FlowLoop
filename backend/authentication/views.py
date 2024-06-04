@@ -96,12 +96,11 @@ def login(request):
         return Response({"detail":"Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST)
 
     token, created = CustomToken.objects.get_or_create(user=user)
-    token_data = {'key': token.key}
 
     user_data = get_object_or_404(Users, user=user.user_id)
     ser_user = UsersSerializer(instance=user_data)
 
-    return Response({"token": token_data, "user": ser_user.data}, status=status.HTTP_200_OK)
+    return Response({"token": token.key, "user": ser_user.data}, status=status.HTTP_200_OK)
 
 # @api_view(['POST'])
 # def signup(request):
@@ -135,8 +134,7 @@ def signup(request):
         if serializer_user.is_valid():
             serializer_user.save()
             token, created = CustomToken.objects.get_or_create(user=user)
-            token_data = {'key': token.key}
-            return Response({'token': token_data, 'user': serializer_user.data}, status=status.HTTP_200_OK)
+            return Response({'token': token.key, 'user': serializer_user.data}, status=status.HTTP_200_OK)
         else:
             errors.update(serializer_user.errors)
             user.delete()

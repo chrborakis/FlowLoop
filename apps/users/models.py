@@ -67,13 +67,7 @@ class Users(models.Model):
     create_date = models.DateTimeField(default=now, editable=False)
 
     def save(self, *args, **kwargs):
-        base_slug = '-'.join((slugify(self.firstname), slugify(self.lastname)))
-        unique_slug = base_slug
-        counter = 1
-        while Users.objects.filter(slug=unique_slug).exists():
-            unique_slug = f"{base_slug}-{self.user.user_id}"
-            counter += 1
-        self.slug = unique_slug
+        self.slug = '-'.join((slugify(self.firstname), slugify(self.lastname), slugify(self.user.user_id)))
         super(Users, self).save(*args, **kwargs)
 
 

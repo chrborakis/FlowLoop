@@ -4,7 +4,7 @@ import { getUniversity, getEducation } from '../UserUtils'
 import University from './University';
 import School from './School';
 
-const Education = ({user, admin}) => {
+const Education = ({user, admin, token}) => {
     const [education, setEducation] = useState();
     const [university, setUniversity] = useState([]);
     
@@ -15,8 +15,8 @@ const Education = ({user, admin}) => {
 
 
     return(<>   
-        <School user={user} education={education} admin={admin}/>
-        <University user={user} university={university} admin={admin}/>       
+        <School user={user} education={education} admin={admin} token={token}/>
+        <University user={user} university={university} admin={admin} token={token}/>       
     </>);
 }
 

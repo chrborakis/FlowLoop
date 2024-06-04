@@ -415,8 +415,11 @@ class ProjectsSerializer(serializers.ModelSerializer):
                 'image':str(project_admin.admin.employee.user.image),
             }
         except ProjectAdmin.DoesNotExist:
-            return None
-      
+            return {
+                'id'  : None,
+                'name': 'Deleted User',
+            }
+        
 
 class ProjectAssignSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()

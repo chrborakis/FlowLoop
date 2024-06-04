@@ -79,14 +79,44 @@ export const UserAvt = ({user, width, circle}) => {
 
 export const Company = ({ company, circle, width}) => {
     const { name, slug, image} = company
-    return(<>
+    const imageUrl = image
+        ? (image.startsWith('/files\\') || image.startsWith('/files'))
+            ? image
+            : `files\\${image}`
+        : '';
+
+//     return(<>
+//         <Link to={`/company/${slug}`} onClick={scrollTop}>
+//             {circle ? (
+//                 image && <Avatar alt={name} src={`/files/${image}`} width={width || 60}/>
+//             ) : (
+//                 image && <img alt={name} src={`/files/${image}`} width={width || 60}/>
+//             )}
+//             {name}
+//         </Link>
+//     </>)
+
+// const { name, slug, image} = user
+// const imageUrl = image
+//     ? (image.startsWith('/files\\') || image.startsWith('/files'))
+//         ? image
+//         : `/files/${image}`
+//     : '';
+
+    return( 
         <Link to={`/company/${slug}`} onClick={scrollTop}>
-            {circle ? (
-                image && <Avatar alt={name} src={`/files/${image}`} width={width || 60}/>
+            <div style={{display:'flex', alignItems:'center'}}>
+            {imageUrl ? (
+                circle ? (
+                    imageUrl && <Avatar alt={name} src={imageUrl} width={width || 60}/>
+                ) : (
+                    imageUrl && <img alt={name} src={imageUrl} width={width || 60}/>
+                )
             ) : (
-                image && <img alt={name} src={`/files/${image}`} width={width || 60}/>
+                <Avatar {...stringAvatar(name)} width={width || 60}/>
             )}
-            {name}
+            { name && <p className='name'>{name}</p>}
+            </div>
         </Link>
-    </>)
+    )
 }

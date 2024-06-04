@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 
 import '../../../../../static/css/index.css'
 
-const Address = ({company_id, address, admin}) => {
+const Address = ({company_id, address, admin, token}) => {
     const [data, setData] = useState({ 
         country: address?.country,
         city:    address?.city,
@@ -58,9 +58,9 @@ const Address = ({company_id, address, admin}) => {
         setErrors("");
         console.log(data)
         if(address?.id){
-            updateAddress( address.id, data, setEdit, setErrors)
+            updateAddress( address.id, data, setEdit, setErrors, token)
         }else{
-            createAddress( company_id, data, setEdit, setErrors)
+            createAddress( company_id, data, setEdit, setErrors, token)
         }
     }
     

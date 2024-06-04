@@ -8,15 +8,13 @@ import '../../../../static/css/projects.css'
 import '../../../../static/css/HomePage.css'
 import '../../../../static/css/index.css'
 
-const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
+const NewDivision = ({admin_slug, user, setDivisions, project_id}) => {
     const [newDivState, setNewDivState] = useState(false)
     const [newDivision, setNewDivision] = useState({project: project_id, title:'', description:'', file: null})
     const [error,setError] = useState('')
 
-    const showNewDivision = () => {
-        setNewDivState(true)
-    }
-
+    const showNewDivision = () => setNewDivState(true)
+    
     const adjustInputHeight = (target) => {
         target.style.height = 'auto';
         target.style.height = `${target.scrollHeight}px`;
@@ -31,11 +29,11 @@ const NewDivision = ({admin_slug, user_slug, setDivisions, project_id}) => {
     const submitNewDiv = ( event) => {
         event.preventDefault()
         setError('')
-        addDivision( project_id, newDivision, setDivisions, setNewDivision, setError, setNewDivState)
+        addDivision( project_id, newDivision, setDivisions, setNewDivision, setError, setNewDivState, user?.token)
     }
 
     return(<>
-        {admin_slug === user_slug && (
+        {admin_slug === user?.slug && (
             !newDivState ? (
                 <Button variant="solid" color="primary" onClick={showNewDivision}>Add Division</Button>
             ) : (

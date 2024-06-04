@@ -47,7 +47,7 @@ export const getMessages = async( user, friend, setMessages) => {
 // }
 
 export const getChats = async( user, setChats) => {
-    await axios.get(`${window.location.origin}/backend/chat/conversations/${user}`,{
+    await axios.get(`${window.location.origin}/backend/chat/conversations/${user.id}`,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
     }).then( res => {
         console.log(res.data)
@@ -84,10 +84,10 @@ export const clearUnread = async( user, friend) => {
     ).catch(err => console.log(err))
 }
 
-export const sendMessage = async( data, setMessages, setMessage, socket) => {
+export const sendMessage = async( data, token, setMessages, setMessage, socket) => {
     const {sender, receiver, message} = data;
     await axios.post(`${window.location.origin}/backend/chat/conversation/${sender}/${receiver}`, data,{
-        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
+        headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': `${token}`,'Content-Type': 'application/json'}
     }).then( res => {
         console.log(res.data)
         if(res.data.status===200) {

@@ -16,7 +16,7 @@ import Button from '@mui/material/Button';
 import '../../../../../static/css/index.css'
 import '../../../../../static/css/Profile/info.css'
 
-const Info = ({user, _user, updateUser, admin}) => {
+const Info = ({user, _user, updateUser, admin, token}) => {
     const [countries, setCountries] = useState([]);
     useEffect(() => { getCountries(countries, setCountries)}, []);
 
@@ -27,14 +27,9 @@ const Info = ({user, _user, updateUser, admin}) => {
   
     const [data, setData] = useState({ 
         user: user.user,
-        firstname: user.firstname,
-        midname: user.midname,
-        lastname: user.lastname,
-        occupation: user.occupation, 
-        gender: gender, 
-        phone: user.phone,
-        about: user.about,
-        country: user.country,
+        firstname: user.firstname, midname: user.midname, lastname: user.lastname,
+        occupation: user.occupation, gender: gender, phone: user.phone,
+        about: user.about,country: user.country,
     });
 
     useEffect(() => {setData(prevData => ({...prevData,gender: gender}))}, [gender]);
@@ -51,7 +46,7 @@ const Info = ({user, _user, updateUser, admin}) => {
         data.gender = gender;
 
         axios.patch(`../backend/api/users/${user.slug}`, data
-        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}).
+        ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}).
         then( res => {
             console.log(res)
             if(res.status === 200) {
@@ -83,17 +78,17 @@ const Info = ({user, _user, updateUser, admin}) => {
                         editMode &&
                         <>
                             <TextField disabled={!editMode} variant="standard" className="textfield" 
-                                placeholder="Enter your First Name" name="first_name"
+                                placeholder="Enter your First Name" name="firstname"
                                 label="First Name" required multiline fullWidth 
                                 value={data.firstname} onChange={handleInputChange}
                             />
                             <TextField disabled={!editMode} variant="standard" className="textfield" 
-                                placeholder="Enter your Middle Name" name="middle_name"
+                                placeholder="Enter your Middle Name" name="midname"
                                 label="Middle Name" multiline fullWidth 
                                 value={data.midname} onChange={handleInputChange}
                             />
                             <TextField disabled={!editMode} variant="standard" className="textfield" 
-                                placeholder="Enter your Last Name" name="last_name"
+                                placeholder="Enter your Last Name" name="lastname"
                                 label="Last Name" required multiline fullWidth 
                                 value={data.lastname} onChange={handleInputChange}
                             />

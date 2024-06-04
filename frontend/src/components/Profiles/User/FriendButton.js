@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 
 import { send_request } from './UserUtils';
 
-const FriendButton = ({ user, profile, setRequested, requested, onReply}) => {
+const FriendButton = ({ user, profile, setRequested, requested, onReply, token}) => {
     // const [client, setClient] = useState(null);
     const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success' });
     
@@ -13,10 +13,10 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply}) => {
     const sendRequest = () => {
         if( buttonConfig.text === 'Delete Friend'){
             // socket.emit('friend-deletion', { user, profile });
-            send_request( user, profile, setRequested, 'D')
+            send_request( user, profile, setRequested, 'D', token)
         }else if( buttonConfig.text === 'Send request'){
             // socket.emit('friend-request', { user, profile });
-            send_request( user, profile, setRequested, 'P')
+            send_request( user, profile, setRequested, 'P', token)
         }
     };
 

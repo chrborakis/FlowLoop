@@ -8,10 +8,9 @@ export const getComments = async( setComments, url) => {
     .catch(err => console.log(err.data))
 };
 
-export const postComment = async( data, url, setComment, comment, setText) => {
+export const postComment = async( data, url, setComment, comment, setText, token) => {
     await axios.post(`${url}/0`, data,{
-        headers: {'X-CSRFToken': Cookies.get('csrftoken'),
-        'Content-Type': 'application/json'}
+        headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}
     })
     .then(  res => {
         setComment(comment)

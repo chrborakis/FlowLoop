@@ -39,7 +39,7 @@ const NewPost = (props) => {
             "body": formData.description,
             ...(formData.image && { "image": formData.image }),
         }
-        postPost( props.url, data, props.newPost, props.onHide, setErrors, setFormData)
+        postPost( props.url, data, props.newPost, props.onHide, setErrors, setFormData, props.user.token)
     };
 
     return (

@@ -9,6 +9,7 @@ from backend.users.views import *
 
 urlpatterns = [
     path("user/<slug:slug>",    UserProfile.as_view()),
+    path("user_cred/<int:user>",    views.user_cred),
     path("friends/<slug:user>",   views.friends),
     path("education/<int:user>",  views.education),
     path("university/<int:user>", views.university),

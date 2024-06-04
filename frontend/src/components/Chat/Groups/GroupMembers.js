@@ -38,7 +38,7 @@ const GroupMembers = (props) => {
     };
 
     const accept = () => {
-        if(memberToRemove?.id)removeMember(memberToRemove.id, setMembers,null)
+        if(memberToRemove?.id)removeMember(memberToRemove.id, setMembers,null, props.token)
         setVisible(false);
     };
     const reject = () => setVisible(false); 
@@ -76,9 +76,9 @@ const GroupMembers = (props) => {
     const handleAdminClick = (member, isAdmin) => {
         if(member.user_id!== user.id){
             if(isAdmin){
-                removeAdmin( member.member, setAdmins)
+                removeAdmin( member.member, setAdmins, props.token)
             }else{
-                addAdmin( {admin:member.member}, setAdmins)
+                addAdmin( {admin:member.member}, setAdmins, props.token)
             }
         }
     };
@@ -153,7 +153,7 @@ const GroupMembers = (props) => {
                 </Paper>
             { props?.isAdmin && (
                 <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-                    <AddMember company={group?.company} group={{id:group?.id, company:group?.company}} setMembers={setMembers}/>
+                    <AddMember company={group?.company} group={{id:group?.id, company:group?.company}} setMembers={setMembers} token={props.token}/>
                 </Modal.Footer>
             )}
         </Modal>       

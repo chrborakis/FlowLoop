@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from "react";
-import { getChats } from "./ChatUtils";
 import { Row, Col, Card } from "react-bootstrap";
 import { User } from "../Profiles/Profile";
 import { scrollTop } from "../Extra/LinkOnTop";

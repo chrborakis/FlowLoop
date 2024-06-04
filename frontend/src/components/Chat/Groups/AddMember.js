@@ -8,7 +8,7 @@ import '../../../../static/css/index.css'
 import { addMember } from "./GroupUtils";
 import { getNotMembers } from "./GroupUtils";
 
-const AddMember = ({company, group, setMembers}) => {
+const AddMember = ({company, group, setMembers, token}) => {
     const [workers, setWorkers] = useState([])
 
     const [newMember, setNewMember] = useState(null);
@@ -20,7 +20,7 @@ const AddMember = ({company, group, setMembers}) => {
     const handleSubmit = async(e) => {
         e.preventDefault()
         if(newMember){
-            addMember( {member:newMember?.work_id, group: group.id}, setMembers, setNewMember)
+            addMember( {member:newMember?.work_id, group: group.id}, setMembers, setNewMember, token)
         }
     }
     
