@@ -7,7 +7,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormControl from '@mui/material/FormControl';
 import { getEmail, updateEmail, updatePassword } from "./UpdateUser";
 
-const Settings = ({user}) => {
+const ChangeCredentials = ({user}) => {
     const [modalShow, setModalShow] = useState(false);
 
     const [email, setEmail] = useState('')
@@ -47,13 +47,13 @@ const Settings = ({user}) => {
 
     return (
         <>
-            <Button variant="outlined" onClick={() => setModalShow(true)}>Settings</Button>
+            <Button variant="outlined" onClick={() => setModalShow(true)}>Update Credentials</Button>
 
             {modalShow && (
                 <Modal show={modalShow} onHide={() => setModalShow(false)} size="lg" centered>
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Change Credentials
+                        Update Credentials
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -101,4 +101,4 @@ const Settings = ({user}) => {
     );
 }
 
-export default Settings;
+export default ChangeCredentials;

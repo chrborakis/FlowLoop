@@ -4,6 +4,7 @@ import { Avatar } from "@material-ui/core";
 import { Card, Row,Col } from "react-bootstrap";
 import {Form} from 'react-bootstrap';
 import { TextField } from "@material-ui/core";
+import { UserAvt } from "../../Profiles/Profile";
 
 const Friends = ({user_id, handleChat}) => {
     const [friends, setFriends] = useState([]);
@@ -47,7 +48,8 @@ const Friends = ({user_id, handleChat}) => {
                     {filteredList.map(friend => (
                         <div className="active-friend" key={friend.id} alt={friend.friend_info.name} onClick={() => handleChat(friend)}>
                             <div className="avatar-wrapper">
-                                <Avatar alt={friend.friend_info.name} title={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/>
+                                {/* <Avatar alt={friend.friend_info.name} title={friend.friend_info.name} src={`/files/${friend.friend_info.image}`} width={60}/> */}
+                                <UserAvt user={{name:friend.friend_info.name, image:friend.friend_info.image}} width={60} circle/>
                                 <div className="name-wrapper">
                                     <p className='name'>{friend.friend_info.name}</p>
                                 </div>

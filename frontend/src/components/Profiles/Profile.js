@@ -58,7 +58,7 @@ export const User = ({ user, circle, width}) => {
 export const UserAvt = ({user, width, circle}) => {
     const { name, image} = user
     const imageUrl = image
-        ? (image.startsWith('/files\\') || image.startsWith('/files'))
+        ? (image?.startsWith('/files\\') || image.startsWith('/files'))
             ? image
             : `files\\${image}`
         : '';

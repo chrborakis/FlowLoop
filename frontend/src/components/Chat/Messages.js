@@ -21,7 +21,8 @@ const Messages = ({ user, refresh, messages, chats, setChat, handleChat }) => {
                         <Col xs={10}>
                             <Row>
                                 <Col xs={2}>
-                                    <UserAvt user={{name:user === chat.sender_info.id ? chat.receiver_info.name : chat.sender_info.name, image:user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`}} width={40}/>
+                                    <UserAvt user={{name:user === chat.sender_info.id ? chat.receiver_info.name : chat.sender_info.name, 
+                                        image:user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`}} width={40} circle/>
                                     {/* <img src={ user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`} style={{width: "40px",height: "40px",borderRadius: "50%",}} /> */}
                                 </Col>
                                 <Col xs={10} className="d-flex justify-content-between align-items-start">

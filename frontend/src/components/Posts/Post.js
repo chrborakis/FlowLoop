@@ -16,9 +16,9 @@ import { Company } from "../Profiles/Profile";
 import IconButton from '@mui/material/IconButton';
 import '../../../static/css/index.css'
 import PostActions from "./PostActions";
-
 import '../../../static/css/Posts/Post.css';
-
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
 import { UserAvt } from "../Profiles/Profile";
        
 const Post = ({post, url, setPosts}) => {
@@ -58,14 +58,21 @@ const Post = ({post, url, setPosts}) => {
 
             <Row className="align-items-center">
                 <Col className="d-flex justify-content-start">
-                    <Col xs={3}>
-                        <UserAvt user={{name: post.user?.user_name, image: post.user?.user_image, slug:post.user?.user_slug}} circle width={60}/>
+                    <Col xs={3} className="d-flex justify-content-center align-items-center">
+                        <AvatarGroup max={2}>
+                            { post.user?.company_name && (
+                                <UserAvt user={{name:post.user?.company_name, slug:post.user?.company_slug}} circle width={60}/>
+                            )}
+                            <UserAvt user={{name: post.user?.user_name, image: post.user?.user_image, slug:post.user?.user_slug}} circle width={60}/>
+                        </AvatarGroup>
                     </Col>
                     <Col xs={9}>
                         <Row>
                             <Col xs={12} className="d-flex justify-content-start">
                                 { post.user?.company_name && 
-                                    <Company company={{name:post.user?.company_name, slug:post.user?.company_slug}}/>
+                                    <Link to={`/company/${post.user?.company_slug}`} onClick={scrollTop}>
+                                        {post.user?.company_name}
+                                    </Link>                             
                                 }
                             </Col>
                             <Col xs={12}className="d-flex justify-content-start">

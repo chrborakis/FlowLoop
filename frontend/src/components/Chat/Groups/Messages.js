@@ -1,6 +1,7 @@
 import React, {useState,useRef,useEffect} from "react";
 import { Row, Col } from "react-bootstrap";
 import { dateFormat } from "../../Extra/Date";
+import { UserAvt } from "../../Profiles/Profile";
 
 const Messages = ({messages, user_id}) => {
     const messageEndRef = useRef(null);
@@ -23,7 +24,7 @@ const Messages = ({messages, user_id}) => {
                         isDifferentSender && message?.sender_info?.id !== user_id && (<Row>
                             { message?.sender_info?.id && (
                                 <Col xs={1} className="d-flex justify-content-between align-items-start">
-                                    <img src={`/files/${message?.sender_info?.image}`} alt={message?.sender_info?.name} style={{width: '35px',height: '35px',borderRadius: '50%'}}/>
+                                    <UserAvt user={message?.sender_info} width={35} circle/>
                                 </Col>
                             )}
                             <Col xs={11} className="text-left" style={{ textAlign: 'left' }}>

@@ -9,11 +9,7 @@ import { Button } from "@material-ui/core";
 
 import { useAuth } from "../../store/AuthContext";
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
-import UserProfile from '../Profiles/User/UserProfile'
-import HomePage from '../HomePage';
 import SearchBar from './SearchBar';
-import CompanyProfile from '../Profiles/Company/CompanyProfile';
 import MessageContainer from '../Chat/MessageContainer';
 import { Tabs, Tab } from '@material-ui/core';
 import TabPanel from '../Extra/TabPanel';
@@ -25,7 +21,7 @@ import '../../../static/css/index.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { User, Company } from '../Profiles/Profile';
 
-import Settings from './Settings';
+import ChangeCredentials from './ChangeCredentials';
 
 function NavBar({user, messages, notifications}) {
     const { logout } = useAuth();
@@ -91,7 +87,7 @@ function NavBar({user, messages, notifications}) {
                 >
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-                            Option
+                            Options
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body className="d-flex flex-column">
@@ -108,7 +104,7 @@ function NavBar({user, messages, notifications}) {
 
                         <div className="log_out mt-auto">
                             <ButtonGroup orientation="vertical" aria-label="Vertical button group" variant="contained">
-                                <Settings user={user}/>
+                                <ChangeCredentials user={user}/>
                                 <Button variant="outlined" color="red">
                                     <Link to="/" onClick={logOut}>Log Out</Link>
                                 </Button>

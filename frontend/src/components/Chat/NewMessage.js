@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import { Card, Row, Col, Form } from "react-bootstrap";
 import { useAuth } from "../../store/AuthContext";
 
-const NewMessage = ({chat, setMessages, socket, onSend, token}) => {
+const NewMessage = ({chat, setMessages, socket, onSend}) => {
     const { user } = useAuth();   
 
     const [message, setMessage] = useState('')
@@ -13,7 +13,7 @@ const NewMessage = ({chat, setMessages, socket, onSend, token}) => {
 
     const handleSubmit = ( e) => {
         e.preventDefault();
-        onSend( {...chat, ...{message}}, setMessages, setMessage, socket, token)
+        onSend( {...chat, ...{message}}, setMessages, setMessage, socket, user?.token)
     }
 
     return(<>

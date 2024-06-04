@@ -57,7 +57,7 @@ const CompanyProfile = () => {
 
     useEffect(() => {
         if(data) get_request( user, user?.id, data?.company_id, setRequested)
-    }, [ data, slug, requested]);
+    }, [ data, slug, requested, sendWorkRequest]);
 
     const sendRequest = () => {
         const user_data = {
