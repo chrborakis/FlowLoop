@@ -114,6 +114,40 @@ class UserCredentialView(APIView):
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class NotificationsView(APIView):
+    def get(self, request, user):
+        try:
+            instances = get_list_or_404(Notifications, user=user)
+            serializers = NotificationsSerializer(instances, many=True)
+            return Response(serializers.data)
+        except Http404:
+            return Response({'error': 'Notifications not found.'}, status=404)    
+    def post( self, request, user):
+        serializer = NotificationsSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, user):
+        user_data = get_object_or_404(Notifications, user=user)
+        serializer = NotificationsSerializer(user_data, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class UnreadNotificationsCountView(APIView):
+    def get( self, request, user):
+        try:
+            unread_message_count = Notifications.objects.filter(user=user, is_read=False).count()
+            return Response(unread_message_count)
+        except Http404:
+            return Response({'error': 'Notifications instances not found.'}, status=404)   
+
 class AddressView(APIView):
     def get(self, request, id):
         try:

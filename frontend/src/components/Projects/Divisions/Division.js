@@ -16,7 +16,7 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { User } from "../../Profiles/Profile";
 
-const Division = ({ company, admin_slug,division,setDivisions}) => {
+const Division = ({ company, admin,division,setDivisions}) => {
     const {user} = useAuth();
     const [assignOptsOpen, setAssignOptOpen] = useState(false);
     const toggleDropdown = () => setAssignOptOpen(!assignOptsOpen);
@@ -44,7 +44,7 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
     };
 
     return(<>
-        <Card id={division.division} style={{ width: '90%', marginTop: '10px' }}>
+        <Card id={`division-${division.division}`} style={{ width: '90%', marginTop: '10px' }}>
             <Card.Header>
             <Row className="align-items-center">
                 {division?.assign ? (
@@ -53,17 +53,17 @@ const Division = ({ company, admin_slug,division,setDivisions}) => {
                     </Col>
                 ) : (
                     <Col xs={8} className="d-flex justify-content-start">
-                        <DivisionInvite division={division} company={company} admin_slug={admin_slug} user={user} setDivisions={setDivisions}/>
+                        <DivisionInvite division={division} company={company} admin={admin} user={user} setDivisions={setDivisions}/>
                     </Col>
                 )}
 
-                {admin_slug === user?.slug && (
+                {admin.slug === user?.slug && (
                     <Col xs={4} className="d-flex justify-content-end">
                         <Dropdown show={assignOptsOpen} onToggle={toggleDropdown}>
                             <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <ButtonGroup variant="outlined" color="error" orientation="vertical" aria-label="Vertical button group">
-                                    {division?.assign && <Button onClick={() => removeAssign(division.division, division.assign.participant_id,setDivisions, user?.token)}>Remove Assign</Button>}
+                                    {division?.assign && <Button onClick={() => removeAssign(division, division.assign.participant_id,setDivisions, user?.token, admin?.id, company.slug, division?.assign?.id)}>Remove Assign</Button>}
                                     <Button icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>Delete Division</Button>
                                 </ButtonGroup>
                             </Dropdown.Menu>

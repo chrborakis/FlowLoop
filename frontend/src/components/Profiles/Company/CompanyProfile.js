@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
 import { getCompany, get_request, sendWorkRequest, getAddress, getStaff } from './CompanyUtils';
 
 import { useAuth }    from '../../../store/AuthContext';
@@ -14,7 +13,7 @@ import Address from './Info/Address';
 import Staff from './Info/Staff';
 import ProjectsList from '../../Projects/Projects/ProjectsList';
 import Button from 'react-bootstrap/Button';
-
+import { useParams } from 'react-router-dom';
 import {Card, Row,Col, Container} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css"; 
 import ProfileImage from '../ProfileImage';
@@ -22,7 +21,9 @@ import ProfileImage from '../ProfileImage';
 
 const CompanyProfile = () => {
     const { user, updateUser } = useAuth();
-    const { slug } = useParams();
+    const { slug, content } = useParams();
+
+    console.log(slug,content)
 
     const [ data, setData] = useState();
     const [ address, setAddress] = useState();
@@ -32,7 +33,9 @@ const CompanyProfile = () => {
     const [tabInfo, setTabInfo] = useState(0);
     const handleTabInfo = (event, newTabContent) => setTabInfo(newTabContent);
 
+    
     const [tabContent, setTabContent] = useState(0);
+    // console.log(tabContent)
     const handleTabContent = (event, newTabContent) => setTabContent(newTabContent);
 
     const [requested, setRequested] = useState(false);
@@ -40,13 +43,9 @@ const CompanyProfile = () => {
     const unemployed = user?.company === null
         
 
-    useEffect( () => {
-        getCompany(setData, slug)
-    }, [slug]);
+    useEffect( () => {getCompany(setData, slug)}, [slug]);
 
-    useEffect(()=>{
-        setImage(data?.image);
-    }, [data?.image])
+    useEffect(()=>{setImage(data?.image);}, [data?.image])
 
     useEffect( () => {
         if(data?.company_id) {
@@ -60,11 +59,7 @@ const CompanyProfile = () => {
     }, [ data, slug, requested, sendWorkRequest]);
 
     const sendRequest = () => {
-        const user_data = {
-            "user": user.id,
-            "company": data?.company_id,
-            "status": "P"
-        }
+        const user_data = { "user": user.id, "company": data?.company_id, "status": "P"}
         sendWorkRequest( user_data, setRequested, user?.token)
     };
     const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success' });
@@ -99,12 +94,6 @@ const CompanyProfile = () => {
                                 <Row className="text-center d-flex justify-content-center">
                                     {
                                         requested !== 'A' && (
-                                            // <Button disabled={!unemployed || requested==='P'} 
-                                            //     onClick={sendRequest}>
-                                            // {requested === 'P' && 'Already requested!'}
-                                            // {requested === 'No' && !unemployed && 'You can only be employee on one company'}
-                                            // {requested === 'No' && unemployed && 'Send Request'}
-                                            // </Button>
                                             <Button variant={buttonConfig.variant} disabled={!unemployed || requested==='P'}  onClick={sendRequest}>
                                                 { buttonConfig.text }
                                             </Button>

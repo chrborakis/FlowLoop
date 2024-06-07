@@ -6,14 +6,16 @@ import Button from '@material-ui/core/Button';
 
 const AdminInvite = (props) => {
     const [workers, setWorkers] = useState([])
-    const [selectedOption, setSelectedOption] = useState({work_on:'',name:''});
+    const [selectedOption, setSelectedOption] = useState({user_id:'',work_on:'',name:''});
 
-    useEffect( ()=>{ fetchStaff(props.company, setWorkers)},[])
+    useEffect( ()=>{ fetchStaff(props.company.id, setWorkers)},[])
 
     const handleSubmit = async(e) => {
         e.preventDefault()
         if(selectedOption.work_on){
-            addAssign(props.division.division, selectedOption.work_on, props.setDivisions, props.onHide, props.token)
+            addAssign(props.division, selectedOption.work_on, props.setDivisions, props.onHide, props.token,
+                props.company.slug, props.admin_id, selectedOption.user_id
+            )
         }
     }
 
@@ -32,7 +34,7 @@ const AdminInvite = (props) => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {workers && workers.map((worker, index) => (
-                        <Dropdown.Item key={index} eventKey={worker} onClick={() => setSelectedOption({work_on:worker.id,name:worker.employee.name})}>
+                        <Dropdown.Item key={index} eventKey={worker} onClick={() => setSelectedOption({user_id:worker.employee.id, work_on:worker.id,name:worker.employee.name})}>
                             <>
                                 <img src={`/files/${worker.employee.image}`} width={50}/>
                                 {worker.employee.name}

@@ -20,8 +20,9 @@ import '../../../static/css/NavBar.css'
 import '../../../static/css/index.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { User, Company } from '../Profiles/Profile';
-
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChangeCredentials from './ChangeCredentials';
+import Notifications from './Notifications';
 
 function NavBar({user, messages, notifications}) {
     const { logout } = useAuth();
@@ -45,7 +46,7 @@ function NavBar({user, messages, notifications}) {
                 <NavDropdown onClick={() => toggleRequests(!refreshRequests)} onToggle={toggleRequests} className='chat-list' title={
                     <IconButton size="large"aria-haspopup="true" color="inherit">
                         <AddBusinessIcon />
-                    </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
+                    </IconButton>} id={`Requests offcanvasNavbarDropdown-expand-${expand}`}>
                     <Row>
                         <Col>
                             <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
@@ -64,12 +65,27 @@ function NavBar({user, messages, notifications}) {
                     </Row>
                 </NavDropdown>
 
+                <NavDropdown title={<IconButton size="large" aria-label="notifications" color="inherit">
+                    <Badge badgeContent={notifications.notifications} color="error">
+                        <NotificationsIcon />
+                    </Badge>
+                    </IconButton>} id={`notifications offcanvasNavbarDropdown-expand-${expand}`}>
+                    <Row>
+                        <Tabs value={0} indicatorColor="primary" textColor="primary" centered> 
+                            <Tab label="Notifications"/>
+                        </Tabs>
+                        <TabPanel value={0} index={0}>
+                            <Notifications user={user} notifications={notifications}/>
+                        </TabPanel>
+                    </Row>
+                </NavDropdown>
+
                 <NavDropdown onClick={() => toggleMessages(!refreshChat)} onToggle={toggleMessages}
                     title={<IconButton size="large" aria-label="messages" color="inherit">
                     <Badge badgeContent={messages.messages} color="error">
                         <MailIcon />
                     </Badge>
-                    </IconButton>} id={`offcanvasNavbarDropdown-expand-${expand}`}>
+                    </IconButton>} id={`messages offcanvasNavbarDropdown-expand-${expand}`}>
                     <Row>
                         <Tabs value={0} indicatorColor="primary" textColor="primary" centered> 
                             <Tab label="Messages"/>
@@ -82,23 +98,19 @@ function NavBar({user, messages, notifications}) {
                 </NavDropdown>
 
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
-                <Navbar.Offcanvas id={`offcanvasNavbar-expand-${expand}`}
-                    aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`} placement="end"
+                <Navbar.Offcanvas id={`Options offcanvasNavbar-expand-${expand}`}
+                    aria-labelledby={`Options offcanvasNavbarLabel-expand-${expand}`} placement="end"
                 >
                     <Offcanvas.Header closeButton>
-                        <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
+                        <Offcanvas.Title id={`Options offcanvasNavbarLabel-expand-${expand}`}>
                             Options
                         </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body className="d-flex flex-column">
                         <Col>                        
-                            <Row>
-                                <Badge><User user={user} /></Badge>
-                            </Row>
+                            <Row><Badge><User user={user} /></Badge></Row>
                             {user?.company?.slug && (
-                                <Row>
-                                    <Badge><Company company={user.company} /></Badge>
-                                </Row>
+                                <Row><Badge><Company company={user.company} /></Badge></Row>
                             )}
                         </Col>
 

@@ -11,45 +11,45 @@ import CompanyProfile from "./Profiles/Company/CompanyProfile";
 import LoginRegister from "./LoginRegister/LoginRegister";
 import NavBar from "./AppBar/NavBar";
 
-import { getUserInfo, getMessages} from "./Extra/UserInfo";
+import { getUserInfo, getUnreadMessages} from "./Extra/UserInfo";
+import { getUnreadNotifications, readNotification } from "./AppBar/NotificationsUtils";
 
 const App = () => {
     const { user, updateUser } = useAuth();   
     const [messages, setMessages] = useState(0)
+    const [notifications, setNotifications] = useState(0)
 
-    const updateUnread = (user_id, setMessages) => {
-        getMessages(user_id, setMessages)}
+    const updateUnreadMessages      = (user_id, setMessages) => getUnreadMessages(user_id, setMessages)
+    const updateUnreadNotifications = (user_id, setMessages) => getUnreadNotifications(user_id, setNotifications)
 
     useEffect(()=>{
         if(user){
             getUserInfo(user?.id, updateUser)
-            getMessages(user?.id, setMessages)
+            getUnreadMessages(user?.id, setMessages)
+            getUnreadNotifications(user?.id, setNotifications)
         }
     },[user?.id])
 
-    useEffect(()=>{
-        getMessages(user?.id, setMessages)
-    },[messages])
+    useEffect( ()=> {getUnreadMessages(user?.id, setMessages)},[messages])
+    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications,readNotification])
 
     return(
         <Router basename="/">
             <div className="body">
-                    { user ? (
-                        <>
-                            <NavBar user={user} messages={{messages, setMessages,updateUnread}} notifications={0}/>
-                            <Switch>
-                                <Route path="/user/:slug">    <UserProfile /></Route>
-                                <Route path="/company/:slug"> <CompanyProfile /></Route>
-                                <div className="content">
-                                    <Route   Route path="/"><HomePage user={user}/></Route>   
-                                </div>
-                            </Switch>
-                        </>
-                    ) : (
-                        <div><h1>FlowLoop</h1>
-                            <LoginRegister/>
+                { user ? (<>
+                    <NavBar user={user} messages={{messages, setMessages,updateUnreadMessages}} notifications={{notifications, setNotifications, updateUnreadNotifications,readNotification}}/>
+                    <Switch>
+                        <Route path="/user/:slug">    <UserProfile /></Route>
+                        <Route path="/company/:slug"> <CompanyProfile /></Route>
+                        <Route path="/company/:slug/:content"> <CompanyProfile /></Route>
+                        <div className="content">
+                            <Route  Route path="/"><HomePage user={user}/></Route>   
                         </div>
-                    )}
+                    </Switch>
+                </>) : (<>
+                    <h1>FlowLoop</h1>
+                    <LoginRegister/>
+                </>)}
             </div>
         </Router> 
     )

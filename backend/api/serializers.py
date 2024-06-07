@@ -1,11 +1,11 @@
 import datetime
 from rest_framework import serializers
-from apps.chats.models import PrivateChat
-from apps.companies.models import Companies, WorkRequests, WorksOn
-from apps.groups.models import GroupAdmins, GroupChat, GroupMembers, Groups
-from apps.models import Address
-from apps.posts.models import PostsPrivate, PostsPrivateComments, PostsPrivateLikes, PostsPublic, PostsPublicComments, PostsPublicLikes
-from apps.projects.models import ProjectDivision,ProjectAdmin, ProjectRequestAssign, Projects, ProjectAssign
+from apps.chats.models import *
+from apps.companies.models import *
+from apps.groups.models import *
+from apps.models import *
+from apps.posts.models import *
+from apps.projects.models import *
 from apps.users.models import *
 from rest_framework import serializers, fields
 
@@ -34,6 +34,28 @@ class UsersSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Phone number already exists")
         return super().update(instance, validated_data)
     
+class NotificationsSerializer(serializers.ModelSerializer):
+    sender_info = serializers.SerializerMethodField()
+    class Meta:
+        model = Notifications
+        fields = (
+            'id',
+            'user',
+            'sender',
+            'sender_info',
+            'message',
+            'url',
+            'is_read',
+            'timestamp'
+        )
+    def get_sender_info(self,obj):
+        return {
+            'id':    obj.sender.user_id,
+            'name':  str(obj.sender.firstname) + ' ' + str(obj.sender.lastname),
+            'slug':  str(obj.sender.slug),
+            'image': str(obj.sender.image)
+        }
+
 class CompaniesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Companies
@@ -392,11 +414,13 @@ class ProjectAdminSerializer(serializers.ModelSerializer):
 
 class ProjectsSerializer(serializers.ModelSerializer):
     admin = serializers.SerializerMethodField()    
+    company_slug = serializers.SerializerMethodField()    
     class Meta:
         model = Projects
         fields = (
             "project_id",
             "company",
+            "company_slug",
             "title",
             "description",
             "phase",
@@ -420,6 +444,8 @@ class ProjectsSerializer(serializers.ModelSerializer):
                 'name': 'Deleted User',
             }
         
+    def get_company_slug(self, obj):
+        return str(obj.company.slug)
 
 class ProjectAssignSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -505,6 +531,7 @@ class ProjectDivisionSerializer(serializers.ModelSerializer):
                     user_list.append({
                         'id': request.id,
                         'work_id': request.employee.id,
+                        'user_id': str(user.user_id),
                         'name': str(user),
                         'slug': str(user.slug),
                         'image': str(user.image),

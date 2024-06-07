@@ -3,7 +3,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircleLoader } from 'react-spinners';
 import { getProjects } from "./ProjectUtils";
 import Project from './Project';
-import Button from '@mui/material/Button';
+import { Button } from "@material-ui/core";
+
 
 import NewProject from "./NewProject";
 

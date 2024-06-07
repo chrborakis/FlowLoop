@@ -70,7 +70,6 @@ class Users(models.Model):
         self.slug = '-'.join((slugify(self.firstname), slugify(self.lastname), slugify(self.user.user_id)))
         super(Users, self).save(*args, **kwargs)
 
-
     class Meta:  
         db_table = 'users'
 
@@ -78,6 +77,20 @@ class Users(models.Model):
         return f"{self.firstname} {self.lastname}"
     
 
+
+class Notifications(models.Model):
+    user   = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='notification_receiver')
+    sender = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='notification_sender')
+    message = models.CharField(max_length=255)
+    url     = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(default=now, editable=False)
+
+    class Meta:  
+        db_table = 'notifications'
+    
+    def __str__(self):
+        return f"{self.user} - {self.message}"
 
 class EducationDetails(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, null=False)

@@ -53,7 +53,7 @@ const Post = ({post, url, setPosts}) => {
     }
 
     return(
-        <Card className="card-content card">
+        <Card className="card-content" id={`post-${post.post_id}`}>
             <Card.Header className="header">
 
             <Row className="align-items-center">

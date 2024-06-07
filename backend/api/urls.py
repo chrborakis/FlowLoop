@@ -7,6 +7,9 @@ urlpatterns = [
     path("usercredentials/<int:user>",   UserCredentialView.as_view()),
     path("users",            UsersView.as_view()),
     path("users/<slug:user>",   UserView.as_view()),
+
+    path("notifications/<int:user>", NotificationsView.as_view()),
+    path("unread_notifications_count/<int:user>", UnreadNotificationsCountView.as_view()),
     
     path("companies",        CompaniesView.as_view()),
     path("companies/<slug:company>", CompanyView.as_view()),

@@ -20,10 +20,10 @@ const DivisionInvite = ({ division, company, admin_slug, user, setDivisions}) =>
             <>
                 <ButtonGroup aria-label="Basic button group">
                     <Button variant="contained" color="primary" onClick={() => setModalShow(true)}>Add Member</Button>
-                    <AdminInvite division={division} company={company} show={modalShow} onHide={() => setModalShow(false)} setDivisions={setDivisions} token={user?.token}/>
+                    <AdminInvite admin_id={user?.id} division={division} company={company} show={modalShow} onHide={() => setModalShow(false)} setDivisions={setDivisions} token={user?.token}/>
                     {division.requests?.length > 0 && (<div>
                         <Button variant="secondary" onClick={() => setRequestsShow(true)}>Requests</Button>
-                        <Requests  division={division} setDivisions={setDivisions} show={requestsShow} onHide={() => setRequestsShow(false)} token={user?.token}/>
+                        <Requests admin_id={user?.id} company={company} division={division} setDivisions={setDivisions} show={requestsShow} onHide={() => setRequestsShow(false)} token={user?.token}/>
                     </div>
                     )}
                 </ButtonGroup>

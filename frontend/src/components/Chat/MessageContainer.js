@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { getChats } from "./ChatUtils";
-import { Row, Col } from "react-bootstrap";
-import { Card } from "react-bootstrap";
-import { User } from "../Profiles/Profile";
-import { scrollTop } from "../Extra/LinkOnTop";
-import { Link } from "react-router-dom";
-import { dateFormat } from "../Extra/Date";
 import Chat from "./Chat";
 import Messages from "./Messages";
 import "../../../static/css/messages.css";
@@ -20,7 +14,7 @@ const MessageContainer = ({ user, refresh, messages }) => {
         if (refresh) {
             setChats([]);
             getChats( user, setChats);
-            messages.updateUnread(user.id, messages.setMessages);
+            messages.updateUnreadMessages(user.id, messages.setMessages);
         }
     }, [refresh]);
 

@@ -16,12 +16,12 @@ urlpatterns = [
     path('chat/',      include('backend.chat.urls')),
     path('groups/',include('backend.groups.urls')),
 
-    # path('ws/test/', TextRoomConsumer.as_asgi()),
-    # path('ws/',             include(websocket_urlpatterns)),
     path('authentication/', include('backend.authentication.urls')),
 
     path("search_users/<str:name>", views.search_users),
     path("search_companies/<str:name>", views.search_companies),
     path('user_info/<int:user_id>', views.user_info),
     path('active_friends/<int:user_id>', views.active_friends),
+
+    path('notifications/<int:user>', views.notifications)
 ]

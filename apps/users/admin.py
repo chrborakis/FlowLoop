@@ -47,3 +47,5 @@ admin.site.register(UniversityDetails,UniversityDetailsAdmin)
 admin.site.register(EducationDetails,EducationDetailsAdmin)
 
 admin.site.register(CustomToken)
+
+admin.site.register(Notifications)

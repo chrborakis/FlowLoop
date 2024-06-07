@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import { Container, Col, Row, Card, Dropdown, Form} from 'react-bootstrap';
 import Button from '@mui/material/Button';
+
 import ButtonGroup from '@mui/material/ButtonGroup';
 
 import Badge from 'react-bootstrap/Badge';
@@ -128,7 +129,7 @@ const Project = ({project, setProjects}) => {
     }
 
     return(<>
-        <Card className="card-content">
+        <Card className="card-content"  id={`project-${project.project_id}`}>
             <Card.Header className="header">
                 <Row className="align-items-center">
                     <Col className="d-flex justify-content-start">
@@ -228,7 +229,7 @@ const Project = ({project, setProjects}) => {
             }}>
                 {isExpanded ? (<>
                     <NewDivision admin_slug={project?.admin?.slug} user={user_} setDivisions={setDivisions} project_id={project.project_id}/>
-                    <DivisionsList company={project.company} admin_slug={project?.admin?.slug} divisions={divisions} setDivisions={setDivisions}/>
+                    <DivisionsList company={{id:project.company, slug:project.company_slug}} admin={{id:project?.admin?.id, slug:project?.admin?.slug}} divisions={divisions} setDivisions={setDivisions}/>
                 </>) : (<>
                     {divisions && divisions.length > 0 ? (<>Divisions: {divisions.length}</>) : (<>No divisions</>)}
                 </>)
