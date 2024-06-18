@@ -228,15 +228,10 @@ class FriendsRequestsSerializer(serializers.ModelSerializer):
 class PostsPublicSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
-    # likes = PostsPublicLikesSerializer(many=True, read_only=True)
-    # total_likes = serializers.SerializerMethodField()
-    # comments = PostsPublicCommentsSerializer(many=True, read_only=True)
-
     class Meta:
         model = PostsPublic
         fields = (
             'post_id',
-            # 'slug',
             'author',
             'user','title','body',
             'publish_date','image'
@@ -295,13 +290,20 @@ class PostsPublicLikesSerializer(serializers.ModelSerializer):
 
 class PostsPrivateLikesSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    company = serializers.SerializerMethodField()
     class Meta:
         model = PostsPrivateLikes
         fields = (
             'post',
             'like',
-            'user'
+            'user',
+            'company'
         )
+
+    def get_company(self,obj):
+        return {
+            'slug':  str(obj.like.employee.company.slug),
+        }
 
     def get_user(self,obj):
         return {

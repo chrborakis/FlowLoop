@@ -22,7 +22,6 @@ export const deletePost = async( url, post, setPosts, token) => {
     await axios.delete(`${url}/${post}/`,
     {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
-        console.log(res.data)
         if(res.data.status === 200){
             setPosts(prevData => prevData.filter(obj => obj.post_id !== post));
         }
@@ -49,7 +48,6 @@ export const postPost = async( url, data, newPost, onHide, setErrors, setFormDat
     await axios.post(new_url, data,{
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'multipart/form-data'}})
     .then(  res => {
-        console.log(res.status)
         if(res.status === 200){
             newPost(res.data);
             setFormData({ title: '', description: '', image: null})

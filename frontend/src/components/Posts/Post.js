@@ -117,7 +117,7 @@ const Post = ({post, url, setPosts}) => {
                         <Row className="align-items-center">
                             {editMode ? (
                                 <TextField label="Title" variant="standard" disabled={!editMode}
-                                    placeholder="Enter a post title" name="title"
+                                    placeholder="Enter a post Title" name="title"
                                     value={data.title} required multiline fullWidth 
                                     onChange={handleInputChange} className="textfield"       
                                 />

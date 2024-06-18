@@ -20,7 +20,7 @@ const PostActions = ({url,post}) => {
         <div className="comments">
             <Row>
                 <Col>
-                    <Likes post={post.post_id} url={`${url}likes/${post.post_id}`}/>
+                    <Likes post={post} url={`${url}likes/${post.post_id}`}/>
                 </Col>
                 <Col>
                     {<Button> <CommentIcon/> {comments?.length || 0}</Button>}
