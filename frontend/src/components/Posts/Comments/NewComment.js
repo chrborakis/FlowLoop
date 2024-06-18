@@ -9,9 +9,11 @@ import { TextField } from "@material-ui/core";
 import '../../../../static/css/Posts/NewComment.css';
 
 import '../../../../static/css/index.css'
+import { useNotification } from "../../../store/NotificationContext";
 
 const NewComment = ({post, onComment, url}) => {
     const { user} = useAuth();
+    const { addNotification} = useNotification();
 
     const [comment, setComment] = useState("");
 
@@ -25,8 +27,8 @@ const NewComment = ({post, onComment, url}) => {
             return
         }
         const commentor = url.includes('public') ? user.id : user.work_id;
-        const data = {post:post, commentor, comment: comment}
-        postComment(data, url, onComment, comment, setComment, user?.token);
+        const data = {post:post.post_id, commentor, comment: comment}
+        postComment(data, url, onComment, comment, setComment, post, addNotification, user?.token);
     }
 
     return(

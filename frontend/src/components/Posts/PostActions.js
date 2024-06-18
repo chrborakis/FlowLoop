@@ -27,7 +27,7 @@ const PostActions = ({url,post}) => {
                 </Col>
             </Row>
                 { comments ? (
-                    <Comments post={post.post_id} url={`${url}comments`} comments={comments} exp={{isExpanded,toggleExpand}} setNewComment={setNewComment}/>
+                    <Comments post={post} url={`${url}comments`} comments={comments} exp={{isExpanded,toggleExpand}} setNewComment={setNewComment}/>
                 ) : (
                     <p>No comments</p> 
                 )}
