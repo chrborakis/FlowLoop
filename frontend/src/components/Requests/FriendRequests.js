@@ -8,17 +8,14 @@ import { Link } from "react-router-dom";
 import { scrollTop } from "../Extra/LinkOnTop";
 
 import { getRequests, replyRequest, checkRequest } from "./FriendUtils"; 
+import { useNotification } from "../../store/NotificationContext";
 
 const FriendRequests = ({ refresh}) => {
     const {user} = useAuth();
+    const {addNotification} = useNotification();
     const [requests, setRequests] = useState([]);
 
-    const reply = (receiver, status) => {
-        console.log("REQ_ID", receiver)
-        replyRequest( receiver, user?.id, status, setRequests)
-        // window.location.reload();
-        console.log(requests)
-    }
+    const reply = (receiver, info, status) => replyRequest( receiver, info, user, status, setRequests, addNotification, user?.token)
 
     useEffect(() => {
         if(refresh)getRequests( setRequests, user?.id)
@@ -39,8 +36,8 @@ const FriendRequests = ({ refresh}) => {
                             </Row>
                             <Row>
                                 <ButtonGroup orientation="horizontal" className="w-100" style={{display:'block', width:'100%'}}>
-                                    <Button onClick={() => reply( req.sender, 'A')} variant="contained" color="success">Accept</Button>
-                                    <Button onClick={() => reply( req.sender, 'D')} color="error">Decline</Button>
+                                    <Button onClick={() => reply( req.sender, req?.sender_info, 'A')} variant="contained" color="success">Accept</Button>
+                                    <Button onClick={() => reply( req.sender, req?.sender_info, 'D')} color="error">Decline</Button>
                                 </ButtonGroup>
                             </Row>
                         </Col>

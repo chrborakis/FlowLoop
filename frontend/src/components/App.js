@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext  } from "react";
 import { render } from 'react-dom';
-import { AuthProvider,useAuth } from "../store/AuthContext";
+import { AuthProvider, useAuth } from "../store/AuthContext";
+import { NotificationProvider, useNotification } from "../store/NotificationContext";
 
-import "../../static/css/index.css"
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Routes } from 'react-router-dom';
 
 import UserProfile from "./Profiles/User/UserProfile";
 import HomePage from "./HomePage";
@@ -12,12 +12,14 @@ import LoginRegister from "./LoginRegister/LoginRegister";
 import NavBar from "./AppBar/NavBar";
 
 import { getUserInfo, getUnreadMessages} from "./Extra/UserInfo";
-import { getUnreadNotifications, readNotification } from "./AppBar/NotificationsUtils";
+import { postNotification,getUnreadNotifications, readNotification } from "./AppBar/Notifications/NotificationsUtils";
+
+import "../../static/css/index.css"
 
 const App = () => {
-    const { user, updateUser } = useAuth();   
+    const { user, updateUser } = useAuth(); 
+    const { notifications, setNotifications} = useNotification();
     const [messages, setMessages] = useState(0)
-    const [notifications, setNotifications] = useState(0)
 
     const updateUnreadMessages      = (user_id, setMessages) => getUnreadMessages(user_id, setMessages)
     const updateUnreadNotifications = (user_id, setMessages) => getUnreadNotifications(user_id, setNotifications)
@@ -31,21 +33,20 @@ const App = () => {
     },[user?.id])
 
     useEffect( ()=> {getUnreadMessages(user?.id, setMessages)},[messages])
-    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications,readNotification])
+    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications])
 
     return(
         <Router basename="/">
             <div className="body">
                 { user ? (<>
                     <NavBar user={user} messages={{messages, setMessages,updateUnreadMessages}} notifications={{notifications, setNotifications, updateUnreadNotifications,readNotification}}/>
-                    <Switch>
-                        <Route path="/user/:slug">    <UserProfile /></Route>
-                        <Route path="/company/:slug"> <CompanyProfile /></Route>
-                        <Route path="/company/:slug/:content"> <CompanyProfile /></Route>
-                        <div className="content">
-                            <Route  Route path="/"><HomePage user={user}/></Route>   
-                        </div>
-                    </Switch>
+                    <Routes>
+                        <Route path="/user/:slug" element={<UserProfile />}/>
+                        <Route path="/company/:slug?/:tab?/:content?" element={<CompanyProfile/>}/>
+                        {/* <div className="content"> */}
+                            <Route path="/" element={<HomePage user={user}/>}/>
+                        {/* </div> */}
+                    </Routes>
                 </>) : (<>
                     <h1>FlowLoop</h1>
                     <LoginRegister/>
@@ -58,6 +59,8 @@ const App = () => {
 export default App; 
 render( 
     <AuthProvider>
-        <App />
+        <NotificationProvider>
+            <App />
+        </NotificationProvider>
     </AuthProvider> 
 , document.getElementById("app"));

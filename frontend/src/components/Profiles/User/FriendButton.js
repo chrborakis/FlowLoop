@@ -1,4 +1,5 @@
-import Button from 'react-bootstrap/Button';
+import Button from '@mui/material/Button';
+
 import React, {useState, useEffect} from 'react';
 
 import { send_request } from './UserUtils';
@@ -24,11 +25,10 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply, token})
         if (requested === 'P') {
             setButtonConfig({ text: 'Already requested!', variant: 'secondary' });
         } else if (requested === 'A') {
-            setButtonConfig({ text: 'Delete Friend', variant: 'danger' });
+            setButtonConfig({ text: 'Delete Friend', variant:"outlined", color:"error"});
         } else {
             setButtonConfig({ text: 'Send request', variant: 'success' });
         }
-        console.log("REQUESTED -> ", requested)
       }, [requested]);
 
     return(
@@ -38,13 +38,13 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply, token})
                     {!showButtons && <Button onClick={handleClick}>Reply Request</Button>}
                     {showButtons && (
                       <>
-                        <Button onClick={() => onReply('A')} variant="outline-primary">Accept</Button>
-                        <Button onClick={() => onReply('D')} variant="outline-danger">Decline</Button>
+                        <Button onClick={() => onReply('A')} variant="contained" color="success">Accept</Button>
+                        <Button onClick={() => onReply('D')} variant="outlined"  color="error">Decline</Button>
                       </>
                     )}
                 </>
             ) : (
-                <Button variant={buttonConfig.variant} disabled={requested=='P'} onClick={sendRequest}>
+                <Button variant={buttonConfig.variant} color={buttonConfig?.color} disabled={requested=='P'} onClick={sendRequest}>
                     { buttonConfig.text }
                 </Button>
             )}

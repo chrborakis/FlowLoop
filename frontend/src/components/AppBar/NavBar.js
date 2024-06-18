@@ -22,7 +22,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { User, Company } from '../Profiles/Profile';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChangeCredentials from './ChangeCredentials';
-import Notifications from './Notifications';
+import Notifications from './Notifications/Notifications';
 
 function NavBar({user, messages, notifications}) {
     const { logout } = useAuth();
@@ -36,6 +36,9 @@ function NavBar({user, messages, notifications}) {
 
     const [refreshChat, setRefreshChat] = useState(false);
     const toggleMessages = (isOpen) => setRefreshChat(isOpen);
+
+    const [refreshNotifications, setRefreshNotifications] = useState(false);
+    const toggleNotifications = (isOpen) => setRefreshNotifications(isOpen);
     
     return (<>
       {[false].map((expand) => (
@@ -46,7 +49,7 @@ function NavBar({user, messages, notifications}) {
                 <NavDropdown onClick={() => toggleRequests(!refreshRequests)} onToggle={toggleRequests} className='chat-list' title={
                     <IconButton size="large"aria-haspopup="true" color="inherit">
                         <AddBusinessIcon />
-                    </IconButton>} id={`Requests offcanvasNavbarDropdown-expand-${expand}`}>
+                    </IconButton>} id={`requests offcanvasNavbarDropdown-expand-${expand}`}>
                     <Row>
                         <Col>
                             <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
@@ -65,7 +68,8 @@ function NavBar({user, messages, notifications}) {
                     </Row>
                 </NavDropdown>
 
-                <NavDropdown title={<IconButton size="large" aria-label="notifications" color="inherit">
+                <NavDropdown onClick={() => toggleNotifications(!refreshChat)} onToggle={toggleNotifications}
+                    title={<IconButton size="large" aria-label="notifications" color="inherit">
                     <Badge badgeContent={notifications.notifications} color="error">
                         <NotificationsIcon />
                     </Badge>
@@ -75,7 +79,7 @@ function NavBar({user, messages, notifications}) {
                             <Tab label="Notifications"/>
                         </Tabs>
                         <TabPanel value={0} index={0}>
-                            <Notifications user={user} notifications={notifications}/>
+                            <Notifications user={user} refresh={refreshNotifications} notifications={notifications}/>
                         </TabPanel>
                     </Row>
                 </NavDropdown>

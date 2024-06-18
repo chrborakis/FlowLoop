@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef} from "react";
+import React,{useState,useEffect,useRef,useContext } from "react";
 import { Container, Col, Row, Card, Form,Dropdown ,CloseButton} from 'react-bootstrap';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -16,13 +16,21 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { User } from "../../Profiles/Profile";
 
+import { useNotification } from "../../../store/NotificationContext";
+
 const Division = ({ company, admin,division,setDivisions}) => {
     const {user} = useAuth();
+    const { addNotification, delNotification } = useNotification();
+
     const [assignOptsOpen, setAssignOptOpen] = useState(false);
     const toggleDropdown = () => setAssignOptOpen(!assignOptsOpen);
 
     const fileInputRef = useRef(null);
-    const handleButtonClick = () => fileInputRef.current.click();
+
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
     const [ file, setFile] = useState(null);
     const [errors,setErrors] = useState("")
 
@@ -53,7 +61,7 @@ const Division = ({ company, admin,division,setDivisions}) => {
                     </Col>
                 ) : (
                     <Col xs={8} className="d-flex justify-content-start">
-                        <DivisionInvite division={division} company={company} admin={admin} user={user} setDivisions={setDivisions}/>
+                        <DivisionInvite division={division} company={company} admin={admin} user={user} setDivisions={setDivisions} addNotification={addNotification}/>
                     </Col>
                 )}
 
@@ -63,7 +71,7 @@ const Division = ({ company, admin,division,setDivisions}) => {
                             <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <ButtonGroup variant="outlined" color="error" orientation="vertical" aria-label="Vertical button group">
-                                    {division?.assign && <Button onClick={() => removeAssign(division, division.assign.participant_id,setDivisions, user?.token, admin?.id, company.slug, division?.assign?.id)}>Remove Assign</Button>}
+                                    {division?.assign && <Button onClick={() => removeAssign(division, division.assign.participant_id,setDivisions, user?.token, admin?.id, company.slug, division?.assign?.id, addNotification)}>Remove Assign</Button>}
                                     <Button icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>Delete Division</Button>
                                 </ButtonGroup>
                             </Dropdown.Menu>
@@ -88,17 +96,17 @@ const Division = ({ company, admin,division,setDivisions}) => {
                 }
                 {
                     parseInt(user?.work_id) === parseInt(division.assign?.work_id) && (
-                        <Form>
-                            <Button onClick={handleButtonClick} className="button" type="submit" startIcon={<CloudUploadIcon/>}>
-                                {division.file ? "Replace File" : "Upload File"}
-                                <Form.Control  ref={fileInputRef}
-                                    className="file-input" type="file"
-                                    onChange={handleFileChange}
-                                    style={{ display: 'none' }}
+                        <>
+                        <Button onClick={handleButtonClick} className="button" type="submit" startIcon={<CloudUploadIcon/>}>
+                            {division.file ? "Replace File" : "Upload File"}
+                            <Form.Control  ref={fileInputRef}
+                                className="file-input" type="file"
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
                                 />
-                            </Button>
-                            <span className="text-danger">{errors}</span>
-                        </Form>
+                        </Button>
+                        <span className="text-danger">{errors}</span>
+                        </>
                     )
                 }
                 </>

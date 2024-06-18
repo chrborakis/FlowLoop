@@ -14,7 +14,7 @@ const AdminInvite = (props) => {
         e.preventDefault()
         if(selectedOption.work_on){
             addAssign(props.division, selectedOption.work_on, props.setDivisions, props.onHide, props.token,
-                props.company.slug, props.admin_id, selectedOption.user_id
+                props.company.slug, props.admin_id, selectedOption.user_id, props.addNotification
             )
         }
     }

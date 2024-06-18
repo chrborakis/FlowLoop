@@ -14,7 +14,6 @@ export const getFriends = async(user_id, setFriends) => {
     .catch(err => console.log(err))
 }
 
-
 export const getMessages = async( user, friend, setMessages) => {
     // window.location.host
     await axios.get(`${window.location.origin}/backend/chat/conversation/${user}/${friend}`,{
@@ -26,25 +25,6 @@ export const getMessages = async( user, friend, setMessages) => {
         }
     }).catch(err => console.log(err))
 }
-
-// export const getMessages = async(user, friend, setMessages, setLoading, setHasNextPage, currentPage) => {
-//     setLoading(true);
-//     const url = `${window.location.origin}/backend/chat/conversation/${user}/${friend}`
-//     const page_url = url+"/?page="+currentPage;
-    
-//     await axios.get( page_url.trim(),{
-//         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}
-//     }).then(  res => {
-//         console.log(res)
-//         if( res.data.status === 200){
-//             setMessages(prevMess => [...prevMess, ...res.data.data]);
-//             setHasNextPage(res.data.has_next);
-//         }})
-//     .catch( err => {
-//         setLoading(false);
-//         console.log(err)})
-//     .finally( err => setLoading(false))
-// }
 
 export const getChats = async( user, setChats) => {
     await axios.get(`${window.location.origin}/backend/chat/conversations/${user.id}`,{

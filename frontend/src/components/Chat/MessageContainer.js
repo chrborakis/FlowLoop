@@ -7,9 +7,10 @@ import "../../../static/css/messages.css";
 const MessageContainer = ({ user, refresh, messages }) => {
     // Recent chats
     const [chats, setChats] = useState([]);
-    // Chat info about sender-receiver(ids)
+
     const [chat, setChat] = useState(null);
-    const [isChatOpen, setIsChatOpen] = useState(false); // Track whether the chat is open or closed
+    const [isChatOpen, setIsChatOpen] = useState(false); 
+    
     useEffect(() => {
         if (refresh) {
             setChats([]);
@@ -19,47 +20,48 @@ const MessageContainer = ({ user, refresh, messages }) => {
     }, [refresh]);
 
     const handleChat = (_chat) => {
-        if (user === _chat.sender_info.id) {
+        console.log(_chat)
+        // if (user === _chat.sender_info.id) {
             setChat({
                 sender: {
                     id: _chat.sender,
                     user_id: _chat.sender_info.id,
-                    name: _chat.sender_info.name,
-                    slug: _chat.sender_info.slug,
-                    image: _chat.sender_info.image,
+                    name:   _chat.sender_info.name,
+                    slug:   _chat.sender_info.slug,
+                    image:  _chat.sender_info.image,
                 },
                 receiver: {
                     id: _chat.receiver,
                     user_id: _chat.receiver_info.id,
-                    name: _chat.receiver_info.name,
-                    slug: _chat.receiver_info.slug,
-                    image: _chat.receiver_info.image,
+                    name:   _chat.receiver_info.name,
+                    slug:   _chat.receiver_info.slug,
+                    image:  _chat.receiver_info.image,
                 },
             });
-        } else {
-            setChat({
-                sender: {
-                    id: _chat.receiver,
-                    user_id: _chat.receiver_info.id,
-                    name: _chat.receiver_info.name,
-                    slug: _chat.receiver_info.slug,
-                    image: _chat.receiver_info.image,
-                },
-                receiver: {
-                    id: _chat.sender,
-                    user_id: _chat.sender_info.id,
-                    name: _chat.sender_info.name,
-                    slug: _chat.sender_info.slug,
-                    image: _chat.sender_info.image,
-                },
-            });
-        }
+        // } else {
+        //     setChat({
+        //         sender: {
+        //             id: _chat.receiver,
+        //             user_id: _chat.receiver_info.id,
+        //             name: _chat.receiver_info.name,
+        //             slug: _chat.receiver_info.slug,
+        //             image: _chat.receiver_info.image,
+        //         },
+        //         receiver: {
+        //             id: _chat.sender,
+        //             user_id: _chat.sender_info.id,
+        //             name: _chat.sender_info.name,
+        //             slug: _chat.sender_info.slug,
+        //             image: _chat.sender_info.image,
+        //         },
+        //     });
+        // }
         setIsChatOpen(true);
     };
 
     return (<>
         <Messages user={user.id} refresh={refresh} handleChat={handleChat}
-            messages={messages} chats={chats} setChat={setChat}
+            messages={messages} chats={chats}
         />
         { isChatOpen && chat && <Chat chat={chat} setChat={setChat} />}
     </>);

@@ -70,6 +70,7 @@ export const fetchStaff = async(company, setWorkers) => {
 }
 
 export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, project, setFormData, token) => {
+    console.log(project_id, work_on, hide, setNewProject, project, setFormData, token)
     await axios.post(`../backend/projects/admin`, {project:project_id, admin:work_on},
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {

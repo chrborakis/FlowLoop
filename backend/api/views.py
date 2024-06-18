@@ -56,7 +56,6 @@ class UserView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def patch(self, request, user):
-        print("DATA IN API: ", request.data)
         try:
             if user.isdigit():
                 user_instance = get_object_or_404(Users, pk=user)
@@ -118,7 +117,7 @@ class UserCredentialView(APIView):
 class NotificationsView(APIView):
     def get(self, request, user):
         try:
-            instances = get_list_or_404(Notifications, user=user)
+            instances = get_list_or_404(Notifications.objects.filter( user=user).order_by('-timestamp'))
             serializers = NotificationsSerializer(instances, many=True)
             return Response(serializers.data)
         except Http404:
@@ -130,8 +129,8 @@ class NotificationsView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def patch(self, request, user):
-        user_data = get_object_or_404(Notifications, user=user)
-        serializer = NotificationsSerializer(user_data, data=request.data, partial=True)
+        user_data = get_object_or_404(Notifications, id=user)
+        serializer = NotificationsSerializer(user_data, data={'is_read': True}, partial=True)
         
         if serializer.is_valid():
             serializer.save()
@@ -272,7 +271,6 @@ class CompanyView(APIView):
     
     
     def patch(self, request, company):
-        print("DATA IN API: ", request.data)
         try:
             if company.isdigit():
                 company_instance = Companies.objects.get(pk=company)

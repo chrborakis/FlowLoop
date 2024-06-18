@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card ,Form} from "react-bootstrap"; 
 import { Tab, Tabs} from '@mui/material';
 import TabPanel from '../../Extra/TabPanel';
+import { Button } from "@material-ui/core";
 
 import { useAuth } from '../../../store/AuthContext';
 import Info from './Info/Info';
@@ -19,20 +20,21 @@ import { replyRequestProfile } from '../../Requests/FriendUtils';
 
 import '../../../../static/css/Profile/Profile.css'
 import "bootstrap/dist/css/bootstrap.min.css"; 
+import { useNotification } from '../../../store/NotificationContext';
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();
+    const { addNotification }  = useNotification();
     const { slug } = useParams();
     
     const [ data, setData] = useState();
     const [ work, setWork] = useState();
     const [requested, setRequested] = useState(false);
     const [friends, setFriends] = useState([])
-
     
     const reply = ( status) => {
         console.log("Reply Friend Request -> ", user, data?.user, status)
-        replyRequestProfile( user, data?.user, status, setRequested, user?.token)
+        replyRequestProfile( user, {id:data?.user, slug:data?.slug}, status, setRequested, addNotification, user?.token)
     }
     
     const [ image, setImage] = useState(data?.image);

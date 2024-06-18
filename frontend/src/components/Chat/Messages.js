@@ -10,12 +10,24 @@ import '../../../static/css/messages.css'
 
 import { UserAvt } from "../Profiles/Profile";
 
-const Messages = ({ user, refresh, messages, chats, setChat, handleChat }) => {
+const Messages = ({ user, refresh, messages, chats, handleChat }) => {
+
+    const setChat = (chat) => {
+        
+        const receiver   = user === chat.sender_info.id ? chat.receiver : chat.sender;
+        const sender = user !== chat.sender_info.id ? chat.receiver : chat.sender;
+
+        const receiver_info   = user === chat.sender_info.id ? chat.receiver_info : chat.sender_info;
+        const sender_info = user !== chat.sender_info.id ? chat.receiver_info : chat.sender_info
+
+        handleChat({sender,sender_info, receiver,receiver_info})
+    }
+
     return (
         <div className="chats-list">
             {chats && chats.length > 0 ? (
                 chats.map((chat, idx) => (
-                    <div key={chat.message_id} onClick={() => handleChat(chat)}
+                    <div key={chat.message_id} onClick={() => setChat(chat)}
                         className={`chat ${!chat.read && user === chat.receiver_info.id ? "unread" : ""}`}
                     >
                         <Col xs={10}>

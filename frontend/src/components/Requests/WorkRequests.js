@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect} from "react";
 
 import { useAuth } from "../../store/AuthContext";
+import { useNotification } from "../../store/NotificationContext";
+
 import { User } from "../Profiles/Profile";
 import {ButtonGroup, Button} from '@mui/material';
 import { Row,Col } from "react-bootstrap";
@@ -11,11 +13,11 @@ import { getRequests, replyRequest, checkRequest } from "./WorkUtils";
 
 const WorkRequests = ({company, refresh}) => {
     const {user, updateUser} = useAuth();
+    const {addNotification} = useNotification()
     const [requests, setRequests] = useState([]);
 
     const reply = (req_id, status) => {
-        replyRequest(req_id, status, setRequests)
-        console.log(requests)
+        replyRequest(req_id, status, setRequests, addNotification, user?.id, user?.token)
     }
 
     useEffect(() => {

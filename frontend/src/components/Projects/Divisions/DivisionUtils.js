@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { postNotification } from '../../AppBar/NotificationsUtils';
+import { postNotification } from '../../AppBar/Notifications/NotificationsUtils';
 
 export const getDivisions = async( company, setDivisions) => {
     await axios.get(`../backend/projects/divisions/${company}`,
@@ -31,7 +31,6 @@ export const addDivision = async( project_id, newDivision, setDivisions, setNewD
 }
 
 export const uploadDivision = async( division, setDivisions, formData, setErrors) => {
-    console.log(formData)
     await axios.patch(`../backend/api/project_divisions/${division}`, formData,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'multipart/form-data'}})
     .then(  res => {
@@ -63,7 +62,7 @@ export const deleteDivision = async( division_id, setDivisions, token) => {
     .catch( err => console.log(err))
 }
 
-export const replyRequest = async(request, data, division, setDivisions, onHide, token, admin_id, user_id, company_slug) => {
+export const replyRequest = async(request, data, division, setDivisions, onHide, token, admin_id, user_id, company_slug, addNotification) => {
     await axios.patch(`../backend/projects/assign_request/${request}`, data, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( async res => {
@@ -80,8 +79,9 @@ export const replyRequest = async(request, data, division, setDivisions, onHide,
             );
             postNotification({user:user_id, sender:admin_id,
                 message:'You have been accepted a new project!',
-                url:`/company/${company_slug}#${division.project}`
+                url:`/company/${company_slug}/1/${division.project}`
             }, token)
+            addNotification()
             onHide();
         }
     })
@@ -112,7 +112,7 @@ export const getAssign = async(division) => {
     }
 }
 
-export const addAssign = async(division, work_on, setDivisions, onHide, token, company_slug, admin_id, user_id) => {
+export const addAssign = async(division, work_on, setDivisions, onHide, token, company_slug, admin_id, user_id, addNotification) => {
     await axios.post(`../backend/projects/assign/${division.division}`, work_on, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
@@ -120,15 +120,16 @@ export const addAssign = async(division, work_on, setDivisions, onHide, token, c
             setDivisions(prevData =>prevData.map(obj => obj.division === division.division ? { ...obj, assign: res.data.data.user } : obj));
             postNotification({user:user_id, sender:admin_id,
                 message:'You have been assign to a new project!',
-                url:`/company/${company_slug}#${division.project}`
+                url:`/company/${company_slug}/1/${division.project}`
             }, token)
             onHide();
+            addNotification();
         }
     })
     .catch( err => console.log(err))
 }
 
-export const removeAssign = async(divToDel, participant_id, setDivisions, token, admin_id, company_slug, user_id) => {
+export const removeAssign = async(divToDel, participant_id, setDivisions, token, admin_id, company_slug, user_id, addNotification) => {
     await axios.delete(`../backend/projects/assign/${participant_id}`,
         {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token}})
     .then( res => {
@@ -136,8 +137,9 @@ export const removeAssign = async(divToDel, participant_id, setDivisions, token,
             setDivisions(prevData => prevData.map(obj => obj.division === divToDel.division ? { ...obj, assign: null } : obj));
             postNotification({user:user_id, sender:admin_id,
                 message:'You have been removed from a project!',
-                url:`/company/${company_slug}#${divToDel.project}`
+                url:`/company/${company_slug}/1/${divToDel.project}`
             }, token)
+            addNotification()
         }
     })
     .catch( err => console.log(err.response.data))

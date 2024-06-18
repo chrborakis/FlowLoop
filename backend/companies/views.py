@@ -127,22 +127,19 @@ def workrequests(request, id):
             'data': response.json(),
             'status': response.status_code
         })    
-    if request.method == 'POST':
-        token = request.headers.get('Authorization')
-        if(verify_token(token)):
-            data = json.loads(request.body.decode('utf-8'))
-            status = data.get('status')
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        status = data.get('status')
 
-            instance = WorkRequests.objects.get(pk=id)     #work_request id
-            if status=='A':
-                instance.status = status
-                instance.save()
-            elif status=='D':
-                instance.delete()
+        instance = WorkRequests.objects.get(pk=id)     #work_request id
+        if status=='A':
+            instance.status = status
+            instance.save()
+        elif status=='D':
+            instance.delete()
 
-            return JsonResponse({'message': "Work Request: " + str(id) + "set to "+str(status)})
-        else:
-            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
+        serializer = WorkRequestsSerializer(instance)
+        return JsonResponse({'data': serializer.data})
 
 # FOR POST/GET ACTIONS BASED ON WORK_ID 
 # for users
@@ -150,48 +147,43 @@ def workrequests(request, id):
 def id_workrequests(request, user, company):
     base_url = get_base_url(request)
     if request.method == 'POST':
-        token = request.headers.get('Authorization')
-        if(verify_token(token)):
-            data = json.loads(request.body.decode('utf-8'))   
-            try:
-                response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
-                if response.status_code == 200:
-                    result = response.json()
-                    if(data.get('is_admin')):
-                        set_admin(result.get("id"))
-                    status = result.get("status")
+        data = json.loads(request.body.decode('utf-8'))   
+        try:
+            response = requests.post(base_url+'/backend/api/workrequests/0', json=data)
+            if response.status_code == 200:
+                result = response.json()
+                if(data.get('is_admin')):
+                    set_admin(result.get("id"))
+                status = result.get("status")
 
-                    work = None
-                    if( status == 'A'):
-                        workOn = get_workson_instance(data.get('user'))
-                        print('POST WORK ON', workOn)
-                        work = {
-                            "company": workOn.get("company"), 
-                            "work_id": workOn.get("id"), 
-                            "is_admin": workOn.get("is_admin"), 
-                        }
+                work = None
+                if( status == 'A'):
+                    workOn = get_workson_instance(data.get('user'))
+                    print('POST WORK ON', workOn)
+                    work = {
+                        "company": workOn.get("company"), 
+                        "work_id": workOn.get("id"), 
+                        "is_admin": workOn.get("is_admin"), 
+                    }
 
-                    return JsonResponse({
-                        'message': 'Work Request POST succesfully',
-                        'work': work,
-                        'data': response.json(),
-                        'status': response.status_code
-                    })
-                else:
-                    return JsonResponse({
-                        'message': 'Failed to POST Work Request',
-                        'data': response.json(),
-                        'status': response.status_code
-                    })
-            except Exception as e:
                 return JsonResponse({
-                    'message': str(e),
+                    'message': 'Work Request POST succesfully',
+                    'work': work,
                     'data': response.json(),
                     'status': response.status_code
                 })
-        else:
-            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
-
+            else:
+                return JsonResponse({
+                    'message': 'Failed to POST Work Request',
+                    'data': response.json(),
+                    'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({
+                'message': str(e),
+                'data': response.json(),
+                'status': response.status_code
+            })
     elif request.method == 'GET':
         if user and company:
             base_url = get_base_url(request)

@@ -8,6 +8,7 @@ from apps.users.models import *
 from rest_framework import status
 from rest_framework.decorators import action
 from django.shortcuts import get_list_or_404
+from django.views.decorators.csrf import csrf_exempt
 
 from backend.util import get_base_url, get_workson_instance, verify_token
 
@@ -118,16 +119,16 @@ def active_friends(request, user_id):
                 return JsonResponse({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return JsonResponse({'error':'User Id is NULL'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
+@csrf_exempt
 def notifications(request,user):
     if request.method == 'PATCH':
         # token = request.headers.get('Authorization')
         # if(verify_token(token)):
-        data = json.loads(request.body.decode('utf-8'))
         base_url = get_base_url(request)
         try:
             notification = user
-            response = requests.patch(base_url+'/backend/api/notifications/'+str(notification), json=data)
+            response = requests.patch(base_url+'/backend/api/notifications/'+str(notification))
             if response.status_code == 200:
                 return JsonResponse({
                     'message': '[PATCH]Notification '+str(notification)+' read successfully',
@@ -144,28 +145,28 @@ def notifications(request,user):
             # return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
         
     elif request.method == 'POST':
-        token = request.headers.get('Authorization')
-        if(verify_token(token)):
-            data = json.loads(request.body.decode('utf-8'))
-            print(data)
-            base_url = get_base_url(request)
-            try:
-                response = requests.post(base_url+'/backend/api/notifications/0', json=data)
+        # token = request.headers.get('Authorization')
+        # if(verify_token(token)):
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        base_url = get_base_url(request)
+        try:
+            response = requests.post(base_url+'/backend/api/notifications/0', json=data)
 
-                if response.status_code == 200:
-                    return JsonResponse({
-                        'message': '[POST]Notification send successfully',
-                        'data':  response.json(), 'status': response.status_code
-                    })
-                else:
-                    return JsonResponse({
-                        'message': '[POST]Notification send failed',
-                        'data':  response.json(), 'status': response.status_code
-                    })
-            except Exception as e:
-                return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
-        else:
-            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
+            if response.status_code == 200:
+                return JsonResponse({
+                    'message': '[POST]Notification send successfully',
+                    'data':  response.json(), 'status': response.status_code
+                })
+            else:
+                return JsonResponse({
+                    'message': '[POST]Notification send failed',
+                    'data':  response.json(), 'status': response.status_code
+                })
+        except Exception as e:
+            return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+        # else:
+            # return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
         
     elif request.method == 'GET':
         if user:

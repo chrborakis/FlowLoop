@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { requestAssign } from "../Divisions/DivisionUtils";
 
-const DivisionInvite = ({ division, company, admin_slug, user, setDivisions}) => {
+const DivisionInvite = ({ division, company, admin, user, setDivisions, addNotification}) => {
     const [modalShow, setModalShow] = useState(false);
     const [requestsShow, setRequestsShow] = useState(false);
 
@@ -16,11 +16,11 @@ const DivisionInvite = ({ division, company, admin_slug, user, setDivisions}) =>
 
     return(<>
         {/* Admin Option */}
-        {admin_slug === user.slug ? (
+        {admin?.id === user?.id ? (
             <>
                 <ButtonGroup aria-label="Basic button group">
                     <Button variant="contained" color="primary" onClick={() => setModalShow(true)}>Add Member</Button>
-                    <AdminInvite admin_id={user?.id} division={division} company={company} show={modalShow} onHide={() => setModalShow(false)} setDivisions={setDivisions} token={user?.token}/>
+                    <AdminInvite admin_id={user?.id} division={division} company={company} show={modalShow} onHide={() => setModalShow(false)} setDivisions={setDivisions} token={user?.token} addNotification={addNotification}/>
                     {division.requests?.length > 0 && (<div>
                         <Button variant="secondary" onClick={() => setRequestsShow(true)}>Requests</Button>
                         <Requests admin_id={user?.id} company={company} division={division} setDivisions={setDivisions} show={requestsShow} onHide={() => setRequestsShow(false)} token={user?.token}/>

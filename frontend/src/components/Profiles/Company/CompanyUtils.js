@@ -107,12 +107,13 @@ export const createAddress = async( company_id, address, setEdit, setErrors, tok
     }) 
 }
 
-export const get_request = async ( user, user_id, company_id, setRequested) => {
+export const get_request = async ( user, user_id, company_id, setRequested, setRequestId) => {
     // const { user1, updateUser } = useAuth()
     if( company_id){
         axios.get(`/backend/companies/id_workrequests/${user_id}/${company_id}`)
         .then(  res => {
             console.log(res)
+            setRequestId(res.data.data.id)
             // if visited page = requested page
             if( company_id!=res.data.data.company) {setRequested('No')}
             if( company_id == res.data.data.company && res.data.data.status==='P'){setRequested('P')}
