@@ -1,17 +1,156 @@
-import React, {useEffect, useState} from "react";
-import {Row,Col,Card,ListGroup } from 'react-bootstrap';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import Badge from 'react-bootstrap/Badge';
+import React,{useState,useEffect} from "react";
+import { Form, Card, Row,Col } from "react-bootstrap";
+import { Button } from "@material-ui/core";
 
-import Avatar from '@mui/material/Avatar';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import { User, UserAvt } from "../../Profile";
+import { TextField } from "@material-ui/core";
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import CheckIcon from '@mui/icons-material/Check';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
-const Staff = ({staff}) => {
-    console.log(staff)
+import { updateAdmin, getStaff, removeEmployee } from "../CompanyUtils";
+
+const Staff = ({user, company}) => {
+    const [ staff, setStaff]     = useState([]);
+    const [filteredMembers, setFiltered] = useState(staff)
+    const [updateTrigger, setUpdateTrigger] = useState(false);
+
+    useEffect( () => {
+        if(company.id) {
+            getStaff( company.id, setStaff)}
+    },[company,updateTrigger])
+
+    useEffect( () => {if(staff)setFiltered(staff)},[staff])
+
+
+    //Remove member
+    const [memberToRemove, setMemberToRemove] = useState({employee:null,name:''});
+    const [visible,setVisible] = useState(false)
+
+    const [hoveredRow, setHoveredRow] = useState(null);
+    const [hoveredCell, setHoveredCell] = useState(null);
+    
+        
+    const onRemove = (member) => {
+        setMemberToRemove({employee:member?.employee_id,name:member.employee?.name});
+        setVisible(true);
+    };
+
+    const accept = () => {
+        if(memberToRemove?.employee){
+            setUpdateTrigger(prev => !prev);
+            removeEmployee(memberToRemove.employee, user?.token)
+        }
+        setVisible(false);
+    };
+    const reject = () => setVisible(false); 
+
+    const handleSubmit = async(e) => {
+        e.preventDefault()
+    }
+
+    const columns = [
+        { id: 'no', label: 'No', minWidth: 50, align: 'left'},
+        { id: 'name', label: 'Name', minWidth: 100, align: 'left'},
+        { id: 'admin', label: 'Admin', minWidth: 100, align: 'left'},
+      ];
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    const handleChangePage = (event, newPage) => setPage(newPage);
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+ 
+    useEffect(()=>{
+        if(staff || searchQuery){
+            setFiltered( staff?.filter(member => member?.employee?.name.toLowerCase().includes(searchQuery.toLowerCase())))
+        }
+    },[staff,searchQuery])  
+        
+    const handleAdminClick = (member) => {
+        if(member.employee.id!== user.id){
+            setUpdateTrigger(prev => !prev);
+            if(member.is_admin){
+                updateAdmin( member.employee_id, false, user?.token)
+            }else{
+                updateAdmin( member.employee_id, true, user?.token)
+            }
+        }
+    };
+
+
     return(<>
         <Card className="text-center mx-auto d-block">  
             <Card.Header>Company Staff</Card.Header>
-            <Card.Body>        
-            {staff?.length > 0 ? (
+            {/* <Card.Body>     */}
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <Form className='form' onSubmit={handleSubmit}>
+                            <TextField label="Search" variant="outlined" style={{width:'90%'}}
+                                value={searchQuery} onChange={handleSearchChange}
+                                fullWidth margin="normal" size="small"
+                            />
+                        </Form>
+                <TableContainer sx={{ maxHeight: 440, width: '100%', margin: 'auto' }}>
+                    <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                        {columns.map((column) => (
+                            <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                            {column.label}
+                            </TableCell>
+                        ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        { filteredMembers!=null && filteredMembers?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((member, index) => {
+                            return (
+                                <TableRow hover role="checkbox" tabIndex={-1} key={member?.employee.user_id} onMouseEnter={() => setHoveredRow(member?.employee.user_id)} onMouseLeave={() => setHoveredRow(null)}>
+                                    <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
+                                    <TableCell><User user={member?.employee} circle={true} width={50}/></TableCell>
+                                    <TableCell
+                                        onClick={() => handleAdminClick(member)}
+                                        onMouseEnter={() => setHoveredCell(member.employee.id)} onMouseLeave={() => setHoveredCell(null)}
+                                    >
+                                        {member.is_admin && !(user?.isAdmin && hoveredRow === member.employee.id && hoveredCell === member.employee.id && member.is_admin
+                                            ) ? <CheckIcon /> : null}
+                                        {user.isAdmin && (
+                                            (hoveredRow === member.employee.id && hoveredCell === member.employee.id) &&
+                                            (member.is_admin &&  member.employee.id!== user.id ? <ClearIcon/> : <CheckIcon />) 
+                                        )}
+                                           
+                                    </TableCell>
+                                    
+                                    { user?.is_admin && member?.employee.id!== user.id && <TableCell><PersonRemoveIcon onClick={() => onRemove(member)}/></TableCell>}
+                                </TableRow>
+                            );
+                        })}
+                        <ConfirmDialog visible={visible} onHide={() => setVisible(false)}
+                            message={`Are you sure you want to remove ${memberToRemove.name}?`} header="Remove Member"
+                            icon="pi pi-exclamation-triangle" accept={accept} reject={reject}
+                        />
+                    </TableBody>
+                    </Table>
+                </TableContainer>
+                <Row>
+                    {/* <Col xs={5}> */}
+                        
+                    {/* </Col> */}
+                    {/* <Col xs={7}> */}
+                        <TablePagination 
+                            component="div" count={filteredMembers?.length || 0} rowsPerPage={rowsPerPage} page={page}
+                            onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    {/* </Col> */}
+                </Row>
+                </Paper>    
+            {/* {staff?.length > 0 ? (
             <ListGroup variant="flush">
                 {staff?.map((result, index) => (
                     index % 2 === 0 && (
@@ -34,12 +173,12 @@ const Staff = ({staff}) => {
                             </div>
                         </ListGroup.Item>
                     )
-                ))}
-            </ListGroup>
-        ) : (<p>No users found</p>)}
-            </Card.Body>
-            <Card.Footer className="text-muted">
-            </Card.Footer>
+                ))} */}
+            {/* </ListGroup> */}
+        {/* ) : (<p>No users found</p>)} */}
+            {/* </Card.Body> */}
+            {/* <Card.Footer className="text-muted"> */}
+            {/* </Card.Footer> */}
         </Card>
     </>)
 }

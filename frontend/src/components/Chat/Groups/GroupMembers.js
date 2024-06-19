@@ -108,7 +108,6 @@ const GroupMembers = (props) => {
                                 <TableRow hover role="checkbox" tabIndex={-1} key={member.user_id} onMouseEnter={() => setHoveredRow(member.user_id)} onMouseLeave={() => setHoveredRow(null)}>
                                     <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
                                     <TableCell><User user={member} circle={true} width={50}/></TableCell>
-                                    {/* <TableCell onClick={ () => handleAdminClick(member, isMemberAdmin(member.user_id))}>{isMemberAdmin(member.user_id) && <CheckIcon />}</TableCell> */}
                                     <TableCell
                                         onClick={() => handleAdminClick(member, isMemberAdmin(member.user_id))}
                                         onMouseEnter={() => setHoveredCell(member.user_id)} onMouseLeave={() => setHoveredCell(null)}

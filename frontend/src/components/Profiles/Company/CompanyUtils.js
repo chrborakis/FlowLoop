@@ -132,9 +132,29 @@ export const sendWorkRequest = async ( data, setRequested, token) => {
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
         );
         if(setRequested != null) setRequested(true);
-        console.log("sendWorkRequest -> ", res.data);
         return res.data;
     } catch(err) {
         console.log(err);
     }
 };
+
+
+export const updateAdmin = async( employee_id, is_admin, token) => {
+    if( employee_id){
+        await axios.patch(`/backend/companies/update_admin/${employee_id}`, {is_admin},
+            {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+        ).then(  res => {
+            console.log(res)
+        }).catch( err => console.log(err))
+    }
+}
+
+export const removeEmployee = async( employee_id, token) => {
+    if( employee_id){
+        await axios.delete(`/backend/companies/remove_employee/${employee_id}`,
+            {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
+        ).then(  res => {
+            console.log(res)
+        }).catch( err => console.log(err))
+    }
+}

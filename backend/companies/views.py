@@ -229,3 +229,31 @@ def set_admin( id):
     except Exception as e:
         return JsonResponse({'error':str(e)}, status=400)
     
+def update_admin(request, employee):
+    if request.method == 'PATCH':
+        token = request.headers.get('Authorization')
+        if(verify_token(token)):
+            data = json.loads(request.body.decode('utf-8'))
+            is_admin = data.get('is_admin')
+
+            instance = WorksOn.objects.get(employee=employee)     #work_request id
+            instance.is_admin = is_admin
+            instance.save()
+
+            serializer = WorksOnSerializer(instance)
+            return JsonResponse({'data': serializer.data})
+    else:
+        return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
+    
+def remove_employee(request, employee):
+    if request.method == 'DELETE':
+        token = request.headers.get('Authorization')
+        if(verify_token(token)):
+            try:
+                instance = WorksOn.objects.get(employee=employee)     #work_request id
+                instance.delete()
+                return JsonResponse({'data': "Employee "+str(employee)+" Removed successfully"})
+            except Exception as e:      
+                return JsonResponse({'data': str(e)})
+        else:
+            return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 

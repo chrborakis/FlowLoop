@@ -10,17 +10,14 @@ import { getCompany, getAddress, getStaff } from './CompanyUtils';
 const InfoTabs = ({user,slug, data}) => {
     const [tabInfo, setTabInfo] = useState(0);
     const handleTabInfo = (event, newTabContent) => setTabInfo(newTabContent);
-
     
     const [ address, setAddress] = useState();
     const [ staff, setStaff]     = useState([]);
 
-    
-
     useEffect( () => {
         if(data?.company_id) {
+            getStaff(data?.company_id, setStaff)
             getAddress(data?.address, setAddress)
-            getStaff(  data?.company_id, setStaff)
         }
     },[data?.company_id,slug])
 
@@ -39,7 +36,7 @@ const InfoTabs = ({user,slug, data}) => {
             <Address company_id={data?.company_id} address={address} admin={data.company_id===user?.company?.id && user.is_admin} token={user?.token}/>
         </TabPanel>
         <TabPanel value={tabInfo} index={2}>
-            { staff && <Staff staff={staff}/>}
+            <Staff user={user} company={{id:data?.company_id, slug:slug}}/>
         </TabPanel>
     </>)
 }

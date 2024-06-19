@@ -14,4 +14,7 @@ urlpatterns = [
     
     path("workrequests/<int:id>", views.workrequests),
     path("id_workrequests/<int:user>/<int:company>", views.id_workrequests),
+
+    path("update_admin/<int:employee>", views.update_admin),
+    path("remove_employee/<int:employee>", views.remove_employee)
 ]
