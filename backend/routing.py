@@ -7,5 +7,5 @@ from backend.users.consumers import NotificationConsumer
 websocket_urlpatterns = [
     re_path(r'^ws/chat/(?P<room_name>[^/]+)/$', ChatConsumer.as_asgi()),
     re_path(r'^ws/group_chat/(?P<room_name>[^/]+)/$', GroupChatConsumer.as_asgi()),
-    re_path(r'^ws/notification/(?P<room_name>[^/]+)/$', NotificationConsumer.as_asgi()),
+    re_path(r'^ws/notifications/(?P<room_name>[^/]+)/$', NotificationConsumer.as_asgi()),
 ]

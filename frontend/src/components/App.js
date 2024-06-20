@@ -18,7 +18,7 @@ import "../../static/css/index.css"
 
 const App = () => {
     const { user, updateUser } = useAuth(); 
-    const { notifications, setNotifications} = useNotification();
+    const { notifications, setNotifications, updateTrigger} = useNotification();
     const [messages, setMessages] = useState(0)
 
     const updateUnreadMessages      = (user_id, setMessages) => getUnreadMessages(user_id, setMessages)
@@ -33,7 +33,7 @@ const App = () => {
     },[user?.id])
 
     useEffect( ()=> {getUnreadMessages(user?.id, setMessages)},[messages])
-    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications])
+    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications,updateTrigger])
 
     return(
         <Router basename="/">

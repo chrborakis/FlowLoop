@@ -20,7 +20,6 @@ import { useNotification } from "../../../store/NotificationContext";
 
 const Division = ({ company, admin,division,setDivisions}) => {
     const {user} = useAuth();
-    const { addNotification, delNotification } = useNotification();
 
     const [assignOptsOpen, setAssignOptOpen] = useState(false);
     const toggleDropdown = () => setAssignOptOpen(!assignOptsOpen);
@@ -61,7 +60,7 @@ const Division = ({ company, admin,division,setDivisions}) => {
                     </Col>
                 ) : (
                     <Col xs={8} className="d-flex justify-content-start">
-                        <DivisionInvite division={division} company={company} admin={admin} user={user} setDivisions={setDivisions} addNotification={addNotification}/>
+                        <DivisionInvite division={division} company={company} admin={admin} user={user} setDivisions={setDivisions}/>
                     </Col>
                 )}
 
@@ -71,7 +70,7 @@ const Division = ({ company, admin,division,setDivisions}) => {
                             <Dropdown.Toggle variant="secondary"><HiMiniCog6Tooth /></Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <ButtonGroup variant="outlined" color="error" orientation="vertical" aria-label="Vertical button group">
-                                    {division?.assign && <Button onClick={() => removeAssign(division, division.assign.participant_id,setDivisions, user?.token, admin?.id, company.slug, division?.assign?.id, addNotification)}>Remove Assign</Button>}
+                                    {division?.assign && <Button onClick={() => removeAssign(division, division.assign.participant_id,setDivisions, user?.token, admin?.id, company.slug, division?.assign?.id)}>Remove Assign</Button>}
                                     <Button icon="pi pi-check" label="Confirm" onClick={() => setVisible(true)}>Delete Division</Button>
                                 </ButtonGroup>
                             </Dropdown.Menu>

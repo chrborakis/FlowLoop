@@ -10,8 +10,12 @@ import CheckIcon from '@mui/icons-material/Check';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { updateAdmin, getStaff, removeEmployee } from "../CompanyUtils";
+import {useNotification} from '../../../../store/NotificationContext'
 
 const Staff = ({user, company}) => {
+    const {addNotification, socket} = useNotification();
+    console.log("staff: ", socket)
+
     const [ staff, setStaff]     = useState([]);
     const [filteredMembers, setFiltered] = useState(staff)
     const [updateTrigger, setUpdateTrigger] = useState(false);
@@ -25,22 +29,23 @@ const Staff = ({user, company}) => {
 
 
     //Remove member
-    const [memberToRemove, setMemberToRemove] = useState({employee:null,name:''});
+    const [memberToRemove, setMemberToRemove] = useState({employee:null,name:'', sender: null, receiver:null, company: null, slug:null});
     const [visible,setVisible] = useState(false)
 
     const [hoveredRow, setHoveredRow] = useState(null);
     const [hoveredCell, setHoveredCell] = useState(null);
-    
         
     const onRemove = (member) => {
-        setMemberToRemove({employee:member?.employee_id,name:member.employee?.name});
+        setMemberToRemove({employee:member?.employee_id,name:member.employee?.name,
+            sender: user?.id, receiver:member?.employee.id, company: member.company.name, slug: member.company.slug
+        });
         setVisible(true);
     };
 
     const accept = () => {
         if(memberToRemove?.employee){
             setUpdateTrigger(prev => !prev);
-            removeEmployee(memberToRemove.employee, user?.token)
+            removeEmployee(memberToRemove, addNotification, user?.token, socket)
         }
         setVisible(false);
     };
@@ -78,9 +83,11 @@ const Staff = ({user, company}) => {
         if(member.employee.id!== user.id){
             setUpdateTrigger(prev => !prev);
             if(member.is_admin){
-                updateAdmin( member.employee_id, false, user?.token)
+                updateAdmin( {employee:member?.employee_id,name:member.employee?.name,sender: user?.id, receiver:member?.employee.id, company: member.company.name, slug: member.company.slug}
+                    ,false, addNotification, user?.token)
             }else{
-                updateAdmin( member.employee_id, true, user?.token)
+                updateAdmin({employee:member?.employee_id,name:member.employee?.name,sender: user?.id, receiver:member?.employee.id, company: member.company.name, slug: member.company.slug}, 
+                    true, addNotification, user?.token)
             }
         }
     };

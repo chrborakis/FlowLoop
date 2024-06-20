@@ -66,7 +66,6 @@ export const clearUnread = async( user, friend) => {
 
 export const sendMessage = async( data, setMessages, setMessage, socket, token) => {
     const {sender, receiver, message} = data;
-    console.log(token)
     await axios.post(`${window.location.origin}/backend/chat/conversation/${sender}/${receiver}`, data,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': `${token}`,'Content-Type': 'application/json'}
     }).then( res => {

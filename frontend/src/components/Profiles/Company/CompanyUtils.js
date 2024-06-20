@@ -4,10 +4,11 @@ import Cookies from 'js-cookie';
 import { useAuth } from '../../../store/AuthContext';
 import {changeImage} from '../User/UserUtils'
 
+import { postNotification } from '../../AppBar/Notifications/NotificationsUtils';
+
 export const getAddress = async( company, setAddress) => {
     axios.get(`/backend/companies/address/${company}`)
     .then(  res => {
-        console.log(res.data.data)
         setAddress(res.data.data)})
     .catch( err => console.log(err))
 }
@@ -15,7 +16,6 @@ export const getAddress = async( company, setAddress) => {
 export const getStaff = async( company, setStaff) => {
     axios.get(`/backend/companies/staff/${company}`)
     .then(  res => {
-        console.log(res.data)
         if(res.data.status === 200){
             const sortedData = [...res.data.data].sort((a, b) => (a.is_admin === b.is_admin) ? 0 : a.is_admin ? -1 : 1);
             setStaff(sortedData)
@@ -139,22 +139,40 @@ export const sendWorkRequest = async ( data, setRequested, token) => {
 };
 
 
-export const updateAdmin = async( employee_id, is_admin, token) => {
-    if( employee_id){
-        await axios.patch(`/backend/companies/update_admin/${employee_id}`, {is_admin},
+export const updateAdmin = async( data, is_admin, addNotification, token) => {
+    if( data.employee){
+        console.log("updateAdmin: ", socket)
+        await axios.patch(`/backend/companies/update_admin/${data.employee}`, {is_admin},
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
         ).then(  res => {
-            console.log(res)
+            postNotification({user:data.receiver, sender:data.sender,
+                message:is_admin ? `You have been assigned as admin in ${data.company}!` : `You have been removed as admin in ${data.company}!`,
+                url:`${window.location.origin}/company/${data.slug}`
+            }, token)
+            addNotification()
+            const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/${data.receiver}/`)
+            if(socket){
+                socket.onopen = () => {
+                    console.log('WebSocket connection established:', socket);
+                    socket.send(JSON.stringify({ 'message': 'New Notification' }));
+                };
+                socket.onclose = () => console.log('WebSocket connection closed:', socket);
+            }
         }).catch( err => console.log(err))
     }
 }
 
-export const removeEmployee = async( employee_id, token) => {
-    if( employee_id){
-        await axios.delete(`/backend/companies/remove_employee/${employee_id}`,
+export const removeEmployee = async( data, addNotification, token, socket) => {
+    if( data.employee){
+        await axios.delete(`/backend/companies/remove_employee/${data.employee}`,
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
         ).then(  res => {
-            console.log(res)
+            postNotification({user:data.receiver, sender:data.sender,
+                message:`You have been removed from ${data.company}!`,
+                url:`${window.location.origin}/company/${data.slug}`
+            }, token)
+            addNotification()
+            socket.send(JSON.stringify({'message': 'New Notification'}))
         }).catch( err => console.log(err))
     }
 }

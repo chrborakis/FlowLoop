@@ -32,6 +32,14 @@ export const postNotification = async (notification, token) => {
         );
 
         if (res.data.status === 200) {
+            const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/${notification.user}/`);
+            if(socket){
+                socket.onopen = () => {
+                    socket.send(JSON.stringify({type: 'notification', message: notification.message}));
+                    socket.close();
+                };
+                socket.onerror = (error) => console.error('WebSocket error:', error);
+            }
             console.log('Notification posted successfully:', res.data);
         }
     } catch (err) {

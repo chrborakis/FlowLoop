@@ -62,7 +62,7 @@ export const deleteDivision = async( division_id, setDivisions, token) => {
     .catch( err => console.log(err))
 }
 
-export const replyRequest = async(request, data, division, setDivisions, onHide, token, admin_id, user_id, company_slug, addNotification) => {
+export const replyRequest = async(request, data, division, setDivisions, onHide, token, admin_id, user_id, company_slug) => {
     await axios.patch(`../backend/projects/assign_request/${request}`, data, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( async res => {
@@ -81,7 +81,6 @@ export const replyRequest = async(request, data, division, setDivisions, onHide,
                 message:'You have been accepted a new project!',
                 url:`/company/${company_slug}/1/${division.project}`
             }, token)
-            addNotification()
             onHide();
         }
     })
@@ -112,7 +111,7 @@ export const getAssign = async(division) => {
     }
 }
 
-export const addAssign = async(division, work_on, setDivisions, onHide, token, company_slug, admin_id, user_id, addNotification) => {
+export const addAssign = async(division, work_on, setDivisions, onHide, token, company_slug, admin_id, user_id) => {
     await axios.post(`../backend/projects/assign/${division.division}`, work_on, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
@@ -123,13 +122,12 @@ export const addAssign = async(division, work_on, setDivisions, onHide, token, c
                 url:`/company/${company_slug}/1/${division.project}`
             }, token)
             onHide();
-            addNotification();
         }
     })
     .catch( err => console.log(err))
 }
 
-export const removeAssign = async(divToDel, participant_id, setDivisions, token, admin_id, company_slug, user_id, addNotification) => {
+export const removeAssign = async(divToDel, participant_id, setDivisions, token, admin_id, company_slug, user_id) => {
     await axios.delete(`../backend/projects/assign/${participant_id}`,
         {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token}})
     .then( res => {
@@ -139,7 +137,6 @@ export const removeAssign = async(divToDel, participant_id, setDivisions, token,
                 message:'You have been removed from a project!',
                 url:`/company/${company_slug}/1/${divToDel.project}`
             }, token)
-            addNotification()
         }
     })
     .catch( err => console.log(err.response.data))
