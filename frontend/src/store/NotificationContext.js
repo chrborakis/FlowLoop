@@ -8,7 +8,6 @@ const NotificationProvider = ({ children }) => {
     const { user } = useAuth(); 
     const [socket, setSocket] = useState(null);
     const [notifications, setNotifications] = useState(0);
-    const [updateTrigger, setUpdateTrigger] = useState(false);
     const socketRef = useRef(null);
 
     useEffect(()=>{
@@ -29,30 +28,8 @@ const NotificationProvider = ({ children }) => {
             return () => socket.close()
         }
     },[socket])
-
-
-    const updateNotifications = useCallback(() => {
-        if (user) {
-            getUnreadNotifications(user.id, setNotifications);
-        }
-    }, [user]);
-
-    useEffect(() => {
-        updateNotifications();
-    }, []);
-
-    const addNotification = useCallback(() => {
-        setUpdateTrigger(prev => !prev);
-        setNotifications(prevCounter => prevCounter + 1);
-    }, [notifications]);
-
-    const delNotification = useCallback(() => {
-        setUpdateTrigger(prev => !prev);
-        setNotifications(prevCounter => prevCounter - 1);
-    }, []);
     
-    
-    return (<NotificationContext.Provider value={{ notifications, setNotifications, addNotification, delNotification, updateNotifications, socket}}>
+    return (<NotificationContext.Provider value={{ notifications, setNotifications, socket}}>
         {children}
     </NotificationContext.Provider>);
 };

@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getLikes, postLike} from "./LikesUtils";
 import { useAuth } from "../../../store/AuthContext";
-// import Button from 'react-bootstrap/Button';
 import Button from '@mui/material/Button';
-// import { Provider, LikeButton } from "@lyket/react";
 import BeenhereIcon from '@mui/icons-material/Beenhere';
-import { useNotification } from "../../../store/NotificationContext";
 
 const Likes = ({post, url}) => {
     const { user } = useAuth();
-    const { addNotification } = useNotification();
 
     const [likes, setLikes] = useState();
     const [liked, setLiked] = useState(true);
@@ -21,7 +17,7 @@ const Likes = ({post, url}) => {
     const handleLike = () => {
         //like id: Foreign key depends Public Or Private
         // const like = url.includes('public') ? user.id : user.work_id
-        postLike( url, post, url.includes('public') ? user.id : user.work_id, user?.id, post.user.user_id, setLiked, user?.token, addNotification)
+        postLike( url, post, url.includes('public') ? user.id : user.work_id, user?.id, post.user.user_id, setLiked, user?.token)
     };
     
     return(

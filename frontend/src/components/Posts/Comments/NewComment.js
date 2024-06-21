@@ -13,22 +13,17 @@ import { useNotification } from "../../../store/NotificationContext";
 
 const NewComment = ({post, onComment, url}) => {
     const { user} = useAuth();
-    const { addNotification} = useNotification();
 
     const [comment, setComment] = useState("");
 
-    const handleChange = (event) => {
-        setComment(event.target.value);
-    };
+    const handleChange = (event) => setComment(event.target.value);
 
     const handleSubmit = async (e) => {
         e && e.preventDefault();
-        if(!comment){
-            return
-        }
+        if(!comment){return}
         const commentor = url.includes('public') ? user.id : user.work_id;
         const data = {post:post.post_id, commentor, comment: comment}
-        postComment(data, url, onComment, comment, setComment, post, addNotification, user?.token);
+        postComment(data, url, onComment, comment, setComment, post, user?.token);
     }
 
     return(

@@ -9,7 +9,7 @@ export const getRequests = async( setRequests, company) => {
     .catch(err => console.log(err))
 }
 
-export const replyRequest = async( user, status, setRequests, addNotification, admin, token) => {
+export const replyRequest = async( user, status, setRequests, admin, token) => {
     console.log("User: ", user, " Status: ", status)
     await axios.post(`${window.location.origin}/backend/companies/workrequests/${user}`, {status}, {
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),
@@ -23,7 +23,6 @@ export const replyRequest = async( user, status, setRequests, addNotification, a
                 message:`You have been accepted to ${res.data.data.company_info.name}`,
                 url:`/company/${res.data.data.company_info.slug}`
             }, token)
-            addNotification();
         }
     })
     .catch(err => console.log(err))
@@ -37,7 +36,6 @@ export const checkRequest = async( user, updateUser) => {
         else{
             updateUser({...user, 'company': null,'work_id': null,'is_admin': null,})
         }
-        console.log('[UPT]', res.data)
     })
     .catch( err => console.log(err))
 };

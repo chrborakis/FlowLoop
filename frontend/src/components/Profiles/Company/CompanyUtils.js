@@ -139,7 +139,7 @@ export const sendWorkRequest = async ( data, setRequested, token) => {
 };
 
 
-export const updateAdmin = async( data, is_admin, addNotification, token) => {
+export const updateAdmin = async( data, is_admin, token) => {
     if( data.employee){
         console.log("updateAdmin: ", socket)
         await axios.patch(`/backend/companies/update_admin/${data.employee}`, {is_admin},
@@ -149,20 +149,11 @@ export const updateAdmin = async( data, is_admin, addNotification, token) => {
                 message:is_admin ? `You have been assigned as admin in ${data.company}!` : `You have been removed as admin in ${data.company}!`,
                 url:`${window.location.origin}/company/${data.slug}`
             }, token)
-            addNotification()
-            const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/${data.receiver}/`)
-            if(socket){
-                socket.onopen = () => {
-                    console.log('WebSocket connection established:', socket);
-                    socket.send(JSON.stringify({ 'message': 'New Notification' }));
-                };
-                socket.onclose = () => console.log('WebSocket connection closed:', socket);
-            }
         }).catch( err => console.log(err))
     }
 }
 
-export const removeEmployee = async( data, addNotification, token, socket) => {
+export const removeEmployee = async( data, token) => {
     if( data.employee){
         await axios.delete(`/backend/companies/remove_employee/${data.employee}`,
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
@@ -171,8 +162,6 @@ export const removeEmployee = async( data, addNotification, token, socket) => {
                 message:`You have been removed from ${data.company}!`,
                 url:`${window.location.origin}/company/${data.slug}`
             }, token)
-            addNotification()
-            socket.send(JSON.stringify({'message': 'New Notification'}))
         }).catch( err => console.log(err))
     }
 }

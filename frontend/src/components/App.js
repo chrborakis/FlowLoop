@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext  } from "react";
 import { render } from 'react-dom';
+
 import { AuthProvider, useAuth } from "../store/AuthContext";
+import { ChatProvider, useChat } from "../store/ChatContext";
 import { NotificationProvider, useNotification } from "../store/NotificationContext";
 
 import { BrowserRouter as Router, Route, Switch, Routes } from 'react-router-dom';
@@ -18,8 +20,8 @@ import "../../static/css/index.css"
 
 const App = () => {
     const { user, updateUser } = useAuth(); 
-    const { notifications, setNotifications, updateTrigger} = useNotification();
-    const [messages, setMessages] = useState(0)
+    const { notifications, setNotifications} = useNotification();
+    const { messages, setMessages} = useChat()
 
     const updateUnreadMessages      = (user_id, setMessages) => getUnreadMessages(user_id, setMessages)
     const updateUnreadNotifications = (user_id, setMessages) => getUnreadNotifications(user_id, setNotifications)
@@ -33,7 +35,7 @@ const App = () => {
     },[user?.id])
 
     useEffect( ()=> {getUnreadMessages(user?.id, setMessages)},[messages])
-    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications,updateTrigger])
+    useEffect( ()=> {getUnreadNotifications(user?.id, setNotifications)},[notifications])
 
     return(
         <Router basename="/">
@@ -60,7 +62,9 @@ export default App;
 render( 
     <AuthProvider>
         <NotificationProvider>
-            <App />
+            <ChatProvider>
+                <App />
+            </ChatProvider>
         </NotificationProvider>
     </AuthProvider> 
 , document.getElementById("app"));

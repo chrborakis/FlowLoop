@@ -10,10 +10,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { updateAdmin, getStaff, removeEmployee } from "../CompanyUtils";
-import {useNotification} from '../../../../store/NotificationContext'
 
 const Staff = ({user, company}) => {
-    const {addNotification, socket} = useNotification();
     console.log("staff: ", socket)
 
     const [ staff, setStaff]     = useState([]);
@@ -45,7 +43,7 @@ const Staff = ({user, company}) => {
     const accept = () => {
         if(memberToRemove?.employee){
             setUpdateTrigger(prev => !prev);
-            removeEmployee(memberToRemove, addNotification, user?.token, socket)
+            removeEmployee(memberToRemove, user?.token)
         }
         setVisible(false);
     };
@@ -84,10 +82,10 @@ const Staff = ({user, company}) => {
             setUpdateTrigger(prev => !prev);
             if(member.is_admin){
                 updateAdmin( {employee:member?.employee_id,name:member.employee?.name,sender: user?.id, receiver:member?.employee.id, company: member.company.name, slug: member.company.slug}
-                    ,false, addNotification, user?.token)
+                    ,false, user?.token)
             }else{
                 updateAdmin({employee:member?.employee_id,name:member.employee?.name,sender: user?.id, receiver:member?.employee.id, company: member.company.name, slug: member.company.slug}, 
-                    true, addNotification, user?.token)
+                    true, user?.token)
             }
         }
     };

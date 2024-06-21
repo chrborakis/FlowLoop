@@ -74,6 +74,14 @@ export const sendMessage = async( data, setMessages, setMessage, socket, token) 
             socket.send(JSON.stringify({'message': res.data.data}))
             // setMessages(prevMessaged=>[...prevMessaged, res.data.data])
             setMessage('')
+            const sct = new WebSocket(`ws://${window.location.host}/ws/chat_unread/${res.data.data.receiver_info.id}/`);
+            if(sct){
+                sct.onopen = () => {
+                    sct.send(JSON.stringify({type: 'chat_notification', message: `[${sender}->${receiver}] ${message}`}));
+                    sct.close();
+                };
+                sct.onerror = (error) => console.error('WebSocket error:', error);
+            }
         }
     }).catch(err => console.log(err))
 }

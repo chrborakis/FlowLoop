@@ -8,14 +8,12 @@ import { Link } from "react-router-dom";
 import { scrollTop } from "../Extra/LinkOnTop";
 
 import { getRequests, replyRequest, checkRequest } from "./FriendUtils"; 
-import { useNotification } from "../../store/NotificationContext";
 
 const FriendRequests = ({ refresh}) => {
     const {user} = useAuth();
-    const {addNotification} = useNotification();
     const [requests, setRequests] = useState([]);
 
-    const reply = (receiver, info, status) => replyRequest( receiver, info, user, status, setRequests, addNotification, user?.token)
+    const reply = (receiver, info, status) => replyRequest( receiver, info, user, status, setRequests, user?.token)
 
     useEffect(() => {
         if(refresh)getRequests( setRequests, user?.id)

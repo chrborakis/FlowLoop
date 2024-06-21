@@ -2,17 +2,15 @@ import React, {useEffect, useState} from "react";
 import {Modal, Form,Dropdown } from "react-bootstrap"
 import Button from '@material-ui/core/Button';
 import { replyRequest } from "../Divisions/DivisionUtils";
-import { useNotification } from "../../../store/NotificationContext";
 
 const Requests = (props) => {
-    const {addNotification} = useNotification
     const [selectedOption, setSelectedOption] = useState({id:'', user_id:'', work_on:'',name:''});
 
     const handleSubmit = async(e) => {
         e.preventDefault()
         if(selectedOption.work_on){
             const data = {"division": props.division.division,"employee": selectedOption.work_on, "status": "A"}
-            replyRequest( selectedOption.id, data, props.division, props.setDivisions, props.onHide, props.token, props.admin_id, selectedOption.user_id, props.company.slug,addNotification)
+            replyRequest( selectedOption.id, data, props.division, props.setDivisions, props.onHide, props.token, props.admin_id, selectedOption.user_id, props.company.slug)
         }
     }
 

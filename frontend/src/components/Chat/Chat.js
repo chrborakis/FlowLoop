@@ -23,7 +23,6 @@ const Chat = ({chat, setChat, room}) => {
 
     const [messages, setMessages] = useState([]);
 
-
     useEffect(()=>{
         console.log("Starting convo w/: ", chat)
         if(sender && receiver){

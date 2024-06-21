@@ -9,7 +9,7 @@ export const getLikes = async( setLikes, url) => {
     .catch( err => console.log(err))
 };
 
-export const postLike = async( url, post, like, liker, author, setLiked, token, addNotification) => {
+export const postLike = async( url, post, like, liker, author, setLiked, token) => {
     const post_url = url.replace( post, "0")
     const data = { "post": post.post_id, "like": like}
     await axios.post(post_url, data,{
@@ -20,7 +20,6 @@ export const postLike = async( url, post, like, liker, author, setLiked, token, 
             setLiked((prevValue) => !prevValue)
             const url = post.user.company_slug ? `/company/${post.user.company_slug}/0/${post.post_id}` : `/user/${post.user.user_slug}#post-${post.post_id}`
             postNotification({user:author, sender:liker, message:'Liked your post', url:url}, token)
-            addNotification();
         }
     })
     .catch( err => console.log(err.data))
