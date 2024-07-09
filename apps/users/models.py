@@ -44,7 +44,6 @@ class CustomToken(models.Model):
 
 def get_upload_path_user(instance, filename):
     return os.path.join('profile/user', str(instance.slug), filename)
-
 class Users(models.Model):
     user = models.OneToOneField(UsersCredentials, on_delete=models.CASCADE, primary_key=True, blank=False,null=False)
     firstname = models.CharField(max_length=32,blank=False, null=False)
@@ -53,8 +52,7 @@ class Users(models.Model):
     slug = models.SlugField( unique=True, db_index=True, blank=True, null=True, editable=False)
     occupation = models.CharField(max_length=64, blank=False, null=False)
     gender = models.TextField(
-        choices=[("M", "Male"),("F", "Female")],
-        blank=False, null=False
+        choices=[("M", "Male"),("F", "Female")],blank=False, null=False
     )
     image = models.ImageField(upload_to=get_upload_path_user, blank=True, null=True)
     phone = PhoneNumberField(unique=True, blank=False, null=False)
@@ -65,12 +63,10 @@ class Users(models.Model):
     def save(self, *args, **kwargs):
         self.slug = '-'.join((slugify(self.firstname), slugify(self.lastname), slugify(self.user.user_id)))
         super(Users, self).save(*args, **kwargs)
+    def __str__(self): return f"{self.firstname} {self.lastname}"
 
-    class Meta:  
-        db_table = 'users'
-
-    def __str__(self):
-        return f"{self.firstname} {self.lastname}"
+    class Meta:  db_table = 'users'
+    
     
 
 
@@ -112,14 +108,10 @@ class UniversityDetails(models.Model):
 
 class FriendRequests(models.Model):
     id = models.AutoField(primary_key=True)
-    sender   = models.ForeignKey(Users, related_name='sender',   on_delete=models.CASCADE)
-    receiver  = models.ForeignKey(Users, related_name='receiver', on_delete=models.CASCADE)
-    STATUS = [        ("P", "Pending"),        ("A", "Accepted"),        ("D", "Declined")    ]
-    status = models.TextField(
-        choices=STATUS,
-        default="P",
-        blank=False, null=False
-    )
+    sender   = models.ForeignKey( Users, related_name='sender',   on_delete=models.CASCADE)
+    receiver = models.ForeignKey( Users, related_name='receiver', on_delete=models.CASCADE)
+    STATUS = [("P", "Pending"),("A", "Accepted"),("D", "Declined")]
+    status = models.TextField(choices=STATUS, default="P",  blank=False, null=False)
     is_read = models.BooleanField(default=False)
     
     def clean(self):
