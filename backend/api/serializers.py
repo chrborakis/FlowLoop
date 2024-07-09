@@ -108,7 +108,8 @@ class WorkRequestsSerializer(serializers.ModelSerializer):
             'user_info',
             'company_info',
             'company',
-            'status'
+            'status',
+            'is_read'
         )
 
     def get_user_info(self,obj):
@@ -209,7 +210,8 @@ class FriendsRequestsSerializer(serializers.ModelSerializer):
             'sender_info',
             'receiver',
             'receiver_info',
-            'status'
+            'status',
+            'is_read'
         )
     def get_sender_info( self, obj):
         return{

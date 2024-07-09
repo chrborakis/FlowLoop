@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect} from 'react';
-import { getCompany, get_request, sendWorkRequest, getAddress, getStaff } from './CompanyUtils';
+import React, { useState, useEffect} from 'react';
+import { getCompany} from './CompanyUtils';
 
 import { useAuth }    from '../../../store/AuthContext';
 
@@ -8,36 +8,38 @@ import Tab from '@mui/material/Tab';
 import TabPanel from '../../Extra/TabPanel';
 
 import PostsPrivate from '../../Posts/PostsPrivate';
-
 import ProjectsList from '../../Projects/Projects/ProjectsList';
-import Button from '@mui/material/Button';
 import { useParams,useNavigate } from 'react-router-dom';
 import {Card, Row,Col, Container} from 'react-bootstrap';
-import "bootstrap/dist/css/bootstrap.min.css"; 
-import ProfileImage from '../ProfileImage';
-// import '../../../../static/css/Profile/Profile.css';
-import { replyRequest } from '../../Requests/WorkUtils';
-import InfoTabs from './InfoTabs';
+import InfoTabs from './Info/InfoTabs';
 import CompanyHeader from './CompanyHeader';
+
+import "bootstrap/dist/css/bootstrap.min.css"; 
+// import '../../../../static/css/Profile/Profile.css';
 
 const CompanyProfile = () => {
     const { user, updateUser } = useAuth();
     const [ data, setData]       = useState();
     
-    const { slug, tab, content } = useParams(); // Include tab in useParams
-    const navigate = useNavigate(); // useNavigate hook for programmatic navigation
+    const { slug, tab, content } = useParams(); 
+    const navigate = useNavigate(); 
 
     const [tabContent, setTabContent] = useState(0);
-    const handleTabContent = (event, newTabContent) => setTabContent(newTabContent);
+    const handleTabContent = (event, newTabContent) => {
+        setTabContent(newTabContent)
+        navigate(`/company/${slug}/${tab}#${content}`);
+    };
 
     useEffect(() => {
-        if (tab) setTabContent(parseInt(tab));
+        if (tab) {
+            setTabContent(parseInt(tab))
+        };
     }, [tab]);
     
     useEffect( () => {getCompany(setData, slug)}, [slug]);
 
     return (
-        <div>
+        <>
         { data ? (
             <> 
                 <CompanyHeader slug={slug} data={data} user={user}/>
@@ -49,7 +51,7 @@ const CompanyProfile = () => {
                     <Col className="page-box order-lg-2 order-md-2 order-2">
                         {user?.company?.id == data?.company_id ? (
                             <>
-                                <Tabs value={tabContent} onChange={handleTabContent}indicatorColor="primary" textColor="primary"scrollButtons="auto" centeredaria-label="scrollable auto tabs company">
+                                <Tabs value={tabContent} onChange={handleTabContent} indicatorColor="primary" textColor="primary"scrollButtons="auto">
                                     <Tab label="Posts"/>
                                     <Tab label="Projects"/>
                                 </Tabs>
@@ -62,13 +64,11 @@ const CompanyProfile = () => {
                             </>
 
                         ) : ( <p>You should grant access to view content!</p>)}
-
-                        {/* <button disabled={!isCompanyNameUnavailable || requested!=='No'} onClick={sendRequest} */}
                         </Col> 
                 </div>
             </>
         ) : (<>Page Not Found!</>)}
-        </div>
+        </>
     );
 };
 

@@ -39,7 +39,6 @@ class UsersView(APIView):
         return Response(output)
     
     def post( self, request):
-        print("IN USERS API")
         serializer = UsersSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -73,12 +72,10 @@ class UserView(APIView):
             serializer = UsersSerializer(user_instance, data=updated_fields, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                print("User updated successfully")
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
 
         
@@ -162,7 +159,6 @@ class AddressView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def put(self, request, id):
-        print("DATA IN API: ", request.data)
         try:
             address_inst = Address.objects.get(pk=id)
         except Address.DoesNotExist:
@@ -171,12 +167,10 @@ class AddressView(APIView):
             serializer = AddressSerializer(address_inst, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                print("Address updated successfully")
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
 class EducationView(APIView):
@@ -188,7 +182,6 @@ class EducationView(APIView):
         except Http404:
             return Response({'error': 'Education instance not found.'}, status=404)    
     def post( self, request, user):
-        print("data : ", request.data)
         serializer = EducationSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -206,7 +199,6 @@ class EducationView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
     
 class UniversityView(APIView):
@@ -258,11 +250,9 @@ class CompanyView(APIView):
         else:
             instance = get_object_or_404(Companies, slug=company)
         serializers = CompaniesSerializer(instance)
-        # print(serializers.data)
         return Response(serializers.data)
 
     def post( self, request, company):
-        print("DATA IN API: ", request.data)
         serializer = CompaniesSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -290,14 +280,19 @@ class CompanyView(APIView):
             serializer = CompaniesSerializer(company_instance, data=updated_fields, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                print("Company updated successfully")
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
 
+class UnreadRequestsView(APIView):
+    def get(self, request, user):
+        try:
+            unread_message_count = FriendRequests.objects.filter(receiver=user, status="P").count()
+            return Response(unread_message_count)
+        except Http404:
+            return Response({'error': 'Notifications instances not found.'}, status=404)  
 
 class WorkRequestsView(APIView):
     def get( self, request, company):
@@ -306,7 +301,6 @@ class WorkRequestsView(APIView):
         return Response(serializers.data)
     
     def post( self, request):
-        print(request.data)
         serializer = WorkRequestsSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -320,7 +314,6 @@ class GetWorkRequestView(APIView):
         return Response(serializers.data)
     
     def post( self, request, user):
-        print("DATA IN API -> ", request.data)
         serializer = WorkRequestsSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -394,14 +387,12 @@ class UnreadMessagesView(APIView):
                 & Q(read=False)
             ))
             serializers = PrivateChatSerializer(instances, many=True)      
-            print(serializers.data)  
             return Response(serializers.data)
         except Http404:
             return Response({'error': 'Conversation instances not found.'}, status=404)    
     def patch(self, request, user, friend):
         try:
             chats = PrivateChat.objects.filter(sender__person=friend, receiver__person=user, read=False)
-            print(chats)
         except Http404:
             return Response({"error": "PrivateChat not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -411,7 +402,6 @@ class UnreadMessagesView(APIView):
                 chat.save()
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
-            print("EXCEPTION")
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -429,7 +419,6 @@ class ConversationView(APIView):
         except Http404:
             return Response({'error': 'Conversation instances not found.'}, status=404)    
     def post( self, request, user, friend):
-        print("IN API: ", request.data)
         serializer = PrivateChatSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -481,7 +470,6 @@ class GroupView(APIView):
         except Http404:
             return Response({'error': 'Group not found.'}, status=404) 
     def post( self, request, group):
-        print("IN API: ", request.data)
         serializer = GroupsSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -507,7 +495,6 @@ class GroupMembersView(APIView):
         except Http404:
             return Response({'error': 'GroupMembers instances not found.'}, status=404)   
     def post( self, request, group):
-        print("IN API: ", request.data)
         serializer = GroupMembersSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -523,7 +510,6 @@ class GroupAdminsView(APIView):
         except Http404:
             return Response({'error': 'GroupAdmins instances not found.'}, status=404)   
     def post( self, request, id):
-        print("IN API: ", request.data)
         serializer = GroupAdminsSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -551,7 +537,6 @@ class GroupsChatView(APIView):
         except Http404:
             return Response({'error': 'GroupChats instances not found.'}, status=404)   
     def post( self, request, group):
-        print("IN API: ", request.data)
         serializer = GroupChatSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -580,13 +565,11 @@ class FriendRequest(APIView):
         try:
             # request.query_params
             instance = get_object_or_404(FriendRequests, sender=sender, receiver=receiver)
-            print("INSTANCE: ",instance)
             serializers = FriendsRequestsSerializer(instance)
             return Response(serializers.data)
         except Http404:
             return Response({'error': 'FriendRequests instance not found.'}, status=404)  
     def post( self, request):
-        print("IN API" ,request.data)
         serializer = FriendsRequestsSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -601,20 +584,6 @@ class AllFriendsRequestsView(APIView):
     def post( self, request):
         pass
         
-# class FriendsView(APIView):
-#     def get( self, request, user, friend):
-#         instance = get_object_or_404(Friends, user1=user, friend=friend)
-#         serializers = FriendsSerializer(instance)
-#         return Response(serializers.data)
-    
-#     def post( self, request, user):
-#         print("DATA IN API -> ", request.data)
-#         serializer = FriendsSerializer(data = request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 class FriendsList(APIView):
     def get( self, request, user):
         instances = get_list_or_404(Friends, person__slug=user)
@@ -636,7 +605,6 @@ class AllPostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print("API:", request.data)
         serializer = PostsPublicSerializer( data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -650,7 +618,6 @@ class PostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print("API:", request.data)
         serializer = PostsPublicSerializer( data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -664,7 +631,6 @@ class IdPostsPublicView(APIView):
         return Response(serializers.data)
 
     def post( self, request):
-        print("2DATA IN API", request.data)
         serializer = PostsPublicSerializer( data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -702,11 +668,8 @@ class PostPublicView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
-
-
     
 # CALL ON EVERY NEW POST TO UPDATE THE ARRAY OF POSTS
 class PostPrivateView(APIView):
@@ -726,7 +689,6 @@ class PostPrivateView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
 
@@ -769,7 +731,6 @@ class AllPublicCommentView(APIView):
         return Response(output)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PostsPublicCommentsSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -788,7 +749,6 @@ class AllPrivateCommentView(APIView):
         return Response(output)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PostsPrivateCommentsSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -802,7 +762,6 @@ class PublicCommentView(APIView):
         return Response(serializers.data)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PostsPublicCommentsSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -816,7 +775,6 @@ class PrivateCommentView(APIView):
         return Response(serializers.data)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PostsPrivateCommentsSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -831,11 +789,9 @@ class AllPublicLikesView(APIView):
             "like_id": output.like_id,
         }for output in PostsPublicLikes.objects.all()
     ]
-        print(output)
         return Response(output)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PublicLikesSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -850,11 +806,9 @@ class AllPrivateLikesView(APIView):
             "like_id": output.like_id,
         }for output in PostsPrivateLikes.objects.all()
     ]
-        print(output)
         return Response(output)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PrivateLikesSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -868,7 +822,6 @@ class PublicLikesView(APIView):
         return Response(serializers.data)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PostsPublicLikesSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -882,7 +835,6 @@ class PrivateLikesView(APIView):
         return Response(serializers.data)
     
     def post( self, request):
-        print("data : ", request.data)
         serializer = PostsPrivateLikesSerializer( data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -901,7 +853,6 @@ class ProjectsView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, company):
@@ -917,7 +868,6 @@ class ProjectsView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
 
@@ -932,7 +882,6 @@ class ProjectAdminsView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
         ProjectDivisionView
@@ -947,7 +896,6 @@ class ProjectDivisionView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request, id):
@@ -1006,5 +954,4 @@ class ProjectRequestAssignView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("Error:", e)
             return Response({"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)

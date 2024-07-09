@@ -18,7 +18,7 @@ export const postLike = async( url, post, like, liker, author, setLiked, token) 
     .then(  res => {
         if(res.data.status===200){
             setLiked((prevValue) => !prevValue)
-            const url = post.user.company_slug ? `/company/${post.user.company_slug}/0/${post.post_id}` : `/user/${post.user.user_slug}#post-${post.post_id}`
+            const url = post.user.company_slug ? `/company/${post.user.company_slug}/0/post-${post.post_id}` : `/user/${post.user.user_slug}#post-${post.post_id}`
             postNotification({user:author, sender:liker, message:'Liked your post', url:url}, token)
         }
     })

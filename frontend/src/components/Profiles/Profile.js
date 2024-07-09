@@ -60,10 +60,9 @@ export const UserAvt = ({user, width, circle}) => {
     const imageUrl = image
         ? (image?.startsWith('/files\\') || image.startsWith('/files'))
             ? image
-            : `files\\${image}`
+            : `/files/${image}`
         : '';
-
-    
+// "profile/user/aisha-khan/pexels-stefan-stefancik-91227_5Xu3mkr.jpg"
     return( <>
         {imageUrl ? (
             circle ? (
@@ -82,7 +81,7 @@ export const Company = ({ company, circle, width}) => {
     const imageUrl = image
         ? (image.startsWith('/files\\') || image.startsWith('/files'))
             ? image
-            : `files\\${image}`
+            : `/files/${image}`
         : '';
 
 //     return(<>

@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 
 import React, {useState, useEffect} from 'react';
 
-import { send_request } from './UserUtils';
+import { send_request, getEducation } from './UserUtils';
 
 const FriendButton = ({ user, profile, setRequested, requested, onReply, token}) => {
     // const [client, setClient] = useState(null);
@@ -13,12 +13,11 @@ const FriendButton = ({ user, profile, setRequested, requested, onReply, token})
 
     const sendRequest = () => {
         if( buttonConfig.text === 'Delete Friend'){
-            // socket.emit('friend-deletion', { user, profile });
-            send_request( user, profile, setRequested, 'D', token)
+            send_request( user?.id, profile, setRequested, 'D', token)
         }else if( buttonConfig.text === 'Send request'){
-            // socket.emit('friend-request', { user, profile });
-            send_request( user, profile, setRequested, 'P', token)
+            send_request( user?.id, profile, setRequested, 'P', token)
         }
+        get_request( user?.id, profile, setRequested);
     };
 
     useEffect(() => {

@@ -18,7 +18,7 @@ export const postComment = async( data, url, setComment, comment, setText, post,
         if(res.data.status===200){
             setComment(comment)
             setText('');
-            const url = post.user.company_slug ? `/company/${post.user.company_slug}/0/${post.post_id}` : `/user/${post.user.user_slug}#post-${post.post_id}`
+            const url = post.user.company_slug ? `/company/${post.user.company_slug}/0/post-${post.post_id}` : `/user/${post.user.user_slug}#post-${post.post_id}`
             postNotification({user:post.user.user_id, sender:res.data.data.user.id, message:'Commented your post', url:url}, token)
         }
     }).catch( err => console.log(err))

@@ -7,14 +7,14 @@ import {changeImage} from '../User/UserUtils'
 import { postNotification } from '../../AppBar/Notifications/NotificationsUtils';
 
 export const getAddress = async( company, setAddress) => {
-    axios.get(`/backend/companies/address/${company}`)
+    await axios.get(`/backend/companies/address/${company}`)
     .then(  res => {
         setAddress(res.data.data)})
     .catch( err => console.log(err))
 }
 
 export const getStaff = async( company, setStaff) => {
-    axios.get(`/backend/companies/staff/${company}`)
+    await axios.get(`/backend/companies/staff/${company}`)
     .then(  res => {
         if(res.data.status === 200){
             const sortedData = [...res.data.data].sort((a, b) => (a.is_admin === b.is_admin) ? 0 : a.is_admin ? -1 : 1);
@@ -25,7 +25,7 @@ export const getStaff = async( company, setStaff) => {
 }
 
 export const updateAddress = async( company, address, setEdit, setError, token) => {
-    axios.put(`../backend/api/address/${company}`, address
+    await axios.put(`../backend/api/address/${company}`, address
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log("RES", res)
@@ -38,7 +38,7 @@ export const updateAddress = async( company, address, setEdit, setError, token) 
 }
 
 export const getCompany = async( setData, slug) => {
-    axios.get(`/backend/companies/company/${slug}`)
+    await axios.get(`/backend/companies/company/${slug}`)
     .then(  res => {
         if(res.data.status === 200) setData(res.data.data)
         else setData(null)
@@ -47,7 +47,7 @@ export const getCompany = async( setData, slug) => {
 };
 
 export const updateCompany = async( company_slug, data, setEdit, setError, token) => {
-    axios.patch(`../backend/api/companies/${company_slug}`, data
+    await axios.patch(`../backend/api/companies/${company_slug}`, data
         ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}).
         then( res => {
             if(res.status === 200) {
@@ -94,7 +94,7 @@ export const createCompany = async( user_id, data, image, setErrors, token) => {
 
 // CREATE ADDRESS
 export const createAddress = async( company_id, address, setEdit, setErrors, token) => {
-    axios.post(`/backend/companies/address/${company_id}`, address, 
+    await axios.post(`/backend/companies/address/${company_id}`, address, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status === 200)
@@ -108,9 +108,8 @@ export const createAddress = async( company_id, address, setEdit, setErrors, tok
 }
 
 export const get_request = async ( user, user_id, company_id, setRequested, setRequestId) => {
-    // const { user1, updateUser } = useAuth()
     if( company_id){
-        axios.get(`/backend/companies/id_workrequests/${user_id}/${company_id}`)
+        await axios.get(`/backend/companies/id_workrequests/${user_id}/${company_id}`)
         .then(  res => {
             console.log(res)
             setRequestId(res.data.data.id)
@@ -131,7 +130,9 @@ export const sendWorkRequest = async ( data, setRequested, token) => {
         const res = await axios.post('/backend/companies/id_workrequests/0/0', data,
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
         );
-        if(setRequested != null) setRequested(true);
+        if(setRequested != null) {
+            setRequested(true)
+        };
         return res.data;
     } catch(err) {
         console.log(err);
@@ -141,7 +142,6 @@ export const sendWorkRequest = async ( data, setRequested, token) => {
 
 export const updateAdmin = async( data, is_admin, token) => {
     if( data.employee){
-        console.log("updateAdmin: ", socket)
         await axios.patch(`/backend/companies/update_admin/${data.employee}`, {is_admin},
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
         ).then(  res => {

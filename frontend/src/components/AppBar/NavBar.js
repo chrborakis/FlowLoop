@@ -24,7 +24,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChangeCredentials from './ChangeCredentials';
 import Notifications from './Notifications/Notifications';
 
-function NavBar({user, messages, notifications}) {
+function NavBar({user, messages, notifications, requests}) {
     const { logout } = useAuth();
     const [reqTab, setReqTab] = useState(0);
     const handleReqTab = (event, newTab) => setReqTab(newTab);
@@ -46,9 +46,11 @@ function NavBar({user, messages, notifications}) {
             <Container fluid>
                 <Navbar.Brand href="/" className='nav-title'>FlowLoop</Navbar.Brand>
                 <SearchBar />
-                <NavDropdown onClick={() => toggleRequests(!refreshRequests)} onToggle={toggleRequests} className='chat-list' title={
-                    <IconButton size="large"aria-haspopup="true" color="inherit">
+                <NavDropdown onClick={() => {toggleRequests(!refreshRequests);}} onToggle={toggleRequests} className='chat-list'
+                title={<IconButton size="large" aria-label="notifications" color="inherit">
+                    <Badge badgeContent={requests.requests} color="error">
                         <AddBusinessIcon />
+                    </Badge>
                     </IconButton>} id={`requests offcanvasNavbarDropdown-expand-${expand}`}>
                     <Row>
                         <Col>
@@ -67,7 +69,7 @@ function NavBar({user, messages, notifications}) {
                         </Col>
                     </Row>
                 </NavDropdown>
-
+ 
                 <NavDropdown onClick={() => toggleNotifications(!refreshChat)} onToggle={toggleNotifications}
                     title={<IconButton size="large" aria-label="notifications" color="inherit">
                     <Badge badgeContent={notifications.notifications} color="error">
@@ -95,7 +97,6 @@ function NavBar({user, messages, notifications}) {
                             <Tab label="Messages"/>
                         </Tabs>
                         <TabPanel value={0} index={0}>
-                            {/* <Messages user={user.id} refresh={refreshChat} messages={messages}/> */}
                             <MessageContainer  user={user} refresh={refreshChat} messages={messages}/>
                         </TabPanel>
                     </Row>

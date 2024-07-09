@@ -67,23 +67,27 @@ export const get_request = async ( sender, receiver, setRequested) => {
     ).then(  res => {
         console.log(res.data)
         const response = res.data.data
-        console.log("get_request: ", response)
-
         setRequested(response.status)
-        
     })
     .catch( err => console.log(err))
 };  
 
 export const send_request = async( sender, receiver, setRequested, status, token) => {
-    console.log("Friend request...", sender, " to " , receiver, status)
-    axios.post('/backend/users/friend_requests/', { sender, receiver, status}
+    await axios.post('/backend/users/friend_requests/', { sender, receiver, status}
     ,{headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
     ).then(  res => {
         console.log(res.data)
         if(res.data.status === 200){
             if(res.data.created){
                 setRequested(status=="P")
+                const socket = new WebSocket(`ws://${window.location.host}/ws/requests/${receiver}/`);
+                if(socket){
+                    socket.onopen = () => {
+                        socket.send(JSON.stringify({type: 'requests', message: `${sender} send you a friend request`}));
+                        socket.close();
+                    };
+                    socket.onerror = (error) => console.error('WebSocket error:', error);
+                }
             }else if(res.data.deleted){
                 setRequested("D")
             }

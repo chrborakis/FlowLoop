@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { postNotification } from '../../AppBar/Notifications/NotificationsUtils';
 
 export const getDivisions = async( company, setDivisions) => {
-    await axios.get(`../backend/projects/divisions/${company}`,
+    await axios.get(`${window.location.origin}/backend/projects/divisions/${company}`,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}})
     .then(  res => {
         if( res.data.status === 200){
@@ -13,7 +13,7 @@ export const getDivisions = async( company, setDivisions) => {
 }
 
 export const addDivision = async( project_id, newDivision, setDivisions, setNewDivision, setError, setNewDivState, token) => {
-    await axios.post(`../backend/projects/divisions/${project_id}`, newDivision, 
+    await axios.post(`${window.location.origin}/backend/projects/divisions/${project_id}`, newDivision, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}}
     )
     .then( res => {
@@ -31,7 +31,7 @@ export const addDivision = async( project_id, newDivision, setDivisions, setNewD
 }
 
 export const uploadDivision = async( division, setDivisions, formData, setErrors) => {
-    await axios.patch(`../backend/api/project_divisions/${division}`, formData,
+    await axios.patch(`${window.location.origin}/backend/api/project_divisions/${division}`, formData,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'multipart/form-data'}})
     .then(  res => {
         if( res.status === 200){
@@ -51,7 +51,7 @@ export const uploadDivision = async( division, setDivisions, formData, setErrors
 }
 
 export const deleteDivision = async( division_id, setDivisions, token) => {
-    await axios.delete(`../backend/projects/divisions/${division_id}`,
+    await axios.delete(`${window.location.origin}/backend/projects/divisions/${division_id}`,
     {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token}})
     .then( res => {
         console.log(res.data)
@@ -63,7 +63,7 @@ export const deleteDivision = async( division_id, setDivisions, token) => {
 }
 
 export const replyRequest = async(request, data, division, setDivisions, onHide, token, admin_id, user_id, company_slug) => {
-    await axios.patch(`../backend/projects/assign_request/${request}`, data, 
+    await axios.patch(`${window.location.origin}/backend/projects/assign_request/${request}`, data, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( async res => {
         if(res.data.status === 200){
@@ -79,7 +79,7 @@ export const replyRequest = async(request, data, division, setDivisions, onHide,
             );
             postNotification({user:user_id, sender:admin_id,
                 message:'You have been accepted a new project!',
-                url:`/company/${company_slug}/1/${division.project}`
+                url:`/company/${company_slug}/1/project-${division.project}`
             }, token)
             onHide();
         }
@@ -88,7 +88,7 @@ export const replyRequest = async(request, data, division, setDivisions, onHide,
 }
 
 export const requestAssign = async(request, setRequested, token) => {
-    await axios.post(`../backend/projects/assign_request/0`, request, 
+    await axios.post(`${window.location.origin}/backend/projects/assign_request/0`, request, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status===200){
@@ -100,26 +100,26 @@ export const requestAssign = async(request, setRequested, token) => {
 
 export const getAssign = async(division) => {
     try {
-        const response = await axios.get(`../backend/api/project_assign/${division}`, {
+        const response = await axios.get(`${window.location.origin}/backend/api/project_assign/${division}`, {
             headers: {'X-CSRFToken': Cookies.get('csrftoken')}
         });
         console.log(response.data);
-        return response.data.user; // Return the data fetched from the API
+        return response.data.user; 
     } catch (error) {
         console.error('Error fetching assign data:', error);
-        return null; // Return null or handle the error as needed
+        return null; 
     }
 }
 
 export const addAssign = async(division, work_on, setDivisions, onHide, token, company_slug, admin_id, user_id) => {
-    await axios.post(`../backend/projects/assign/${division.division}`, work_on, 
+    await axios.post(`${window.location.origin}/backend/projects/assign/${division.division}`, work_on, 
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status === 200){
             setDivisions(prevData =>prevData.map(obj => obj.division === division.division ? { ...obj, assign: res.data.data.user } : obj));
             postNotification({user:user_id, sender:admin_id,
                 message:'You have been assign to a new project!',
-                url:`/company/${company_slug}/1/${division.project}`
+                url:`/company/${company_slug}/1/project-${division.project}`
             }, token)
             onHide();
         }
@@ -128,14 +128,14 @@ export const addAssign = async(division, work_on, setDivisions, onHide, token, c
 }
 
 export const removeAssign = async(divToDel, participant_id, setDivisions, token, admin_id, company_slug, user_id) => {
-    await axios.delete(`../backend/projects/assign/${participant_id}`,
+    await axios.delete(`${window.location.origin}/backend/projects/assign/${participant_id}`,
         {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token}})
     .then( res => {
         if(res.data.status === 200){
             setDivisions(prevData => prevData.map(obj => obj.division === divToDel.division ? { ...obj, assign: null } : obj));
             postNotification({user:user_id, sender:admin_id,
                 message:'You have been removed from a project!',
-                url:`/company/${company_slug}/1/${divToDel.project}`
+                url:`/company/${company_slug}/1/project-${divToDel.project}`
             }, token)
         }
     })

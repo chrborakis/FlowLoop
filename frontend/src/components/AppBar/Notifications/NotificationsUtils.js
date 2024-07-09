@@ -1,7 +1,5 @@
 import axios from 'axios';
 import Cookies from "js-cookie";
-import { useContext } from 'react';
-import { NotificationContext } from '../../../store/NotificationContext';
 
 export const getUnreadNotifications = async(user_id, setNotifications) => {
     await axios.get(`${window.location.origin}/backend/api/unread_notifications_count/${user_id}`,
@@ -15,12 +13,11 @@ export const getUnreadNotifications = async(user_id, setNotifications) => {
     .catch( err => console.log(err))
 }
 
-export const readNotification = async( notification, delNotification, token) => {
+export const readNotification = async( notification, token) => {
     try{
         const res = await axios.patch(`${window.location.origin}/backend/notifications/${notification}`, notification,
             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
         if(res.data.status === 200) {
-            delNotification();
         }
     } catch(err) {console.log(err)}
 }
@@ -58,3 +55,26 @@ export const getNotifications = async(user_id, setNotifications) => {
     })
     .catch( err => console.log(err.response))
 }
+
+
+export const getUnreadRequests = async(user_id, setRequests) => {
+    await axios.get(`${window.location.origin}/backend/api/unread_requests_count/${user_id}`,
+        {headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}})
+    .then(  res => {
+        if(res.status===200){
+            setRequests(res.data.data.length)
+        }
+    })
+    .catch( err => console.log(err.response))
+}
+
+
+// export const readRequests = async( user_id, token) => {
+//     try{
+//         const res = await axios.patch(`${window.location.origin}/backend/notifications/requests/${user_id}`,
+//             {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
+//         console.log(res)
+//         if(res.data.status === 200) {
+//         }
+//     } catch(err) {console.log(err)}
+// }

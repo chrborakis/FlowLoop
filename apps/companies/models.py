@@ -39,6 +39,7 @@ class WorkRequests(models.Model):
         default="P",
         blank=False, null=False
     )
+    is_read = models.BooleanField(default=False)
     class Meta:
         unique_together = ('user', 'company',)
         db_table = 'work_requests'

@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 export const getProjects = async(company,setProjects, setLoading, setHasNextPage,currentPage) => {
     setLoading(true);
-    await axios.get(`../backend/projects/projects/${company}`,
+    await axios.get(`${window.location.origin}/backend/projects/projects/${company}`,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'application/json'}})
     .then(  res => {
         if( res.data.status === 200){
@@ -17,7 +17,7 @@ export const getProjects = async(company,setProjects, setLoading, setHasNextPage
 }
 
 export const deleteProject = async(project_id,setProjects,token) => {
-    await axios.delete(`../backend/projects/projects/${project_id}`,
+    await axios.delete(`${window.location.origin}/backend/projects/projects/${project_id}`,
     {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Authorization': token}})
     .then( res => {
         console.log(res.data)
@@ -29,7 +29,7 @@ export const deleteProject = async(project_id,setProjects,token) => {
 }
 
 export const updateProject = async(project_id, data, setEdit, setProjects, setErrors, token) => {
-    await axios.patch(`../backend/projects/projects/${project_id}`, data,
+    await axios.patch(`${window.location.origin}/backend/projects/projects/${project_id}`, data,
     {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log(res.data)
@@ -51,6 +51,7 @@ export const updateProject = async(project_id, data, setEdit, setProjects, setEr
 }
 
 export const postProject = async( url, data, newProject, setIsContentVisible, token) => {
+    console.log(url)
     await axios.post(url, data,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then(  res => {
@@ -61,7 +62,7 @@ export const postProject = async( url, data, newProject, setIsContentVisible, to
 }
 
 export const fetchStaff = async(company, setWorkers) => {
-    await axios.get(`../backend/companies/staff/${company}`)
+    await axios.get(`${window.location.origin}/backend/companies/staff/${company}`)
     .then( res => {
         console.log(res.data)
         setWorkers(res.data.data)
@@ -71,7 +72,7 @@ export const fetchStaff = async(company, setWorkers) => {
 
 export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, project, setFormData, token) => {
     console.log(project_id, work_on, hide, setNewProject, project, setFormData, token)
-    await axios.post(`../backend/projects/admin`, {project:project_id, admin:work_on},
+    await axios.post(`${window.location.origin}/backend/projects/admin`, {project:project_id, admin:work_on},
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status === 200){
@@ -84,7 +85,7 @@ export const setProjectAdmin = async( project_id, work_on, hide, setNewProject, 
 }
 
 export const addProject = async( data, hide, setNewProject, work_id, setProjectError, setProject, setFormData, token) => {
-    await axios.post(`../backend/projects/projects/0`, data,
+    await axios.post(`${window.location.origin}/backend/projects/projects/0`, data,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log(res.data)

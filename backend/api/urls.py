@@ -19,6 +19,7 @@ urlpatterns = [
     path("education/<int:user>",  EducationView.as_view()),
     path("university/<int:user>", UniversityView.as_view()),
 
+    path("unread_requests_count/<int:user>", UnreadRequestsView.as_view()),
     path("workrequests_comp/<int:company>",       WorkRequestsView.as_view()),
     path("workrequests/<int:user>",               GetWorkRequestView.as_view()),
     path("workrequests/<int:user>/<int:company>", UserCompanyRequestView.as_view()),

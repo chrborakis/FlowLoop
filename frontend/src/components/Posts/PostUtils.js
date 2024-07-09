@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 export const getPosts = async(setPosts, url, setLoading, setHasNextPage, currentPage) => {
     setLoading(true);
     const page_url = url+"/?page="+currentPage;
-    axios.get(page_url.trim())
+    axios.get(`${window.location.origin}/${page_url.trim()}`)
     .then(  res => {
         if( res.data.status === 200){
             setPosts(prevPosts => [...prevPosts, ...res.data.data]);
@@ -19,7 +19,7 @@ export const getPosts = async(setPosts, url, setLoading, setHasNextPage, current
 
 
 export const deletePost = async( url, post, setPosts, token) => {
-    await axios.delete(`${url}/${post}/`,
+    await axios.delete(`${window.location.origin}/${url}/${post}/`,
     {method: 'DELETE',headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         if(res.data.status === 200){
@@ -31,7 +31,7 @@ export const deletePost = async( url, post, setPosts, token) => {
 
 export const editPost = async( url, post, setPosts, setEditMode, token) => {
     const new_url = `${url}/${post.post_id}/`
-    await axios.patch(new_url, post, 
+    await axios.patch(`${window.location.origin}/${new_url}`, post, 
     {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'application/json'}})
     .then( res => {
         console.log(res.data)
@@ -45,7 +45,7 @@ export const editPost = async( url, post, setPosts, setEditMode, token) => {
 
 export const postPost = async( url, data, newPost, onHide, setErrors, setFormData, token) => {
     const new_url = url + '/0/'   
-    await axios.post(new_url, data,{
+    await axios.post(`${window.location.origin}/${new_url}`, data,{
         headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': token,'Content-Type': 'multipart/form-data'}})
     .then(  res => {
         if(res.status === 200){

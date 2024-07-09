@@ -9,6 +9,8 @@ from backend.views import *
 
 urlpatterns = [
     path('api/',       include('backend.api.urls')),
+    path('notifications/', include('backend.notifications.urls')),
+
     path('users/',     include('backend.users.urls')),
     path('companies/', include('backend.companies.urls')),
     path('posts/',     include('backend.posts.urls')), 
@@ -23,5 +25,4 @@ urlpatterns = [
     path('user_info/<int:user_id>', views.user_info),
     path('active_friends/<int:user_id>', views.active_friends),
 
-    path('notifications/<int:user>', views.notifications)
 ]

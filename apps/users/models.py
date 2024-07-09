@@ -18,15 +18,11 @@ from django.contrib.auth.hashers import check_password
     
 class UsersCredentials(models.Model):
     user_id  = models.AutoField(primary_key=True)
-    email    = models.EmailField(unique=True)
-    password = models.TextField()
-    active   = models.BooleanField(default=False)
+    email    = models.EmailField(null=False,unique=True)
+    password = models.TextField(null=False)
 
     def check_password(self, raw_password):
-        print(self.password,raw_password)
-        print(check_password(raw_password, self.password))
         return check_password(raw_password, self.password)
-
     def save(self, *args, **kwargs):    
         self.password = make_password(self.password)
         super().save(*args, **kwargs)
@@ -124,6 +120,7 @@ class FriendRequests(models.Model):
         default="P",
         blank=False, null=False
     )
+    is_read = models.BooleanField(default=False)
     
     def clean(self):
         if self.sender == self.receiver:

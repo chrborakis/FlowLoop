@@ -79,7 +79,7 @@ const UserProfile = () => {
                                     </Row>
                                     <Row className="text-center d-flex justify-content-center">
                                             {user.id !== data?.user && (
-                                            <FriendButton user={user.id} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply} token={user?.token}/>
+                                            <FriendButton user={user} profile={data?.user} setRequested={setRequested} requested={requested} onReply={reply} token={user?.token}/>
                                         )}
                                     </Row>
                                 </Col>

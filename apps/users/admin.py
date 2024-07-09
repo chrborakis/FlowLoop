@@ -26,6 +26,7 @@ class FriendsAdmin(admin.ModelAdmin):
 
 class UsersCredentialsAdmin(admin.ModelAdmin):
     list_display = ('email','password')
+    list_ordering = ('-user_id')
 
 class EducationDetailsAdmin(admin.ModelAdmin):
     list_display = ('user','name', 'graduation')
@@ -48,4 +49,7 @@ admin.site.register(EducationDetails,EducationDetailsAdmin)
 
 admin.site.register(CustomToken)
 
-admin.site.register(Notifications)
+
+class NotificationsAdmin(admin.ModelAdmin):
+    list_filter = ('user', 'is_read')
+admin.site.register(Notifications, NotificationsAdmin)
