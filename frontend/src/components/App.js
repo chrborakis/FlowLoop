@@ -63,14 +63,3 @@ const App = () => {
 }
 
 export default App; 
-render( 
-    <AuthProvider>
-        <NotificationProvider>
-            <RequestProvider>
-                <ChatProvider>
-                    <App />
-                </ChatProvider>
-            </RequestProvider>
-        </NotificationProvider>
-    </AuthProvider> 
-, document.getElementById("app"));

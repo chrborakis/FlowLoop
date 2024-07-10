@@ -16,9 +16,6 @@ class Groups(models.Model):
     class Meta:
         db_table = 'groups'
 
-
-
-
 class GroupMembers(models.Model):
     id = models.AutoField(primary_key=True)
     group  = models.ForeignKey(Groups,  on_delete = models.CASCADE)

@@ -19,10 +19,8 @@ class PrivateChat(models.Model):
             raise ValidationError("Sender and Receiver must be friends.")
         super().clean()
 
-
     def __str__(self):
         return f'{self.send_date}[{self.sender.person}->{self.receiver.person}] {self.message}'
 
-    class Meta:
-        db_table = 'private_chat'
+    class Meta: db_table = 'private_chat'
 

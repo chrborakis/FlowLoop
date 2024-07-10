@@ -34,18 +34,13 @@ class WorkRequests(models.Model):
     user    = models.ForeignKey(Users,     on_delete=models.CASCADE, to_field="user_id", related_name='work_request')
     company = models.ForeignKey(Companies, on_delete=models.CASCADE, to_field="company_id")
     STATUS = [        ("P", "Pending"),        ("A", "Accepted"),        ("D", "Declined")    ]
-    status = models.TextField(
-        choices=STATUS,
-        default="P",
-        blank=False, null=False
-    )
+    status = models.TextField(choices=STATUS,default="P",blank=False, null=False)
     is_read = models.BooleanField(default=False)
     class Meta:
         unique_together = ('user', 'company',)
         db_table = 'work_requests'
 
-    def __str__(self):
-        return f'[{self.status}] {self.user} -> {self.company.company_name}'
+    def __str__(self):return f'[{self.status}] {self.user} -> {self.company.company_name}'
 
 class WorksOn(models.Model):
     id = models.AutoField(primary_key=True)
@@ -55,5 +50,4 @@ class WorksOn(models.Model):
     def __str__(self):
         return f'[{self.employee.company}] {self.employee.user}'
 
-    class Meta:
-        db_table = 'works_on'
+    class Meta: db_table = 'works_on'

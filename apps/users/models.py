@@ -129,7 +129,6 @@ class FriendRequests(models.Model):
 class Friends(models.Model):
     person   = models.ForeignKey(Users, related_name='person',  on_delete=models.CASCADE)
     friend   = models.ForeignKey(Users, related_name='friend',  on_delete=models.CASCADE)
-    
     class Meta:
         unique_together = ('person', 'friend',)
         unique_together = ('friend', 'person',)
@@ -137,3 +136,5 @@ class Friends(models.Model):
 
     def __str__(self):
         return f'[{self.person}] friends with {self.friend}'
+    
+    
