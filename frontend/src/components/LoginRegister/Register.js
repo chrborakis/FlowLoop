@@ -77,7 +77,7 @@ const Register = ({login}) => {
     const register = async(e) => {
         formData.gender = gender;
 
-        axios.post('http://127.0.0.1:8000/signup', formData,
+        axios.post('http://127.0.0.1:8000/backend/authentication/signup', formData,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
         ).then(res => {
             console.log(res)

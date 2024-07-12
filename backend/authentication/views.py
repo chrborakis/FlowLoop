@@ -17,69 +17,69 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 
-@csrf_exempt
-def register_view(request):
-    if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        user_credentials = {
-            "email":    data.get('formData').get('email'),
-            "password": data.get('formData').get('password')
-        }
+# @csrf_exempt
+# def register_view(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body.decode('utf-8'))
+#         user_credentials = {
+#             "email":    data.get('formData').get('email'),
+#             "password": data.get('formData').get('password')
+#         }
 
-        print(user_credentials)
-        base_url = get_base_url(request)
-        try:
-            response_cred = requests.post(base_url+'/backend/api/userscredential', json=user_credentials)
-            if response_cred.status_code == 200:
-                user_cred_data = response_cred.json()
-                print("userscredential Response data:", user_cred_data)
+#         print(user_credentials)
+#         base_url = get_base_url(request)
+#         try:
+#             response_cred = requests.post(base_url+'/backend/api/userscredential', json=user_credentials)
+#             if response_cred.status_code == 200:
+#                 user_cred_data = response_cred.json()
+#                 print("userscredential Response data:", user_cred_data)
 
-                user = {
-                    "user":    user_cred_data['user_id'],
-                    "firstname":  data.get('formData').get('firstname'),
-                    "lastname":   data.get('formData').get('lastname'),
-                    "occupation": data.get('formData').get('occupation'),
-                    "gender":     data.get('formData').get('gender'),
-                    "country":    data.get('formData').get('country'),
-                    "phone":      data.get('formData').get('phone'),
-                }
+#                 user = {
+#                     "user":    user_cred_data['user_id'],
+#                     "firstname":  data.get('formData').get('firstname'),
+#                     "lastname":   data.get('formData').get('lastname'),
+#                     "occupation": data.get('formData').get('occupation'),
+#                     "gender":     data.get('formData').get('gender'),
+#                     "country":    data.get('formData').get('country'),
+#                     "phone":      data.get('formData').get('phone'),
+#                 }
 
-                try:
-                    response_user = requests.post(base_url+'/backend/api/users', json=user)
-                    user_data = response_user.json()
-                    print("Response data:", user_data)
+#                 try:
+#                     response_user = requests.post(base_url+'/backend/api/users', json=user)
+#                     user_data = response_user.json()
+#                     print("Response data:", user_data)
 
-                    user1 = {
-                        'id': user_data['user'],
-                        'name':  f"{user_data['firstname']} {user_data['lastname']}",
-                        'slug':  user_data['slug'],'image': user_data['image'],
-                        'company': None,'work_id': None
-                    }
+#                     user1 = {
+#                         'id': user_data['user'],
+#                         'name':  f"{user_data['firstname']} {user_data['lastname']}",
+#                         'slug':  user_data['slug'],'image': user_data['image'],
+#                         'company': None,'work_id': None
+#                     }
 
-                    return JsonResponse({
-                        'message': 'Register Successful',
-                        'user': json.dumps(user1),
-                        'authenticated': True,
-                        'status': response_user.status_code
-                    })
+#                     return JsonResponse({
+#                         'message': 'Register Successful',
+#                         'user': json.dumps(user1),
+#                         'authenticated': True,
+#                         'status': response_user.status_code
+#                     })
 
-                except Exception as e:
-                    # If user creation fails, delete the corresponding user credentials
-                    print("ERROR USER")
-                    instance = UsersCredentials.objects.get(pk=str(user_cred_data['user_id'])) 
-                    instance.delete()
-                    return JsonResponse({
-                        'message': "User Register failed!",
-                        'error': response_user.json(),
-                        'authenticated': False,
-                        'status': response_user.status_code
-                    })
+#                 except Exception as e:
+#                     # If user creation fails, delete the corresponding user credentials
+#                     print("ERROR USER")
+#                     instance = UsersCredentials.objects.get(pk=str(user_cred_data['user_id'])) 
+#                     instance.delete()
+#                     return JsonResponse({
+#                         'message': "User Register failed!",
+#                         'error': response_user.json(),
+#                         'authenticated': False,
+#                         'status': response_user.status_code
+#                     })
             
-            else:   # If user credent fails
-                print(" User Cref Fails: ",response_cred.json())
-                return JsonResponse({'error': response_cred.json()})
-        except:
-            return JsonResponse({'message': 'Error creating user credentials'})
+#             else:   # If user credent fails
+#                 print(" User Cref Fails: ",response_cred.json())
+#                 return JsonResponse({'error': response_cred.json()})
+#         except:
+#             return JsonResponse({'message': 'Error creating user credentials'})
 
 from django.contrib.auth.hashers import make_password
 @api_view(['POST'])

@@ -90,24 +90,31 @@ def company(request, company):
         token = request.headers.get('Authorization')
         if(verify_token(token)):
             data = json.loads(request.body.decode('utf-8'))
-            print(data)
-            base_url = get_base_url(request)
             try:
-                response = requests.post(base_url+'/backend/api/companies/0', json=data)
-                print(response)
-    
+                response = requests.post(base_url+'/backend/api/companies/0', json=data)    
                 if response.status_code == 200:
-                    return JsonResponse({'message': 'Company created successfully','data': response.json(), 'status': response.status_code})
+                    return JsonResponse({
+                        'message': 'Company created successfully',
+                        'data': response.json(), 
+                        'status': response.status_code
+                    })
                 else:
-                    return JsonResponse({'message': 'Failed to create Company','data': response.json(), 'status': response.status_code})
+                    return JsonResponse({
+                        'message': 'Failed to create Company',
+                        'data': response.json(), 
+                        'status': response.status_code
+                    })
             except Exception as e:
-                return JsonResponse({'message': str(e),'data': response.json(),'status': response.status_code})
+                return JsonResponse({
+                    'message': str(e),
+                    'data': response.json(),
+                    'status': response.status_code
+                })
         else:
             return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
 
     elif request.method == 'GET':
         response = requests.get(base_url+'/backend/api/companies/'+str(company))
-        print(response.json())
         return JsonResponse({
             'message': 'Company Fetched succesfully',
             'data': response.json(),

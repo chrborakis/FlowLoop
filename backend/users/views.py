@@ -104,16 +104,15 @@ def friends(request, user):
             base_url = get_base_url(request)
             try:
                 response = requests.get(base_url+'/backend/api/friends/'+str(user))
-                print(response)    
                 if response.status_code == 200:
                     return JsonResponse({
-                        'message': str(user)+' Friends fetched successfully',
+                        'message': str(user)+'Friends fetched successfully',
                         'data': response.json(),
                         'status': response.status_code
                     })
                 else:
                     return JsonResponse({
-                        'message': 'Failed to fethch Friends '+str(user),
+                        'message': 'Failed to fetch Friends '+str(user),
                         'data': response.json(),
                         'status': response.status_code
                     })
@@ -292,7 +291,6 @@ def friend_requests(request):
         if(verify_token(token)):
             try:
                 data = json.loads(request.body.decode('utf-8'))
-                # data = { 'user1':user1, 'request':request_param}
                 if data.get("status") == 'P':
                     response = requests.post(base_url+'/backend/api/friend_requests/', json=data)
                     if response.status_code == 200:
@@ -330,7 +328,6 @@ def friend_requests(request):
                 print("Friend Request Failed: ", e)
         else:
             return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
-
 
     # USED IN USER PROFILE TO GET BUTTON INFO
     elif request.method == 'GET':

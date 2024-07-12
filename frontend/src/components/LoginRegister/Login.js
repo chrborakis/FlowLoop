@@ -38,7 +38,7 @@ const Login = ({login}) => {
     }
 
     const doLogin = async(e) => {
-        axios.post('http://127.0.0.1:8000/login', {email: formData.email, password:formData.password},
+        axios.post('http://127.0.0.1:8000/backend/authentication/login', {email: formData.email, password:formData.password},
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}}
         ).then(res => {
             if(res.status === 200){

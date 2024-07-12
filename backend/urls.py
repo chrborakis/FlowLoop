@@ -8,21 +8,19 @@ from . import views
 from backend.views import *
 
 urlpatterns = [
-    path('api/',       include('backend.api.urls')),
-    path('notifications/', include('backend.notifications.urls')),
+    path('api/',          include('backend.api.urls')),
+    path('authentication/', include('backend.authentication.urls')),
+    path('notifications/',include('backend.notifications.urls')),
 
     path('users/',     include('backend.users.urls')),
     path('companies/', include('backend.companies.urls')),
     path('posts/',     include('backend.posts.urls')), 
     path('projects/',  include('backend.projects.urls')),
     path('chat/',      include('backend.chat.urls')),
-    path('groups/',include('backend.groups.urls')),
+    path('groups/',    include('backend.groups.urls')),
 
-    path('authentication/', include('backend.authentication.urls')),
-
-    path("search_users/<str:name>", views.search_users),
-    path("search_companies/<str:name>", views.search_companies),
-    path('user_info/<int:user_id>', views.user_info),
-    path('active_friends/<int:user_id>', views.active_friends),
-
+    path('search_users/<str:name>',     views.search_users),
+    path('search_companies/<str:name>', views.search_companies),
+    path('user_info/<int:user_id>',     views.user_info),
+    path('active_friends/<int:user_id>',views.active_friends),
 ]

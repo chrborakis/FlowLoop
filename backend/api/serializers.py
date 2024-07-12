@@ -38,16 +38,7 @@ class NotificationsSerializer(serializers.ModelSerializer):
     sender_info = serializers.SerializerMethodField()
     class Meta:
         model = Notifications
-        fields = (
-            'id',
-            'user',
-            'sender',
-            'sender_info',
-            'message',
-            'url',
-            'is_read',
-            'timestamp'
-        )
+        fields = ('id','user','sender','sender_info','message','url','is_read','timestamp')
     def get_sender_info(self,obj):
         return {
             'id':    obj.sender.user_id,

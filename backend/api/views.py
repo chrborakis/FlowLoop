@@ -126,14 +126,15 @@ class NotificationsView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def patch(self, request, user):
-        user_data = get_object_or_404(Notifications, id=user)
-        serializer = NotificationsSerializer(user_data, data={'is_read': True}, partial=True)
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            notification = get_object_or_404(Notifications, id=user)
+            serializer = NotificationsSerializer(notification, data={'is_read': True}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Http404:
+            return Response({'error': 'Notifications not found.'}, status=404)    
     
 
 class UnreadNotificationsCountView(APIView):
@@ -363,12 +364,11 @@ class Employees(APIView):
 class ActiveFriendsView(APIView):
     def get(self, request, user_id):
         try:
-            # instances = get_list_or_404(Friends.objects.filter( person=user_id, friend__user__active=True).order_by('friend__slug'))
             instances = get_list_or_404(Friends.objects.filter( person=user_id).order_by('friend__slug'))
             serializers = FriendsSerializer(instances, many=True)
             return Response(serializers.data)
         except Http404:
-            return Response({'error': 'Active Friends not found.'}, status=404) 
+            return Response({'error': 'Friends not found.'}, status=404) 
 
 class UnreadMessagesCountView(APIView):
     def get( self, request, user):

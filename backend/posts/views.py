@@ -34,13 +34,12 @@ def post_public(request, user):
                 return JsonResponse({'message': 'Post Public Failed posting','error': error_message})
         else:
             return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
-
     elif request.method == 'GET':
         response = None
         if user == '0':
             try:
                 queryset = PostsPublic.objects.all().order_by('-publish_date')
-                paginator = Paginator(queryset, 4)  #  items per scroll down
+                paginator = Paginator(queryset, 5)
                 page_number = request.GET.get('page')
                 page_number = int(page_number) if page_number else 1
                 page_obj = paginator.get_page(page_number)
@@ -48,18 +47,18 @@ def post_public(request, user):
                 serializer = PostsPublicSerializer(page_obj, many=True)
                 return JsonResponse({
                     'message': 'Posts Public Fetched succesfully',
-                    'data': serializer.data, 'has_next': next_page_number,'status': 200
+                    'data': serializer.data,
+                    'has_next': next_page_number,'status': 200
                 })
-                # response = requests.get(base_url+'/backend/api/postpublic')
             except Exception as e:
                 return JsonResponse({
                     'message': 'An error occurred while fetching posts public',
-                    'error': str(e),'status': 500
+                    'error': str(e),'status': 500 
                 })
         elif user != '0':
             try:
                 queryset = PostsPublic.objects.filter(author__slug=str(user)).order_by('-publish_date')
-                paginator = Paginator(queryset, 4)  #items per scroll down
+                paginator = Paginator(queryset, 5)  #items per scroll down
                 page_number = request.GET.get('page')
                 page_number = int(page_number) if page_number else 1
                 page_obj = paginator.get_page(page_number)
@@ -71,11 +70,10 @@ def post_public(request, user):
                     'has_next': next_page_number,
                     'status': 200
                 })
-                # response = requests.get(base_url+'/backend/api/postpublic')
             except Exception as e:
                 return JsonResponse({
                     'message': 'An error occurred while fetching posts public',
-                    'error': str(e),'status': 500
+                    'error': str(e),'status': 500 
                 })
     elif request.method == 'DELETE':
         token = request.headers.get('Authorization')
@@ -89,7 +87,6 @@ def post_public(request, user):
             except Exception as e: return JsonResponse({'message': str(e),'status': 500})
         else:
             return JsonResponse({'message': 'Unauthorized - Token missing', 'status': status.HTTP_403_FORBIDDEN}) 
-
     elif request.method == 'PATCH':
         token = request.headers.get('Authorization')
         if(verify_token(token)):
