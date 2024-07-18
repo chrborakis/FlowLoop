@@ -9,7 +9,7 @@ import PostsPrivate from "./Posts/PostsPrivate";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from '../components/Extra/TabPanel'
-import FriendList from "./Chat/FriendList";
+import List from "./Chat/List";
 import CompanyForm from "./Profiles/Company/NewCompany/CompanyForm";
 
 import '../../static/css/HomePage.css'
@@ -22,14 +22,12 @@ const HomePage = ({user}) => {
 
     return (
         <>
-            <Col md={10} className="d-flex flex-column justify-content-start">
+            <Col md={10} className="d-flex flex-column justify-content-start" style={{ margin: '2%' }}>
                 <Row md={6} className="d-flex justify-content-center align-items-center">
                 {
                     user?.company ? (
                         <Link to={`/company/${user?.company.slug}`}>
-                            <Button variant="outlined">
-                                {user?.company.name}
-                            </Button>
+                            <Button variant="outlined">{user?.company.name}</Button>
                         </Link>
                     ) :  <>
                         <Button variant="outlined" onClick={() => setModalShow(true)}>Start your company</Button>
@@ -37,13 +35,10 @@ const HomePage = ({user}) => {
                     </>
                 }
                 </Row>
-            <Tabs value={value} onChange={handleChange}
-                indicatorColor="primary" textColor="primary"
-                scrollButtons="auto" centered
-                aria-label="scrollable auto tabs example">
-                <Tab label="Feed" />
-                {user?.company?.name && <Tab label={user?.company?.name} />}
-            </Tabs>
+                <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary"                  scrollButtons="auto" centered aria-label="scrollable auto tabs example">
+                    <Tab label="Feed" />
+                    {user?.company?.name && <Tab label={user?.company?.name} />}
+                </Tabs>
                 <div className="scroll-posts">
                     <TabPanel value={value} index={0}>
                         <PostsPublic user={user} url='backend/posts/postpublic' slug='/0'/>
@@ -56,7 +51,7 @@ const HomePage = ({user}) => {
                 </div>
             </Col>
             <Col className="friends-list d-flex flex-column justify-content-end">
-                { user && <FriendList user={{ user_id:user?.id, company_id:user?.company?.id, work_id:user?.work_id}} />}
+                { user && <List user={{ user_id:user?.id, company_id:user?.company?.id, work_id:user?.work_id}} />}
             </Col>
         </>
     );

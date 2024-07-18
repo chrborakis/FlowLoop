@@ -7,6 +7,7 @@ import { dateFormat } from "../../Extra/Date";
 import { UserAvt } from "../../Profiles/Profile";
 import { readNotification } from "./NotificationsUtils";
 import "../../../../static/css/messages.css";
+import "../../../../static/css/index.css";
 
 const Notifications = ({user, refresh, notifications}) => {
     const [notif, setNotif] = useState([]);
@@ -15,7 +16,7 @@ const Notifications = ({user, refresh, notifications}) => {
         if(refresh){
             setNotif([]);
             getNotifications( user?.id, setNotif);
-            notifications.updateUnreadNotifications(user.id, notifications.setNotifications);
+            notifications.updateUnreadNotifications(user.id, notifications.setNotifications);            
         }
     }, [refresh,user]);
 
@@ -27,14 +28,14 @@ const Notifications = ({user, refresh, notifications}) => {
                     <div key={notification.id}className={`chat ${!notification.is_read ? "unread" : ""}`} onClick={ () => readNotification(notification.id, user?.token)}>
                         <Link to={notification.url} onClick={scrollTop}>
                             <Col xs={10}>
-                                <Row>
+                                <Row className="message_notif">
                                     <Col xs={2}><UserAvt user={notification.sender_info} width={40} circle/></Col>
                                     <Col xs={10} className="d-flex justify-content-between align-items-start">
                                         {notification.sender_info.name}
                                         <span className="ml-auto">{dateFormat(notification.timestamp)}</span>
                                     </Col>
                                     <Col className="chat-text" xs={12}>
-                                            {notification.message}
+                                        {notification.message}
                                     </Col>
                                 </Row>
                             </Col>

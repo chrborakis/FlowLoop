@@ -35,6 +35,20 @@ const CompanyProfile = () => {
             setTabContent(parseInt(tab))
         };
     }, [tab]);
+
+    useEffect(() => {
+        if (content) {
+          const scrollToElement = (retryCount = 0) => {
+            const element = document.getElementById(content);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            } else if (retryCount < 10) { // Retry up to 10 times
+              setTimeout(() => scrollToElement(retryCount + 1), 100);
+            }
+          };
+          scrollToElement();
+        }
+      }, [content]);
     
     useEffect( () => {getCompany(setData, slug)}, [slug]);
 

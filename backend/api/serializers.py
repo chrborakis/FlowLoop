@@ -12,7 +12,7 @@ from rest_framework import serializers, fields
 class UsersCredentialSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsersCredentials
-        fields = ('user_id','email','password','active')
+        fields = ('user_id','email','password')
 
     def validate(self, data):
         email = data.get('email')
@@ -258,6 +258,7 @@ class PostsPrivateSerializer(serializers.ModelSerializer):
             'company_id':   obj.author.employee.company.company_id,
             'company_name': str(obj.author.employee.company),
             'company_slug': str(obj.author.employee.company.slug),
+            'company_image': str(obj.author.employee.company.image),
             'user_id':      str(obj.author.employee.user_id),
             'user_name':    str(obj.author.employee.user),
             'user_slug':    str(obj.author.employee.user.slug),

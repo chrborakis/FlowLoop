@@ -27,11 +27,13 @@ const Messages = ({ user, refresh, messages, chats, handleChat }) => {
         <div className="chats-list">
             {chats && chats.length > 0 ? (
                 chats.map((chat, idx) => (
+                    <>
+                    
                     <div key={chat.message_id} onClick={() => setChat(chat)}
                         className={`chat ${!chat.read && user === chat.receiver_info.id ? "unread" : ""}`}
                     >
                         <Col xs={10}>
-                            <Row>
+                            <Row className="message_notif">
                                 <Col xs={2}>
                                     <UserAvt user={{name:user === chat.sender_info.id ? chat.receiver_info.name : chat.sender_info.name, 
                                         image:user === chat.sender_info.id ? `/files/${chat.receiver_info.image}` : `/files/${chat.sender_info.image}`}} width={40} circle/>
@@ -51,8 +53,9 @@ const Messages = ({ user, refresh, messages, chats, handleChat }) => {
                                 </Col>
                             </Row>
                         </Col>
-                        {idx !== chats.length - 1 && <hr />}
                     </div>
+                        {idx !== chats.length - 1 && <hr />}
+                        </>
                 ))
             ) : (
                 <p>No Chats found!</p>

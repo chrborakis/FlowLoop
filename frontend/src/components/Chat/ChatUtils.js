@@ -69,10 +69,8 @@ export const sendMessage = async( data, setMessages, setMessage, socket, token) 
     await axios.post(`${window.location.origin}/backend/chat/conversation/${sender}/${receiver}`, data,{
         headers:{'X-CSRFToken': Cookies.get('csrftoken'),'Authorization': `${token}`,'Content-Type': 'application/json'}
     }).then( res => {
-        console.log(res.data)
         if(res.data.status===200) {
             socket.send(JSON.stringify({'message': res.data.data}))
-            // setMessages(prevMessaged=>[...prevMessaged, res.data.data])
             setMessage('')
             const sct = new WebSocket(`ws://${window.location.host}/ws/chat_unread/${res.data.data.receiver_info.id}/`);
             if(sct){
@@ -85,3 +83,4 @@ export const sendMessage = async( data, setMessages, setMessage, socket, token) 
         }
     }).catch(err => console.log(err))
 }
+

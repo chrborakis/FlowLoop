@@ -15,7 +15,7 @@ const Requests = (props) => {
     }
 
     return(<>
-        <Modal {...props} size="lg" centered
+        <Modal {...props} size="md" centered
             aria-labelledby="contained-modal-title-vcenter"   
         >
             <Form className='form' onSubmit={handleSubmit}>
@@ -33,8 +33,6 @@ const Requests = (props) => {
                         {props.division?.requests && props.division?.requests.map((request, index) => (
                         <Dropdown.Item key={index} eventKey={request} onClick={() => setSelectedOption({id:request.id, user_id:request.user_id, work_on:request.work_id,name:request.name})}>
                             <>
-
-                            {console.log(request)}
                                 <img src={`/files/${request.image}`} width={50}/>
                                 {request.name}
                             </>

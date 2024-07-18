@@ -86,9 +86,6 @@ from django.contrib.auth.hashers import make_password
 def login(request):
     try:
         user = UsersCredentials.objects.get(email=request.data['email'])
-        print(user)
-        # user.active = True
-        # user.save()
     except UsersCredentials.DoesNotExist:
         return Response({"detail": "Account not found!"}, status=status.HTTP_404_NOT_FOUND)
     
@@ -140,30 +137,7 @@ def signup(request):
             user.delete()
     else:
         errors.update(serializer_cred.errors)
-
     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # if serializer_cred.is_valid() and serializer_user.is_valid():
-    #     serializer_cred.save()
-    #     serializer_user.save()
-
-    #     user = UsersCredentials.objects.get(email=request.data['email'])
-    #     token, created = CustomToken.objects.get_or_create(user=user)
-    #     token_data = {'key': token.key}
-    #     return Response({'token': token_data, 'user': serializer_user.data}, status=status.HTTP_200_OK)
-    # else:
-    #     errors = {}
-    #     # if not serializer_cred.is_valid(): errors = serializer_cred.errors
-    #     # if not serializer_user.is_valid(): errors = serializer_user.errors
-    #     if not serializer_cred.is_valid():
-    #         for key, value in serializer_cred.errors.items():
-    #             if key in errors: errors[key].extend(value)
-    #             else: errors[key] = value
-    #     if not serializer_user.is_valid():
-    #         for key, value in serializer_user.errors.items():
-    #             if key in errors: errors[key].extend(value)
-    #             else: errors[key] = value
-    #     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def update_email(request):

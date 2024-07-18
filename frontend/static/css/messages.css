@@ -26,3 +26,15 @@
     background-color: var(--primary);
     color: white;
 }
+
+.message_notif{
+    color: black
+}
+
+.message_notif a {
+    text-decoration: none;
+ }
+
+.unread .message_notif {
+    color: white; 
+  }

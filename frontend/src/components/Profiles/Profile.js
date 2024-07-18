@@ -84,24 +84,6 @@ export const Company = ({ company, circle, width}) => {
             : `/files/${image}`
         : '';
 
-//     return(<>
-//         <Link to={`/company/${slug}`} onClick={scrollTop}>
-//             {circle ? (
-//                 image && <Avatar alt={name} src={`/files/${image}`} width={width || 60}/>
-//             ) : (
-//                 image && <img alt={name} src={`/files/${image}`} width={width || 60}/>
-//             )}
-//             {name}
-//         </Link>
-//     </>)
-
-// const { name, slug, image} = user
-// const imageUrl = image
-//     ? (image.startsWith('/files\\') || image.startsWith('/files'))
-//         ? image
-//         : `/files/${image}`
-//     : '';
-
     return( 
         <Link to={`/company/${slug}`} onClick={scrollTop}>
             <div style={{display:'flex', alignItems:'center'}}>

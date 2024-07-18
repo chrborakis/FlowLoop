@@ -17,13 +17,30 @@ import PostsPublic from '../../Posts/PostsPublic';
 
 import { getUser, getFriends, get_request } from './UserUtils';
 import { replyRequestProfile } from '../../Requests/FriendUtils';
-
+import { useLocation } from 'react-router-dom';
 import '../../../../static/css/Profile/Profile.css'
 import "bootstrap/dist/css/bootstrap.min.css"; 
 
 const UserProfile = () => {
     const { user, updateUser } = useAuth();
     const { slug } = useParams();
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.hash) {
+          const id = location.hash.substring(1);
+          const scrollToElement = (retryCount = 0) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            } else if (retryCount < 10) { 
+                setTimeout(() => scrollToElement(retryCount + 1), 100);
+            }
+          };
+          scrollToElement();
+        }
+      }, [location]);
     
     const [ data, setData] = useState();
     const [ work, setWork] = useState();

@@ -28,6 +28,14 @@ const NotificationProvider = ({ children }) => {
             return () => socket.close()
         }
     },[socket])
+
+    useEffect(()=>{
+        if (notifications > 0) {
+            document.title = `(${notifications}) FlowLoop`;
+        } else {
+            document.title = 'FlowLoop';
+        }
+    },[notifications])
     
     return (<NotificationContext.Provider value={{ notifications, setNotifications, socket}}>
         {children}

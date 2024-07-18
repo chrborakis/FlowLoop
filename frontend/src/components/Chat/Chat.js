@@ -48,20 +48,8 @@ const Chat = ({chat, setChat, room}) => {
 
     useEffect(()=>{
         setMessages([])
-        // if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages, setLoading, setHasNextPage, currentPage)
         if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages)
     },[chat])
-
-    // useEffect(()=>{
-    //     if(chat.receiver)getMessages( sender.user_id, receiver.user_id, setMessages, setLoading, setHasNextPage, currentPage)
-    // },[currentPage])
-
-
-    // const loadMore = () => {
-    //     if (hasNextPage && !loading) {
-    //         setCurrentPage(prevPage => prevPage + 1);
-    //     }
-    // };
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     const handleMouseEnter = (messageId) => setHoveredMessageId(messageId);

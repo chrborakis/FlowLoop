@@ -26,7 +26,6 @@ const PostsPublic = ({user, url, slug}) => {
 
     useEffect( () => {  
         if (newPost) {
-            console.log('newPost:', newPost);
             setPosts((prevPosts) => [newPost.data, ...prevPosts]);
         }
     }, [newPost])
@@ -38,8 +37,11 @@ const PostsPublic = ({user, url, slug}) => {
     };
 
     return (<>
-        <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>New Post</Button>
-        <NewPost user={user} url={url} newPost={setNewPost} show={newPostModal} onHide={() => setNewPostModal(false)}/>  
+        { 
+        user?.slug === slug.substring(1) || !window.location.href.includes("user") && <>
+            <Button variant="contained" color="primary" onClick={() => setNewPostModal(true)}>New Post</Button>
+            <NewPost user={user} url={url} newPost={setNewPost} show={newPostModal} onHide={() => setNewPostModal(false)}/>  
+        </>}
 
         <div className="center-posts">
             <InfiniteScroll

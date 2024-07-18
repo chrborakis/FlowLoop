@@ -59,8 +59,8 @@ const NewDivision = ({admin_slug, user, setDivisions, project_id}) => {
                             multiline fullWidth className="textfield" 
                             onChange={handleInputChange}
                         />
-                        <Button variant="contained" type="success">
-                            <BsPlusLg/>
+                        <Button style={{marginTop: '5%'}} variant="contained" color="success" type="submit">
+                            ADD
                         </Button>
                     </Form>
                     </Card.Body>

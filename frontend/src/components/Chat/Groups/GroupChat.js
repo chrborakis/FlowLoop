@@ -67,7 +67,7 @@ const GroupChat = ({chat, setChat, room, onRemoveMember}) => {
                                 {group.name}
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="dropdown-menu-center">
-                                <Dropdown.Item onClick={() => setMembersModal(true)}>Members</Dropdown.Item>
+                                <Dropdown.Item style={{color:"black"}}onClick={() => setMembersModal(true)}>Members</Dropdown.Item>
                                 <hr/>
                                 <Dropdown.Item style={{color:"red"}} onClick={ () => onRemoveMember(chat.user.member, setMembers,user_?.token)}>Leave Group</Dropdown.Item>
                             </Dropdown.Menu>

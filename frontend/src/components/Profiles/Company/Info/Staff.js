@@ -12,8 +12,6 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 import { updateAdmin, getStaff, removeEmployee } from "../CompanyUtils";
 
 const Staff = ({user, company}) => {
-    console.log("staff: ", socket)
-
     const [ staff, setStaff]     = useState([]);
     const [filteredMembers, setFiltered] = useState(staff)
     const [updateTrigger, setUpdateTrigger] = useState(false);

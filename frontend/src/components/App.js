@@ -21,14 +21,14 @@ import Project from "./Projects/Projects/Project";
 import "../../static/css/index.css"
 
 const App = () => {
+    const updateUnreadMessages      = (user_id, setMessages) => getUnreadMessages(user_id, setMessages)
+    const updateUnreadRequests      = (user_id, setRequests) => getUnreadRequests(user_id, setRequests)
+    const updateUnreadNotifications = (user_id, setNotifications) => getUnreadNotifications(user_id, setNotifications)
+
     const { user, updateUser } = useAuth(); 
     const { notifications, setNotifications} = useNotification();
     const { messages, setMessages} = useChat()
     const { requests, setRequests} = useRequest();
-
-    const updateUnreadMessages      = (user_id, setMessages) => getUnreadMessages(user_id, setMessages)
-    const updateUnreadRequests      = (user_id, setRequests) => getUnreadRequests(user_id, setRequests)
-    const updateUnreadNotifications = (user_id, setNotifications) => getUnreadNotifications(user_id, setNotifications)
 
     useEffect(()=>{
         if(user){
@@ -43,8 +43,7 @@ const App = () => {
         <Router basename="/">
             <div className="body">
                 { user ? (<>
-                    <NavBar user={user} 
-                        messages={{messages, setMessages, updateUnreadMessages}}
+                    <NavBar user={user} messages={{messages, setMessages, updateUnreadMessages}}
                         requests={{requests, setRequests, updateUnreadRequests}}
                         notifications={{notifications, setNotifications, updateUnreadNotifications, readNotification}}
                     />
@@ -54,7 +53,6 @@ const App = () => {
                         <Route path="/" element={<HomePage user={user}/>}/>
                     </Routes>
                 </>) : (<>
-                    <h1>FlowLoop</h1>
                     <LoginRegister/>
                 </>)}
             </div>

@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect} from "react";
 
 import { useAuth } from "../../store/AuthContext";
-
-import { User } from "../Profiles/Profile";
+import { UserΑvt, User } from "../Profiles/Profile";
 import {ButtonGroup, Button} from '@mui/material';
 import { Row,Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -35,7 +34,7 @@ const WorkRequests = ({company, refresh}) => {
                             <Row>
                                 <Col className="d-flex justify-content-start">
                                     <Link to={`/user/${req?.user_info?.slug}`} onClick={scrollTop}>
-                                        <User user={req?.user_info}/>
+                                        <User user={req?.user_info} circle={true}/>
                                     </Link>
                                 </Col>
                             </Row>

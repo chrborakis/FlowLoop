@@ -6,9 +6,7 @@ export const getDivisions = async( company, setDivisions) => {
     await axios.get(`${window.location.origin}/backend/projects/divisions/${company}`,
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'), 'Content-Type': 'application/json'}})
     .then(  res => {
-        if( res.data.status === 200){
-            setDivisions(res.data.data)
-        }})
+        if( res.data.status === 200){setDivisions(res.data.data)}})
     .catch( err => console.log(err))
 }
 
@@ -35,15 +33,11 @@ export const uploadDivision = async( division, setDivisions, formData, setErrors
         {headers: {'X-CSRFToken': Cookies.get('csrftoken'),'Content-Type': 'multipart/form-data'}})
     .then(  res => {
         if( res.status === 200){
-            setDivisions(prevDivs => {
-                return prevDivs.map(obj => {
-                    if (obj.division === res.data.division) return res.data;
-                    else return obj;
-                });
-            });
-        }else{
-            setErrors("Error uploading the file")
-        }})
+            setDivisions(prevDivs => {return prevDivs.map(obj => {
+                if (obj.division === res.data.division) return res.data;
+                else return obj;
+            });});
+        }else{ setErrors("Error uploading the file")}})
     .catch( err => {    
         setErrors("Wrong file format")
         console.log(err.response)

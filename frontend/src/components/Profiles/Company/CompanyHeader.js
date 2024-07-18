@@ -24,7 +24,7 @@ const CompanyHeader = ({ slug, data, user}) => {
         const user_data = { "user": user.id, "company": data?.company_id, "status": "P"}
         sendWorkRequest( user_data, setRequested, user?.token)
     };
-    const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success' });
+    const [buttonConfig, setButtonConfig] = useState({ text: 'Send request', variant: 'success', color:'primary'});
     
     useEffect(() => {
         if (requested === 'P') {
@@ -32,7 +32,7 @@ const CompanyHeader = ({ slug, data, user}) => {
         }else if( requested === 'No' && !unemployed){
             setButtonConfig({ text: 'You can only be employee on one company', variant: 'secondary'})
         }else if( requested === 'A'){
-            setButtonConfig({ text: 'Leave', variant: 'outlined', color:'error'})
+            setButtonConfig({ text: 'Leave Company', variant: 'outlined', color:'error'})
         }
         else if (requested === 'No') {
             setButtonConfig({ text: 'Send Request', variant: 'success' });

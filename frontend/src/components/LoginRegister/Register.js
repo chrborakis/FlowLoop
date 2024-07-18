@@ -119,7 +119,7 @@ const Register = ({login}) => {
         <div className='form'>
             <Form className='form' onSubmit={handleRegister}>
                 <Card className="text-center">  
-                    <Card.Header>Login</Card.Header>
+                    <Card.Header>Register</Card.Header>
                     <Card.Body>
                         <Row>
                             <Form.Group as={Col} className="mb-3" controlId="firstname">

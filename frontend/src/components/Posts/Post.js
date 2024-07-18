@@ -20,7 +20,8 @@ import '../../../static/css/Posts/Post.css';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import { UserAvt } from "../Profiles/Profile";
-       
+import { dateFormat } from "../Extra/Date";
+
 const Post = ({post, url, setPosts}) => {
     const { user} = useAuth();
     const [visible,setVisible] = useState(false)
@@ -48,7 +49,6 @@ const Post = ({post, url, setPosts}) => {
 
     const saveEdited = (e) => {
         e.preventDefault()
-        console.log(data)
         editPost( url, data, setPosts, setEditMode, user?.token)
     }
 
@@ -61,7 +61,7 @@ const Post = ({post, url, setPosts}) => {
                     <Col xs={3} className="d-flex justify-content-center align-items-center">
                         <AvatarGroup max={2}>
                             { post.user?.company_name && (
-                                <UserAvt user={{name:post.user?.company_name, slug:post.user?.company_slug}} circle width={60}/>
+                                <UserAvt user={{name:post.user?.company_name, slug:post.user?.company_slug, image:post.user?.company_image}} circle width={60}/>
                             )}
                             <UserAvt user={{name: post.user?.user_name, image: post.user?.user_image, slug:post.user?.user_slug}} circle width={60}/>
                         </AvatarGroup>
@@ -137,8 +137,8 @@ const Post = ({post, url, setPosts}) => {
                                     <img src={post?.image} style={{ maxWidth: '50%' }} />
                                 </div>
                         )}
-                        <p className="post-date">{new Date(post.publish_date).toISOString().split('T')[0]} - {new Date(post.publish_date).toISOString().split('T')[1].split('.')[0]}</p>
-                    </Card.Text>
+                        <span className="post-date">{dateFormat(post.publish_date)}</span>
+                        </Card.Text>
                     {editMode && (
                         <Col className="justify-content-between">
                         <Button variant="plain" color="error" type="button" onClick={handleEdit}disabled ={!editMode}>

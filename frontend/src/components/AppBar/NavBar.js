@@ -23,7 +23,9 @@ import { User, Company } from '../Profiles/Profile';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChangeCredentials from './ChangeCredentials';
 import Notifications from './Notifications/Notifications';
-
+import { BsArchive } from "react-icons/bs";
+import { IoIosNotifications } from "react-icons/io";
+import { TiMessages } from "react-icons/ti";
 function NavBar({user, messages, notifications, requests}) {
     const { logout } = useAuth();
     const [reqTab, setReqTab] = useState(0);
@@ -46,66 +48,69 @@ function NavBar({user, messages, notifications, requests}) {
             <Container fluid>
                 <Navbar.Brand href="/" className='nav-title'>FlowLoop</Navbar.Brand>
                 <SearchBar />
-                <NavDropdown onClick={() => {toggleRequests(!refreshRequests);}} onToggle={toggleRequests} className='chat-list'
-                title={<IconButton size="large" aria-label="notifications" color="inherit">
-                    <Badge badgeContent={requests.requests} color="error">
-                        <AddBusinessIcon />
-                    </Badge>
-                    </IconButton>} id={`requests offcanvasNavbarDropdown-expand-${expand}`}>
-                    <Row>
-                        <Col>
-                            <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered> 
-                                <Tab label="Friend Requests"/>
-                                {user.is_admin &&  <Tab label="Work Requests"/>}
+                <div>
+                    <div className="d-flex align-items-center">
+                        <NavDropdown onClick={() => toggleRequests(!refreshRequests)} onToggle={toggleRequests} className='chat-list'
+                            title={<IconButton size="large" aria-label="notifications" color="inherit">
+                                <Badge badgeContent={requests.requests} color="error">
+                                    <BsArchive style={{ color: 'white' }} />
+                                </Badge>
+                            </IconButton>}id={`requests-offcanvasNavbarDropdown-expand-${expand}`}
+                        >
+                        <Row>
+                            <Col>
+                            <Tabs value={reqTab} onChange={handleReqTab} indicatorColor="primary" textColor="primary" centered>
+                                <Tab label="Friend Requests" />
+                                {user.is_admin && <Tab label="Work Requests" />}
                             </Tabs>
                             <TabPanel value={reqTab} index={0}>
                                 <FriendRequests refresh={refreshRequests} />
                             </TabPanel>
-                            {user.is_admin &&
+                            {user.is_admin && (
                                 <TabPanel value={reqTab} index={1}>
-                                    <WorkRequests company={user?.company?.id} refresh={refreshRequests} />
+                                <WorkRequests company={user?.company?.id} refresh={refreshRequests} />
                                 </TabPanel>
-                            }
-                        </Col>
-                    </Row>
-                </NavDropdown>
- 
-                <NavDropdown onClick={() => toggleNotifications(!refreshChat)} onToggle={toggleNotifications}
-                    title={<IconButton size="large" aria-label="notifications" color="inherit">
-                    <Badge badgeContent={notifications.notifications} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                    </IconButton>} id={`notifications offcanvasNavbarDropdown-expand-${expand}`}>
-                    <Row>
-                        <Tabs value={0} indicatorColor="primary" textColor="primary" centered> 
-                            <Tab label="Notifications"/>
-                        </Tabs>
-                        <TabPanel value={0} index={0}>
-                            <Notifications user={user} refresh={refreshNotifications} notifications={notifications}/>
-                        </TabPanel>
-                    </Row>
-                </NavDropdown>
+                            )}
+                            </Col>
+                        </Row>
+                        </NavDropdown>
 
-                <NavDropdown onClick={() => toggleMessages(!refreshChat)} onToggle={toggleMessages}
-                    title={<IconButton size="large" aria-label="messages" color="inherit">
-                    <Badge badgeContent={messages.messages} color="error">
-                        <MailIcon />
-                    </Badge>
-                    </IconButton>} id={`messages offcanvasNavbarDropdown-expand-${expand}`}>
-                    <Row>
-                        <Tabs value={0} indicatorColor="primary" textColor="primary" centered> 
-                            <Tab label="Messages"/>
-                        </Tabs>
-                        <TabPanel value={0} index={0}>
-                            <MessageContainer  user={user} refresh={refreshChat} messages={messages}/>
-                        </TabPanel>
-                    </Row>
-                </NavDropdown>
+                        <NavDropdown onClick={() => toggleNotifications(!refreshChat)} onToggle={toggleNotifications}
+                            title={<IconButton size="large" aria-label="notifications" color="inherit">
+                                <Badge badgeContent={notifications.notifications} color="error">
+                                    <IoIosNotifications style={{ color: 'white' }} />
+                                </Badge>
+                            </IconButton>}id={`notifications-offcanvasNavbarDropdown-expand-${expand}`}>
+                        <Row>
+                            <Tabs value={0} indicatorColor="primary" textColor="primary" centered>
+                            <Tab label="Notifications" />
+                            </Tabs>
+                            <TabPanel value={0} index={0}>
+                            <Notifications user={user} refresh={refreshNotifications} notifications={notifications} />
+                            </TabPanel>
+                        </Row>
+                        </NavDropdown>
 
-                <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
-                <Navbar.Offcanvas id={`Options offcanvasNavbar-expand-${expand}`}
-                    aria-labelledby={`Options offcanvasNavbarLabel-expand-${expand}`} placement="end"
-                >
+                        <NavDropdown onClick={() => toggleMessages(!refreshChat)} onToggle={toggleMessages}
+                        title={<IconButton size="large" aria-label="messages" color="inherit">
+                            <Badge badgeContent={messages.messages} color="error">
+                                <TiMessages style={{ color: 'white' }} />
+                            </Badge>
+                        </IconButton>}id={`messages-offcanvasNavbarDropdown-expand-${expand}`}>
+                        <Row>
+                            <Tabs value={0} indicatorColor="primary" textColor="primary" centered>
+                            <Tab label="Messages" />
+                            </Tabs>
+                            <TabPanel value={0} index={0}>
+                            <MessageContainer user={user} refresh={refreshChat} messages={messages} />
+                            </TabPanel>
+                        </Row>
+                        </NavDropdown>
+                    </div>
+                    </div>
+
+                <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} style={{ color: 'white' }} />
+                <Navbar.Offcanvas id={`Options offcanvasNavbar-expand-${expand}`}aria-labelledby={`Options offcanvasNavbarLabel-expand-${expand}`} placement="end">
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title id={`Options offcanvasNavbarLabel-expand-${expand}`}>
                             Options

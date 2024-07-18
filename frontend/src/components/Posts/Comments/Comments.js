@@ -10,6 +10,10 @@ import '../../../../static/css/index.css';
 import { scrollTop } from "../../Extra/LinkOnTop";
 import CommentIcon from '@mui/icons-material/Comment';
 import { UserAvt } from "../../Profiles/Profile";
+import { dateFormat } from "../../Extra/Date";
+
+import "../../../../static/css/index.css"
+
 // post: post_id
 // url: ../backend/postpubliccomments OR backend/postpubliccomments
 const Comments = ({post,url,comments,exp,setNewComment }) => { 
@@ -31,9 +35,7 @@ const Comments = ({post,url,comments,exp,setNewComment }) => {
                                             <Link to={`/user/${comment.user.slug}`} onClick={scrollTop}>
                                                 {comment.user.name}
                                             </Link>
-                                            <span className="ml-auto">
-                                                {new Date(comment.date).toISOString().split('T')[1].split('.')[0]} {new Date(comment.date).toISOString().split('T')[0]} 
-                                            </span>
+                                            <span className="ml-auto">{dateFormat(comment.date)}</span>
                                         </Col>
                                         <Col xs={12} className="text-left" style={{ textAlign: 'left' }}>{comment.comment}</Col>
                                     </Row>

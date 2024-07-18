@@ -9,7 +9,10 @@ import { useAuth } from '../../store/AuthContext';
 const LoginRegister = () => {
     const { login } = useAuth();
 
-    return (
+    return (<>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+            <img src="files/logo_horizontal.svg" width="200px" alt="Logo" />
+        </div>
         <Tabs defaultActiveKey="login" id="justify-tab-example" className="mb-3" justify>
             <Tab eventKey="login" title="Login">
                 <Login    login={login}/>
@@ -18,7 +21,7 @@ const LoginRegister = () => {
                 <Register login={login}/>
             </Tab>
         </Tabs>
-    );
+    </>);
 }
   
 export default LoginRegister;
